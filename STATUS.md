@@ -14,7 +14,7 @@ kenntlich (Favorit, Domain offen; Tochter von Dobson Studio): KI-Kennzeichnung n
 Referenz: bestehender Generator auf dobsonstudio.com/ki-label-generator (Browser-only, Vorlagen, 4 Positionen, Deckkraft, Metadaten-Check, Disclaimer).
 
 ## Aktueller Stand
-- 2026-11-26: Cloudflare Worker `dob-one` live, Auto-Deploy aus main (B1 erledigt).
+- 2026-11-26: Cloudflare Worker `dob-one` live unter https://dob-one.benjamin-j-siedler.workers.dev, Auto-Deploy aus main (B1 erledigt).
 - 2026-11-26: Name-Favorit "kenntlich", Domain kauft Benjamin (B2).
 - 2026-11-26: Idee 1 entschieden, MVP-Spec + Backlog stehen. Tägliche Session (werktags) eingerichtet. Nächstes Ticket: T1.
 - 2026-11-26: Repo angelegt, Ideen-Shortlist in `docs/01-ideen.md`.
