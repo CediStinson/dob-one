@@ -4,6 +4,7 @@ export { matchGenerator } from "./generators.ts";
 export { classifySourceType } from "./iptc.ts";
 export {
   buildXmp,
+  crc32,
   embedXmpJpeg,
   embedXmpPng,
   embedXmpWebp,

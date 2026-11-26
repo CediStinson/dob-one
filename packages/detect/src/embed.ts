@@ -57,7 +57,8 @@ export function embedXmpJpeg(bytes: Uint8Array, xmp: string): Uint8Array {
 }
 
 let crcTable: Uint32Array | undefined;
-function crc32(data: Uint8Array): number {
+/** CRC-32 (IEEE), wie in PNG und ZIP. */
+export function crc32(data: Uint8Array): number {
   if (!crcTable) {
     crcTable = new Uint32Array(256);
     for (let n = 0; n < 256; n++) {

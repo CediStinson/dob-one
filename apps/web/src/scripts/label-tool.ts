@@ -19,6 +19,7 @@ import {
 } from "../lib/label/layout.ts";
 import { drawLabeled, LABEL_FONT } from "../lib/label/render.ts";
 import { describe } from "../lib/label/verdict.ts";
+import { createZip, uniqueNames } from "../lib/zip.ts";
 
 const MAX_FILES = 20;
 const MAX_BYTES = 40 * 1024 * 1024;
@@ -244,9 +245,26 @@ drop.addEventListener("drop", (e) => {
   if (e.dataTransfer?.files) void addFiles(e.dataTransfer.files);
 });
 allBtn.addEventListener("click", async () => {
-  for (const item of items) {
-    await download(item);
-    await new Promise((r) => setTimeout(r, 300));
+  allBtn.disabled = true;
+  msg.textContent = "ZIP wird erstellt …";
+  try {
+    const files: { name: string; data: Uint8Array }[] = [];
+    for (const item of items) {
+      const { blob, name } = await exportBlob(item);
+      files.push({ name, data: new Uint8Array(await blob.arrayBuffer()) });
+    }
+    const names = uniqueNames(files.map((f) => f.name));
+    const zip = createZip(files.map((f, i) => ({ name: names[i]!, data: f.data })));
+    save(
+      new Blob([zip as Uint8Array<ArrayBuffer>], { type: "application/zip" }),
+      "ki-label-bilder.zip",
+    );
+    msg.textContent = "";
+  } catch {
+    msg.textContent =
+      "Das ZIP konnte nicht erstellt werden. Bitte laden Sie die Bilder einzeln herunter.";
+  } finally {
+    allBtn.disabled = items.length === 0;
   }
 });
 clearBtn.addEventListener("click", () => {
