@@ -1,4 +1,7 @@
 ---
+import "@fontsource-variable/inter/index.css";
+import "../styles/global.css";
+
 interface Props {
   title: string;
   description: string;
@@ -14,26 +17,24 @@ const { title, description } = Astro.props;
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#0b0f10" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
+    <header class="wrap top">
+      <a href="/" class="logo">kenntlich<span>.</span></a>
+      <nav>
+        <a href="/#tools">Free Tools</a>
+        <a href="/#warteliste" class="btn small">Warteliste</a>
+      </nav>
+    </header>
     <slot />
+    <footer class="wrap foot">
+      <span>kenntlich. Ein Produkt von dobsonstudio</span>
+      <nav>
+        <a href="/impressum/">Impressum</a>
+        <a href="/datenschutz/">Datenschutz</a>
+      </nav>
+    </footer>
   </body>
 </html>
-
-<style is:global>
-  :root {
-    color-scheme: dark;
-    --bg: #0b0f10;
-    --fg: #e6eeee;
-    --muted: #9fb0b0;
-    --faint: #5f7070;
-    --accent: #2dd4bf;
-  }
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background: var(--bg);
-    color: var(--fg);
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  }
-</style>

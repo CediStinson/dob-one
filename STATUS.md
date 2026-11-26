@@ -18,7 +18,10 @@ Referenz: bestehender Generator auf dobsonstudio.com/ki-label-generator (Browser
 
 ## Aktueller Stand
 
+- 2026-11-26: T3 Landingpage live-fähig (Warteliste noch Mock, Rechtstexte Entwurf). Nächstes Ticket: T4 (Label-Generator).
+- 2026-11-26: T2 `packages/detect` erkennt KI-Hinweise (C2PA, IPTC, Generator-Tags, SD-Parameter), 42 Tests.
+- 2026-11-26: T1 Monorepo steht, ein Worker liefert Astro-Seiten + `/api/health`. CI auf GitHub prüft jeden Push.
 - 2026-11-26: Cloudflare Worker `dob-one` live unter https://dob-one.benjamin-j-siedler.workers.dev, Auto-Deploy aus main (B1 erledigt).
 - 2026-11-26: Name-Favorit "kenntlich", Domain kauft Benjamin (B2).
-- 2026-11-26: Idee 1 entschieden, MVP-Spec + Backlog stehen. Tägliche Session (werktags) eingerichtet. Nächstes Ticket: T1.
+- 2026-11-26: Idee 1 entschieden, MVP-Spec + Backlog stehen. Tägliche Session (werktags) eingerichtet.
 - 2026-11-26: Repo angelegt, Ideen-Shortlist in `docs/01-ideen.md`.

@@ -1,46 +1,302 @@
 ---
 import Base from "../layouts/Base.astro";
+
+const problems = [
+  {
+    title: "KI-Bilder sind überall",
+    text: "Stockfotos, Agenturmotive, Social-Media-Grafiken. Oft weiß niemand mehr, welches Bild aus einem Generator stammt.",
+  },
+  {
+    title: "Chatbots brauchen einen Hinweis",
+    text: "Wer mit einer KI schreibt, soll das erkennen können. Viele Widgets laufen ohne diesen Hinweis.",
+  },
+  {
+    title: "Ein Check reicht nicht",
+    text: "Jede neue Seite und jedes neue Bild kann etwas ändern. Ohne laufende Prüfung fällt das niemandem auf.",
+  },
+];
+
+const steps = [
+  { n: "1", title: "URL eingeben", text: "Ihre Website, ohne Installation und ohne Zugangsdaten." },
+  {
+    n: "2",
+    title: "kenntlich prüft",
+    text: "Bild-Metadaten (C2PA, IPTC, Generator-Angaben) und bekannte Chatbot-Skripte auf bis zu 25 Seiten.",
+  },
+  {
+    n: "3",
+    title: "Sie wissen, was zu tun ist",
+    text: "Eine klare Liste mit Fundstellen, Empfehlungen und einem fertigen Label-Snippet zum Einbauen.",
+  },
+];
+
+const tools = [
+  {
+    title: "KI-Label-Generator",
+    text: "Bilder im Browser mit einem KI-Hinweis versehen. Vorlagen, Position, Deckkraft, mehrere Bilder auf einmal. Ihre Bilder verlassen das Gerät nicht.",
+  },
+  {
+    title: "KI-Website-Check",
+    text: "Eine Seite Ihrer Website kostenlos prüfen: KI-Bilder in den Metadaten und Chatbots ohne Hinweis.",
+  },
+];
 ---
 
 <Base
   title="kenntlich. KI-Inhalte richtig kennzeichnen"
-  description="kenntlich prüft Ihre Website auf KI-Bilder und Chatbots und hilft bei der Kennzeichnung nach Art. 50 AI Act. Bald verfügbar."
+  description="kenntlich findet KI-Bilder und Chatbots auf Ihrer Website und zeigt, wo nach Art. 50 AI Act ein Hinweis fehlt."
 >
   <main>
-    <h1>kenntlich<span>.</span></h1>
-    <p>
-      Wir prüfen Ihre Website auf KI-Bilder und Chatbots und helfen bei der Kennzeichnung nach Art.
-      50 AI Act.
-    </p>
-    <p>Bald verfügbar.</p>
-    <small>Ein Produkt von dobsonstudio</small>
+    <section class="wrap hero">
+      <p class="eyebrow">Art. 50 AI Act</p>
+      <h1>KI-Bilder und Chatbots auf Ihrer Website. <span>Richtig gekennzeichnet.</span></h1>
+      <p class="lead">
+        Seit dem 2. August 2026 gelten die Transparenzpflichten aus Art.&nbsp;50 AI&nbsp;Act. kenntlich findet
+        KI-Inhalte auf Ihrer Website und zeigt Ihnen, wo ein Hinweis fehlt.
+      </p>
+      <div class="cta">
+        <a href="#warteliste" class="btn">Auf die Warteliste</a>
+        <a href="#tools" class="btn ghost">Free Tools ansehen</a>
+      </div>
+    </section>
+
+    <section class="wrap block">
+      <h2>Das Problem</h2>
+      <div class="grid three">
+        {
+          problems.map((p) => (
+            <article class="card">
+              <h3>{p.title}</h3>
+              <p class="muted">{p.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="wrap block">
+      <h2>So funktioniert kenntlich</h2>
+      <ol class="grid three steps">
+        {
+          steps.map((s) => (
+            <li class="card">
+              <span class="num">{s.n}</span>
+              <h3>{s.title}</h3>
+              <p class="muted">{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="muted after">
+        Mit Pro prüft kenntlich jede Woche erneut und meldet sich, wenn neue KI-Bilder ohne Hinweis
+        auftauchen. Für Agenturen mit mehreren Domains und Report im eigenen Look.
+      </p>
+    </section>
+
+    <section class="wrap block" id="tools">
+      <h2>Free Tools</h2>
+      <div class="grid two">
+        {
+          tools.map((t) => (
+            <article class="card">
+              <span class="badge">Bald verfügbar</span>
+              <h3>{t.title}</h3>
+              <p class="muted">{t.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="wrap block" id="warteliste">
+      <div class="card wait">
+        <div>
+          <h2>Warteliste</h2>
+          <p class="muted">
+            Wir melden uns einmal, wenn kenntlich startet. Keine Weitergabe, kein Newsletter.
+          </p>
+        </div>
+        <form id="waitlist" novalidate>
+          <label for="email" class="sr">E-Mail-Adresse</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            placeholder="name@firma.de"
+          />
+          <button type="submit" class="btn">Eintragen</button>
+          <p class="hint" id="waitlist-msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="wrap block">
+      <p class="note">
+        kenntlich wertet Metadaten und bekannte Skripte aus. Die Ergebnisse sind Hinweise, kein Beweis,
+        und ersetzen keine Rechtsberatung.
+      </p>
+    </section>
   </main>
 </Base>
 
+<script>
+  // Vorschau: Die Warteliste ist noch nicht angebunden (T12). Es wird nichts gesendet oder gespeichert.
+  const form = document.querySelector<HTMLFormElement>("#waitlist");
+  const msg = document.querySelector<HTMLParagraphElement>("#waitlist-msg");
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const input = form.querySelector<HTMLInputElement>("input[type=email]");
+    if (!input || !msg) return;
+    if (!input.checkValidity()) {
+      msg.textContent = "Bitte eine gültige E-Mail-Adresse eingeben.";
+      return;
+    }
+    msg.textContent = "Danke. Die Warteliste startet in Kürze. Bis dahin wird nichts gespeichert.";
+    form.reset();
+  });
+</script>
+
 <style>
-  body {
-    display: grid;
-    place-items: center;
+  .hero {
+    padding-top: 72px;
+    padding-bottom: 24px;
   }
-  main {
-    max-width: 560px;
-    padding: 32px;
-  }
-  h1 {
-    font-size: 44px;
-    letter-spacing: -0.02em;
-    margin: 0 0 16px;
-  }
-  h1 span {
+  .eyebrow {
     color: var(--accent);
-  }
-  p {
-    color: var(--muted);
-    line-height: 1.6;
-    font-size: 18px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     margin: 0 0 12px;
   }
-  small {
-    color: var(--faint);
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 60px);
+    margin: 0 0 20px;
+    max-width: 860px;
+  }
+  .hero h1 span {
+    color: var(--accent);
+  }
+  .lead {
+    font-size: 20px;
+    color: var(--muted);
+    max-width: 640px;
+    margin: 0 0 32px;
+  }
+  .cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .block {
+    margin-top: 88px;
+  }
+  .block h2 {
+    font-size: 28px;
+    margin: 0 0 24px;
+  }
+  .grid {
+    display: grid;
+    gap: 16px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .grid.three {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .grid.two {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+  }
+  .card h3 {
+    font-size: 18px;
+    margin: 0 0 8px;
+  }
+  .card p {
+    margin: 0;
+  }
+  .num {
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    padding: 2px 10px;
+    margin-bottom: 12px;
+  }
+  .after {
+    margin-top: 20px;
+    max-width: 680px;
+  }
+  .wait {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  .wait h2 {
+    margin-bottom: 8px;
+  }
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  input {
+    flex: 1 1 220px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--fg);
+    font: inherit;
+  }
+  input:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .hint {
+    flex-basis: 100%;
+    margin: 0;
+    min-height: 1.6em;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  @media (max-width: 800px) {
+    .grid.three,
+    .grid.two,
+    .wait {
+      grid-template-columns: 1fr;
+    }
+    .hero {
+      padding-top: 40px;
+    }
   }
 </style>
