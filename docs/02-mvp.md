@@ -76,6 +76,14 @@ Beide Routen liegen unter `/api/*`, weil nur dort der Worker vor den statischen 
 - Seitenfehler in `pages[].error`: `unreachable` (Cloudflare 530, meist Domain existiert nicht/Tippfehler), `http_<code>`, `not_html`, `network`, `private_host`, `too_many_redirects`.
 - Fehler: 400 (ungültige/private URL), 415 (kein Bild), 429 (Rate-Limit, mit `retry-after`), 502 (Ziel nicht erreichbar).
 
+## Website-Check UI (T8, Stand 26.11.2026)
+
+- Seite `/tools/ki-website-check/`, Vanilla-TS (`apps/web/src/scripts/website-check.ts`), Logik in `apps/web/src/lib/check/` (getestet).
+- Ablauf: `/api/scan` → pro Bild `/api/img` (4 parallel, bei Fehler eine Größenvariante) → `detect` im Browser → Kacheln, Empfehlungen, Bildliste, Seitenliste, Label-Snippet.
+- 429 beim Scan: Wartezeit aus `retry-after`, ohne Angabe Text "Tageskontingent". 429 während der Bildprüfung: Abbruch, Rest als "nicht geprüft", Ergebnis wird trotzdem gezeigt.
+- Entscheidung: Bis Accounts (T10) existieren, zeigt der freie Check den ganzen Scan (bis 25 Seiten) statt nur einer Seite. Begrenzung kommt mit T10.
+- `?url=` füllt das Feld vor, startet aber nicht automatisch.
+
 ## Design (überarbeitet 26.11.2026)
 
 - **Hell statt dunkel.** Compliance-Produkt für KMU: Vertrauen, Ruhe, Seriosität. Weißer/sehr heller Grund (#FFFFFF / #F7F9F9), dunkles Graublau für Text, Teal als Akzent sparsam (Buttons, Haken, Links). dobsonstudio-Look (dunkel) gilt hier ausdrücklich nicht.

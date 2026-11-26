@@ -14,7 +14,6 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 - [ ] **T4d** Label-Generator an `docs/04-label-spec.md` angleichen: Varianten Kurz/GEN/MOD im EU-Icon-Muster, 4 Farben inkl. 50 %, Größe 4 bis 20 %, Eigener-Text-Modus mit Vorlage, Export PNG/JPG/WebP. Geometrie wie spezifiziert. In unserer Schrift (Inter).
 - [ ] **T4e** Sicherheitscheck Label-Generator + Website-Check: Metadaten und gescannte Inhalte nur per `textContent` ausgeben, nie `innerHTML`. Test mit präpariertem Bild (Skript im XMP).
 - [ ] **T13** Free Tool 2 (SEO): PNG/JPG in WebP umwandeln, im Browser, Pixelmaße bleiben gleich, Qualitätsregler, ZIP. Eigene Landingpage "PNG in WebP umwandeln" mit Hinweis auf KI-Label-Generator.
-- [ ] **T8** Web: KI-Website-Check UI (nutzt `/api/scan` + `/api/img`, 429 freundlich abfangen) mit Fortschritt, Ergebnisliste, Handlungsempfehlungen, Label-Snippet.
 - [ ] **T9** Chatbot-Erkennung (Signaturliste in `packages/detect`).
 - [ ] 🧑 **B3** Supabase- und Resend-Account anlegen, Keys als Env-Variablen in Cloudflare eintragen.
 
@@ -27,6 +26,7 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ## Erledigt
 
+- [x] 2026-11-26 T8 KI-Website-Check unter `/tools/ki-website-check/`: Scan + Bildprüfung im Browser (4 parallel, Fallback auf Größenvariante), Fortschritt, Kacheln, Empfehlungen, Bildliste (KI-Funde oben), Seitenliste mit Fehlertexten, Label-Snippet mit Kopieren, 429 freundlich (auch mitten in der Bildprüfung, Rest "nicht geprüft"). Scan-Inhalte nur per `textContent`. Fix: `[hidden]` wurde von `.btn` überschrieben. 22 Tests, Playwright-Durchlauf mit Mock-API.
 - [x] 2026-11-26 T7 `/api/img?src=`: erste 256 KB (Range + Abbruch), nur image/*, Ausgabe als octet-stream mit nosniff/Sandbox-CSP, SSRF-Schutz auch über Redirects, Rate-Limit.
 - [x] 2026-11-26 T6 `/api/scan?url=`: Crawler bis 25 Seiten mit HTMLRewriter, robots.txt, Budget 45 Subrequests, 6 parallel, 150 Bilder, Skripte/iframes für T9, SSRF-Schutz, Rate-Limit pro IP. 44 neue Tests (lol-html als WASM), Produktionsparser in workerd geprüft.
 - [x] 2026-11-26 T2b Markenrecherche `docs/03-marke.md`: Websuche ohne Kollision, Register selbst nicht abfragbar (→ B5), Hauptrisiko: "kenntlich" ist beschreibend, eher Wort-Bild-Marke.

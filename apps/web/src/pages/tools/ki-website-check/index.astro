@@ -1,0 +1,399 @@
+---
+import Base from "../../../layouts/Base.astro";
+import { TEMPLATES } from "../../../lib/label/layout.ts";
+---
+
+<Base
+  title="KI-Website-Check. kenntlich"
+  description="Prüfen Sie Ihre Website kostenlos auf Bilder mit KI-Hinweisen in den Metadaten. Mit Empfehlungen und fertigem Label-Snippet. Ohne Login."
+>
+  <main class="wrap tool">
+    <p class="eyebrow">Free Tool</p>
+    <h1>KI-Website-Check</h1>
+    <p class="lead">
+      Geben Sie Ihre Website ein. Wir lesen bis zu 25 Seiten und prüfen die Bilder auf KI-Hinweise
+      in den Metadaten. Sie sehen, wo ein Hinweis fehlen könnte, und bekommen ein fertiges
+      Label-Snippet.
+    </p>
+    <ul class="facts">
+      <li>Kein Login, keine Cookies</li>
+      <li>Ergebnisse werden nicht gespeichert</li>
+      <li>Bis zu 25 Seiten pro Check</li>
+    </ul>
+
+    <form id="check-form" class="check-form" novalidate>
+      <label for="check-url" class="sr">Adresse Ihrer Website</label>
+      <input
+        id="check-url"
+        name="url"
+        type="text"
+        inputmode="url"
+        autocomplete="url"
+        spellcheck="false"
+        placeholder="beispiel.de"
+        required
+        maxlength="2048"
+      />
+      <button type="submit" class="btn" id="check-start">Website prüfen</button>
+    </form>
+
+    <div id="check-status" class="status" hidden>
+      <p id="check-phase" role="status" aria-live="polite"></p>
+      <progress id="check-progress"></progress>
+    </div>
+    <p id="check-error" class="error" role="alert" hidden></p>
+
+    <section id="check-results" class="results" hidden aria-labelledby="res-title">
+      <h2 id="res-title">Ergebnis für <span id="res-site"></span></h2>
+      <dl class="tiles">
+        <div><dt>Seiten gelesen</dt><dd id="t-pages">0</dd></div>
+        <div><dt>Bilder geprüft</dt><dd id="t-images">0</dd></div>
+        <div class="hl"><dt>Mit KI-Hinweis</dt><dd id="t-ai">0</dd></div>
+        <div><dt>Nicht abrufbar</dt><dd id="t-error">0</dd></div>
+      </dl>
+      <p id="res-limits" class="muted small" hidden></p>
+
+      <h3>Empfehlungen</h3>
+      <ul id="advice" class="advice"></ul>
+
+      <h3>Bilder</h3>
+      <p id="img-empty" class="muted" hidden>Auf den gelesenen Seiten wurden keine Bilder gefunden.</p>
+      <ul id="img-list" class="img-list"></ul>
+      <button type="button" id="img-more" class="btn ghost small" hidden
+        >Alle Bilder anzeigen</button
+      >
+
+      <details class="pages">
+        <summary>Gelesene Seiten (<span id="pages-count">0</span>)</summary>
+        <ul id="page-list" class="page-list"></ul>
+      </details>
+
+      <div class="chatbot muted">
+        <h3>Chatbots</h3>
+        <p>
+          Die Prüfung auf Chatbots ohne KI-Hinweis kommt in Kürze. Nutzen Sie auf Ihrer Website einen
+          KI-Chat, sollte dieser klar als KI erkennbar sein.
+        </p>
+      </div>
+
+      <section class="snippet" aria-labelledby="snip-title">
+        <h3 id="snip-title">Label-Snippet zum Einbauen</h3>
+        <p class="muted">
+          Fügen Sie diesen Code dort ein, wo das Bild steht. Er zeigt einen kleinen Hinweis unten
+          rechts im Bild. Ohne externe Dateien, ohne JavaScript.
+        </p>
+        <div class="snip-opts">
+          <label for="snip-text">Text</label>
+          <select id="snip-text">
+            {TEMPLATES.map((t) => <option value={t}>{t}</option>)}
+          </select>
+        </div>
+        <textarea id="snip-code" readonly rows="10" spellcheck="false" aria-label="Snippet-Code"
+        ></textarea>
+        <div class="snip-actions">
+          <button type="button" id="snip-copy" class="btn small">Code kopieren</button>
+          <span id="snip-msg" class="muted small" role="status" aria-live="polite"></span>
+        </div>
+        <p class="muted small">
+          Lieber das Label direkt ins Bild? Dafür gibt es den <a href="/tools/ki-label-generator/"
+            >KI-Label-Generator</a
+          >.
+        </p>
+      </section>
+    </section>
+
+    <section class="note-block">
+      <h2>Gut zu wissen</h2>
+      <ul class="muted">
+        <li>
+          Wir lesen die Metadaten der Bilder (C2PA, IPTC, Angaben bekannter KI-Programme). Fehlen
+          diese, kann ein Bild trotzdem mit KI erzeugt sein. Das Ergebnis ist ein Hinweis, kein
+          Beweis.
+        </li>
+        <li>
+          Pro Bild laden wir nur den Dateianfang. Die Auswertung läuft in Ihrem Browser. Das
+          Ergebnis speichern wir nicht.
+        </li>
+        <li>
+          Wir beachten die robots.txt Ihrer Website. Seiten, die dort gesperrt sind, lesen wir nicht.
+        </li>
+        <li>
+          Ob und wie Sie kennzeichnen müssen, hängt vom Einzelfall ab. Dieses Tool ersetzt keine
+          Rechtsberatung. Grundlage ist Art.&nbsp;50 der KI-Verordnung (<a
+            href="https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R1689"
+            rel="noopener">EUR-Lex</a
+          >).
+        </li>
+      </ul>
+    </section>
+  </main>
+</Base>
+
+<script>
+  import "../../../scripts/website-check.ts";
+</script>
+
+<style>
+  .tool {
+    padding-top: 56px;
+  }
+  .eyebrow {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+  h1 {
+    font-size: clamp(32px, 5vw, 44px);
+    margin: 0 0 16px;
+  }
+  .lead {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 680px;
+    margin: 0 0 20px;
+  }
+  .facts {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .facts li::before {
+    content: "✓";
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .check-form {
+    display: flex;
+    gap: 10px;
+    max-width: 640px;
+  }
+  .check-form input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid #c9d2d6;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font: inherit;
+    font-size: 17px;
+  }
+  .check-form input:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .status {
+    max-width: 640px;
+    margin-top: 20px;
+  }
+  .status p {
+    margin: 0 0 8px;
+    color: var(--muted);
+  }
+  progress {
+    width: 100%;
+    height: 8px;
+    accent-color: var(--accent);
+  }
+  .error {
+    max-width: 640px;
+    margin-top: 20px;
+    border-left: 3px solid #b45309;
+    padding: 6px 0 6px 12px;
+  }
+  .results {
+    margin-top: 48px;
+  }
+  .results h2 {
+    font-size: 26px;
+    margin: 0 0 20px;
+    word-break: break-word;
+  }
+  .results h3 {
+    font-size: 19px;
+    margin: 36px 0 12px;
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 0;
+  }
+  .tiles div {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .tiles .hl {
+    background: var(--bg-soft);
+  }
+  .tiles dt {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .tiles dd {
+    margin: 2px 0 0;
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .small {
+    font-size: 14px;
+  }
+  .advice {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+    max-width: 760px;
+  }
+  .advice :global(li) {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 16px;
+  }
+  .advice :global(strong) {
+    display: block;
+  }
+  .advice :global(span) {
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .img-list,
+  .page-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px;
+  }
+  .img-list :global(li) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .img-list :global(.name) {
+    font-weight: 600;
+    word-break: break-all;
+  }
+  .img-list :global(.where) {
+    grid-column: 1;
+    font-size: 14px;
+    color: var(--muted);
+    word-break: break-all;
+  }
+  .img-list :global(.tag) {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+    align-self: center;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .img-list :global(.tag[data-s="ai"]) {
+    border-color: #b45309;
+    color: #92400e;
+    background: #fff7ed;
+  }
+  .img-list :global(.tag[data-s="ai_partial"]) {
+    border-color: #ca8a04;
+    color: #854d0e;
+    background: #fefce8;
+  }
+  .img-list :global(.tag[data-s="none"]) {
+    border-color: var(--accent-soft);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .pages {
+    margin-top: 28px;
+  }
+  .pages summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .page-list :global(li) {
+    padding: 6px 0;
+    font-size: 15px;
+    word-break: break-all;
+  }
+  .page-list :global(.err) {
+    color: #92400e;
+  }
+  .chatbot {
+    max-width: 760px;
+  }
+  .snippet {
+    max-width: 760px;
+  }
+  .snip-opts {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 12px 0;
+  }
+  .snip-opts select {
+    font: inherit;
+    border: 1px solid #c9d2d6;
+    border-radius: 8px;
+    padding: 6px 8px;
+  }
+  textarea {
+    width: 100%;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg-soft);
+    padding: 12px;
+    resize: vertical;
+  }
+  .snip-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin: 8px 0 12px;
+  }
+  .note-block {
+    margin-top: 72px;
+    max-width: 720px;
+  }
+  .note-block h2 {
+    font-size: 22px;
+  }
+  .note-block li {
+    margin-bottom: 8px;
+  }
+  @media (max-width: 720px) {
+    .check-form {
+      flex-direction: column;
+    }
+    .tiles {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

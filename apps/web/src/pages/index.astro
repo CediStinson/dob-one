@@ -34,11 +34,14 @@ const tools = [
   {
     title: "KI-Label-Generator",
     href: "/tools/ki-label-generator/",
+    linkText: "Jetzt Bilder labeln",
     text: "Bilder im Browser mit einem KI-Hinweis versehen. Vorlagen, Position, Deckkraft, mehrere Bilder auf einmal. Ihre Bilder verlassen das Gerät nicht.",
   },
   {
     title: "KI-Website-Check",
-    text: "Eine Seite Ihrer Website kostenlos prüfen: KI-Bilder in den Metadaten und Chatbots ohne Hinweis. Kein Login nötig.",
+    href: "/tools/ki-website-check/",
+    linkText: "Website jetzt prüfen",
+    text: "Ihre Website kostenlos prüfen: Bilder mit KI-Hinweisen in den Metadaten, Empfehlungen und fertiges Label-Snippet. Chatbot-Prüfung folgt. Kein Login nötig.",
   },
 ];
 
@@ -127,7 +130,7 @@ const eurLex = "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R
               <p class="muted">{t.text}</p>
               {t.href && (
                 <p class="tool-link">
-                  <a href={t.href}>Jetzt Bilder labeln</a>
+                  <a href={t.href}>{t.linkText}</a>
                 </p>
               )}
             </article>
