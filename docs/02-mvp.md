@@ -1,4 +1,4 @@
-# MVP-Spec: Klarbild (Arbeitsname)
+# MVP-Spec: kenntlich (Favorit, Domain offen; Tochter von Dobson Studio)
 
 Entschieden am 26.11.2026. Idee 1 aus `01-ideen.md`.
 
