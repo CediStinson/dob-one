@@ -11,6 +11,9 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ### Sprint 2: Website-Check
 
+- [ ] **T14** Website-Check neu ausrichten (Entscheidung 26.11.): vom "KI-Detektor" zum Kennzeichnungs-Check. Pro Bild drei Spalten: (1) Herkunftsdaten (C2PA/IPTC/EXIF: KI-Hinweis / keine KI-Angabe / Metadaten entfernt), (2) Sichtbare Kennzeichnung erkannt? (3) Ihre Einschätzung: Nutzer markiert per Klick "KI-Bild ja/nein". Ergebnis: Liste "KI-Bild ohne sichtbares Label → kennzeichnen". Seitenweiter Hinweis, wenn kaum ein Bild Metadaten hat ("Ihr CMS entfernt Herkunftsdaten, maschinenlesbare Kennzeichnung geht verloren").
+- [ ] **T15** Sichtbare Kennzeichnung im HTML erkennen: alt, title, figcaption, aria-label, Text im Umfeld des Bildes ("KI-generiert", "KI-Bild", "AI-generated", "mit KI erstellt" ...), EU-Icon-Bilder, unser eigenes Snippet. Signaturen in packages/detect mit Tests.
+- [ ] **T16** (später) Eingebrannte Labels erkennen: OCR nur auf die 4 Bildecken, im Browser, selbst gehostet. Erst prüfen, ob Aufwand/Größe vertretbar ist.
 - [ ] **T3c** Warteliste entfernen (Entscheidung 26.11.: kein Traffic, kein Nutzen, unnötige DSGVO-Pflichten). Ersetzen durch Kontakt-Hinweis "Interesse an Monitoring oder Agentur-Modus? Schreiben Sie uns" mit mailto:info@dobsonstudio.com (später Domain-Adresse). Datenschutz-Entwurf entsprechend anpassen. Nichts speichern.
 - [ ] **T4d** Label-Generator an `docs/04-label-spec.md` angleichen: Varianten Kurz/GEN/MOD im EU-Icon-Muster, 4 Farben inkl. 50 %, Größe 4 bis 20 %, Eigener-Text-Modus mit Vorlage, Export PNG/JPG/WebP. Geometrie wie spezifiziert. In unserer Schrift (Inter).
 - [ ] **T13** Free Tool 2 (SEO): PNG/JPG in WebP umwandeln, im Browser, Pixelmaße bleiben gleich, Qualitätsregler, ZIP. Eigene Landingpage "PNG in WebP umwandeln" mit Hinweis auf KI-Label-Generator.
