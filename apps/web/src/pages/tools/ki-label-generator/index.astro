@@ -95,6 +95,23 @@ const sizes = [
         </fieldset>
 
         <fieldset>
+          <legend>Maschinenlesbarer Hinweis</legend>
+          <label class="opt">
+            <input type="radio" name="marker" value="trainedAlgorithmicMedia" checked />
+            KI-generiert
+          </label>
+          <label class="opt">
+            <input type="radio" name="marker" value="compositeWithTrainedAlgorithmicMedia" />
+            Mit KI bearbeitet oder Montage
+          </label>
+          <label class="opt">
+            <input type="radio" name="marker" value="none" />
+            Nicht einbetten
+          </label>
+          <p class="help">Wird als IPTC-Angabe in die Datei geschrieben.</p>
+        </fieldset>
+
+        <fieldset>
           <legend>Deckkraft <output id="opacity-out" for="opacity">90 %</output></legend>
           <input id="opacity" name="opacity" type="range" min="30" max="100" step="5" value="90" />
         </fieldset>
@@ -140,8 +157,9 @@ const sizes = [
       <h2>Gut zu wissen</h2>
       <ul class="muted">
         <li>
-          Der Download enthält das sichtbare Label. Metadaten der Originaldatei (auch C2PA-Nachweise)
-          werden dabei nicht übernommen. Bewahren Sie das Original auf.
+          Der Download enthält das sichtbare Label und, wenn gewählt, einen maschinenlesbaren
+          Hinweis nach dem IPTC-Standard (DigitalSourceType). Andere Metadaten der Originaldatei
+          (auch C2PA-Nachweise) werden nicht übernommen. Bewahren Sie das Original auf.
         </li>
         <li>
           Die Metadaten-Einschätzung ist ein Hinweis, kein Beweis. Fehlen Metadaten, kann ein Bild
@@ -291,6 +309,11 @@ const sizes = [
   .seg input:focus-visible + span {
     outline: 2px solid var(--accent);
     outline-offset: 1px;
+  }
+  .help {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--faint);
   }
   input[type="range"] {
     width: 100%;

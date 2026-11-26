@@ -6,8 +6,8 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ### Sprint 1: Fundament + erstes Free Tool
 
-- [ ] **T4b** Label-Generator: beim JPEG/PNG-Export maschinenlesbare Kennzeichnung einbetten (XMP mit IPTC `DigitalSourceType`), optional ZIP-Download für "Alle herunterladen" ohne externe Lib.
 - [ ] 🧑 **B2** Domain kaufen. kenntlich.de vergeben, .ai zu teuer. **kenntlich.eu** kaufen (Fallback kenntlich.app via Cloudflare). Heute Abend. Claude kann Verfügbarkeit nicht prüfen (Shell blockiert). Marke: "kenntlich. Ein Produkt von dobsonstudio". Klarbild bleibt Name des WP-Plugins.
+- [ ] **T4c** Label-Generator: "Alle herunterladen" als ZIP (eigener, kleiner ZIP-Writer ohne Kompression, keine externe Lib).
 - [ ] **T2c** Echte, signierte C2PA-Beispieldateien (Lizenz prüfen) als Fixtures ergänzen; aktuell nur unsignierte, selbst gebaute Manifeste.
 - [ ] **T2b** DPMA/EUIPO-Markenrecherche "kenntlich" (Klasse 9/42) dokumentieren in `docs/03-marke.md`.
 
@@ -28,6 +28,7 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ## Erledigt
 
+- [x] 2026-11-26 T4b Label-Generator bettet beim Export XMP mit IPTC `DigitalSourceType` ein (JPEG APP1, PNG iTXt, WebP VP8X + XMP), Auswahl KI-generiert / Montage / nicht einbetten. Modul `packages/detect/src/embed.ts`, 9 Roundtrip-Tests.
 - [x] 2026-11-26 T5 Cloudflare-Free-Limits recherchiert und mit Folgen für T6/T7 in `docs/02-mvp.md` dokumentiert.
 - [x] 2026-11-26 T4 KI-Label-Generator unter `/tools/ki-label-generator/`: 4 Vorlagen + eigener Text, 4 Positionen, 3 Größen, Hell/Dunkel, Deckkraft, bis 20 Bilder, Download einzeln/alle, Metadaten-Einschätzung via `packages/detect` im Browser. 10 neue Tests (apps/web).
 - [x] 2026-11-26 T3b Landingpage hell (Weiß/#F7F9F9, Teal sparsam), Trust-Leiste nur mit wahren Aussagen, Rechtsbezug mit EUR-Lex-Link + Stand-Datum, Impressum/Datenschutz mit Entwurfsdaten (Freigabe B4 offen).

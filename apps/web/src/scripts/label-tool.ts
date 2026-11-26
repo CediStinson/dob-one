@@ -1,4 +1,12 @@
-import { detect, type DetectResult } from "@dob-one/detect";
+import {
+  buildXmp,
+  detect,
+  embedXmpJpeg,
+  embedXmpPng,
+  embedXmpWebp,
+  type DetectResult,
+  type EmbedSourceType,
+} from "@dob-one/detect";
 import {
   clampOpacity,
   DEFAULT_OPTIONS,
@@ -90,7 +98,34 @@ async function exportBlob(item: Item): Promise<{ blob: Blob; name: string }> {
     canvas.toBlob(resolve, out.type, out.type === "image/png" ? undefined : 0.92),
   );
   if (!blob) throw new Error("Export fehlgeschlagen");
-  return { blob, name: labeledFileName(item.file.name, out.ext) };
+  const marked = await embedMarker(blob, out.type, w, h);
+  return { blob: marked, name: labeledFileName(item.file.name, out.ext) };
+}
+
+function readMarker(): EmbedSourceType | null {
+  const value = new FormData(form).get("marker");
+  return value === "trainedAlgorithmicMedia" || value === "compositeWithTrainedAlgorithmicMedia"
+    ? value
+    : null;
+}
+
+/** Bettet den IPTC-Hinweis ein. Schlägt das fehl, bleibt die Datei ohne Metadaten nutzbar. */
+async function embedMarker(blob: Blob, type: string, w: number, h: number): Promise<Blob> {
+  const marker = readMarker();
+  if (!marker) return blob;
+  const bytes = new Uint8Array(await blob.arrayBuffer());
+  const xmp = buildXmp(marker);
+  try {
+    const out =
+      type === "image/jpeg"
+        ? embedXmpJpeg(bytes, xmp)
+        : type === "image/webp"
+          ? embedXmpWebp(bytes, xmp, w, h)
+          : embedXmpPng(bytes, xmp);
+    return new Blob([out as Uint8Array<ArrayBuffer>], { type });
+  } catch {
+    return blob;
+  }
 }
 
 function save(blob: Blob, name: string): void {
@@ -179,6 +214,17 @@ async function addFiles(files: FileList | File[]): Promise<void> {
 }
 
 form.addEventListener("input", renderAll);
+// "KI-bearbeitet" passt zur IPTC-Angabe "Montage/Bearbeitung mit KI".
+form.addEventListener("change", (e) => {
+  const t = e.target as HTMLInputElement;
+  if (t.name !== "template" || readMarker() === null) return;
+  const code =
+    t.value === "KI-bearbeitet"
+      ? "compositeWithTrainedAlgorithmicMedia"
+      : "trainedAlgorithmicMedia";
+  const radio = form.querySelector<HTMLInputElement>(`input[name="marker"][value="${code}"]`);
+  if (radio) radio.checked = true;
+});
 form.addEventListener("submit", (e) => e.preventDefault());
 input.addEventListener("change", () => {
   if (input.files) void addFiles(input.files);

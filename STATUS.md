@@ -18,13 +18,11 @@ Referenz: bestehender Generator auf dobsonstudio.com/ki-label-generator (Browser
 
 ## Aktueller Stand
 
-- 2026-11-26: T5 Cloudflare-Limits in `docs/02-mvp.md` (100k Worker-Requests/Tag, 10 ms CPU, 50 Subrequests; Assets unbegrenzt). Nächstes Ticket: T2c (C2PA-Fixtures).
+- 2026-11-26: T4b Label-Generator schreibt jetzt auch einen maschinenlesbaren KI-Hinweis (IPTC) in JPEG, PNG und WebP. 61 Tests. Nächstes Ticket: T4c (ZIP-Download), danach T2c.
+- 2026-11-26: T5 Cloudflare-Limits in `docs/02-mvp.md` (100k Worker-Requests/Tag, 10 ms CPU, 50 Subrequests; Assets unbegrenzt).
 - 2026-11-26: T4 KI-Label-Generator live (`/tools/ki-label-generator/`), läuft komplett im Browser, zeigt Metadaten-Einschätzung. 52 Tests.
 - 2026-11-26: T3b Landingpage im hellen Design, ehrliche Trust-Elemente, Impressum mit echten Daten (als Entwurf markiert).
 - 2026-11-26: T3 Landingpage live-fähig (Warteliste noch Mock, Rechtstexte Entwurf).
 - 2026-11-26: T2 `packages/detect` erkennt KI-Hinweise (C2PA, IPTC, Generator-Tags, SD-Parameter), 42 Tests.
 - 2026-11-26: T1 Monorepo steht, ein Worker liefert Astro-Seiten + `/api/health`. CI auf GitHub prüft jeden Push.
-- 2026-11-26: Cloudflare Worker `dob-one` live unter https://dob-one.benjamin-j-siedler.workers.dev, Auto-Deploy aus main (B1 erledigt).
-- 2026-11-26: Name-Favorit "kenntlich", Domain kauft Benjamin (B2).
-- 2026-11-26: Idee 1 entschieden, MVP-Spec + Backlog stehen. Tägliche Session (werktags) eingerichtet.
-- 2026-11-26: Repo angelegt, Ideen-Shortlist in `docs/01-ideen.md`.
+- 2026-11-26: Start: Repo, Ideen-Shortlist, Idee 1 + MVP-Spec, Name-Favorit "kenntlich" (Domain: B2), Cloudflare Worker live mit Auto-Deploy (B1).
