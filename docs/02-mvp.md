@@ -39,6 +39,7 @@ Zahlung kommt erst nach Validierung (Stripe). Bis dahin: Warteliste für Pro.
 - Alles DSGVO-freundlich: keine externen CDNs, Fonts selbst gehostet.
 
 ## Design (überarbeitet 26.11.2026)
+
 - **Hell statt dunkel.** Compliance-Produkt für KMU: Vertrauen, Ruhe, Seriosität. Weißer/sehr heller Grund (#FFFFFF / #F7F9F9), dunkles Graublau für Text, Teal als Akzent sparsam (Buttons, Haken, Links). dobsonstudio-Look (dunkel) gilt hier ausdrücklich nicht.
 - Inter selbst gehostet, viel Weißraum, klare Tabellen und Häkchen-Listen, echte Screenshots statt Stock-Illustrationen.
 - **Trust-Elemente, nur was wahr ist:**
