@@ -7,7 +7,7 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 ### Sprint 1: Fundament + erstes Free Tool
 
 - [ ] 🧑 **B2** Domain kaufen. kenntlich.de vergeben, .ai zu teuer. **kenntlich.eu** kaufen (Fallback kenntlich.app via Cloudflare). Heute Abend. Claude kann Verfügbarkeit nicht prüfen (Shell blockiert). Marke: "kenntlich. Ein Produkt von dobsonstudio". Klarbild bleibt Name des WP-Plugins.
-- [ ] 🧑 **T2c** Echte, signierte C2PA-Beispieldateien als Fixtures. Vorarbeit 26.11.: Quelle `c2pa-org/public-testfiles` (GitHub, Ordner `2.2/`, Lizenz CC BY-SA 4.0, Namensnennung nötig; Fehlerfälle erkennbar an `E-sig-`, `E-dat-`, `E-uri-` im Dateinamen). Claude kann die Dateien nicht laden (Abruf aus der Session gesperrt). **Benjamin:** 3 bis 4 kleine JPEGs (eine KI-generiert, eine Kamera/bearbeitet, eine mit `E-sig-`) und eine PNG herunterladen und nach `packages/detect/fixtures/c2pa-org/` legen (oder per Chat anhängen). Danach baut Claude Tests und den Lizenzhinweis.
+- [ ] **T2c** Echte C2PA-Fixtures liegen jetzt in `packages/detect/fixtures/c2pa-org/` (5 JPEGs, CC BY-SA 4.0, Erwartungen in README dort). Tests dafür schreiben; prüfen, dass Lizenz/Attribution passt und Fixtures nicht ins Web-Build gelangen.
 - [ ] **T2b** DPMA/EUIPO-Markenrecherche "kenntlich" (Klasse 9/42) dokumentieren in `docs/03-marke.md`.
 
 ### Sprint 2: Website-Check
