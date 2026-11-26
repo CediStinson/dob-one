@@ -65,6 +65,16 @@ Folgen für uns:
 - **T7 `/img`**: ein Aufruf pro Bild, also pro Scan bis zu ~25 Seiten × n Bilder Worker-Requests. Bei 100.000/Tag reicht das für einige hundert volle Scans täglich. Pro Scan Bilder deduplizieren und auf z. B. 150 begrenzen.
 - Rate-Limit pro IP ohne KV/DO: zunächst einfach (Cloudflare-Regel oder In-Memory pro Isolate), echte Lösung erst bei Bedarf.
 
+## Scanner-API (T6/T7, Stand 26.11.2026)
+
+Beide Routen liegen unter `/api/*`, weil nur dort der Worker vor den statischen Assets läuft.
+
+- `GET /api/scan?url=example.de`: crawlt bis 25 Seiten der gleichen Website (www. zählt dazu, Redirect der Startseite auf eine andere Domain wird übernommen), respektiert robots.txt (Gruppe `kenntlich-check`, sonst `*`). Max. 45 Subrequests, 6 parallel, 2 MB HTML pro Seite, 150 Bilder. Antwort: `pages`, `images` (`src` + bis zu 5 Fundseiten), `scripts`, `iframes` (für T9), `robots`, `truncated`, `subrequests`. Rate-Limit 5 Scans / 10 Min. pro IP.
+- `GET /api/img?src=…`: erste 256 KB eines Bildes (Range-Header, danach Abbruch). Nur `image/*`, Ausgabe immer als `application/octet-stream` mit `nosniff` und Sandbox-CSP (kein SVG/HTML-Ausführen auf unserer Domain). Header `x-upstream-content-type`, `x-truncated`. Rate-Limit 400 / 10 Min. pro IP.
+- SSRF-Schutz bei jedem Abruf und jedem Redirect-Schritt (max. 3): nur http/https, nur Standardports, keine Zugangsdaten, keine privaten/reservierten IPv4/IPv6 (auch Zahlen- und Hex-Schreibweisen, IPv4-gemappt), keine internen Namen (`localhost`, `.local`, `.internal`, einteilige Hosts). DNS wird nicht aufgelöst (Workers erreichen keine privaten Netze).
+- Rate-Limit ist pro Isolate im Speicher, also grob. Bei Missbrauch: Cloudflare-Regel oder Durable Object.
+- Fehler: 400 (ungültige/private URL), 415 (kein Bild), 429 (Rate-Limit, mit `retry-after`), 502 (Ziel nicht erreichbar).
+
 ## Design (überarbeitet 26.11.2026)
 
 - **Hell statt dunkel.** Compliance-Produkt für KMU: Vertrauen, Ruhe, Seriosität. Weißer/sehr heller Grund (#FFFFFF / #F7F9F9), dunkles Graublau für Text, Teal als Akzent sparsam (Buttons, Haken, Links). dobsonstudio-Look (dunkel) gilt hier ausdrücklich nicht.

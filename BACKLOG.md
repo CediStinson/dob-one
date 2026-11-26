@@ -11,9 +11,7 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ### Sprint 2: Website-Check
 
-- [ ] **T6** Worker: `/scan?url=` crawlt bis 25 Seiten (gleiche Domain, robots.txt respektieren), sammelt Bild-URLs + Chatbot-Skripte, Rate-Limit pro IP.
-- [ ] **T7** Worker: `/img?src=` liefert die ersten 256 KB eines Bildes (SSRF-Schutz: nur http/https, keine privaten IPs).
-- [ ] **T8** Web: KI-Website-Check UI mit Fortschritt, Ergebnisliste, Handlungsempfehlungen, Label-Snippet.
+- [ ] **T8** Web: KI-Website-Check UI (nutzt `/api/scan` + `/api/img`, 429 freundlich abfangen) mit Fortschritt, Ergebnisliste, Handlungsempfehlungen, Label-Snippet.
 - [ ] **T9** Chatbot-Erkennung (Signaturliste in `packages/detect`).
 - [ ] 🧑 **B3** Supabase- und Resend-Account anlegen, Keys als Env-Variablen in Cloudflare eintragen.
 
@@ -26,6 +24,8 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ## Erledigt
 
+- [x] 2026-11-26 T7 `/api/img?src=`: erste 256 KB (Range + Abbruch), nur image/*, Ausgabe als octet-stream mit nosniff/Sandbox-CSP, SSRF-Schutz auch über Redirects, Rate-Limit.
+- [x] 2026-11-26 T6 `/api/scan?url=`: Crawler bis 25 Seiten mit HTMLRewriter, robots.txt, Budget 45 Subrequests, 6 parallel, 150 Bilder, Skripte/iframes für T9, SSRF-Schutz, Rate-Limit pro IP. 44 neue Tests (lol-html als WASM), Produktionsparser in workerd geprüft.
 - [x] 2026-11-26 T2b Markenrecherche `docs/03-marke.md`: Websuche ohne Kollision, Register selbst nicht abfragbar (→ B5), Hauptrisiko: "kenntlich" ist beschreibend, eher Wort-Bild-Marke.
 - [x] 2026-11-26 T2c Tests für 5 echte C2PA-Dateien (c2pa-org): A → none, C/CA/XCA/E-sig → unclear mit claim_generator, Erkennung auch mit nur 64 KB Anfang, Robustheit bei Abschneiden. Lizenz/Attribution liegt bei, Fixtures nicht im Web-Build (geprüft). 7 Tests.
 - [x] 2026-11-26 T4c "Alle herunterladen" als ZIP (eigener ZIP-Writer ohne Kompression, UTF-8-Namen, Dopplungen nummeriert). 3 Tests, Python-zipfile als Gegenprobe.

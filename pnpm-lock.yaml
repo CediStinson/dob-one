@@ -32,6 +32,10 @@ importers:
       hono:
         specifier: ^4.13.22
         version: 4.13.22
+    devDependencies:
+      html-rewriter-wasm:
+        specifier: 0.4.1
+        version: 0.4.1
 
   apps/web:
     dependencies:
@@ -1284,6 +1288,9 @@ packages:
 
   html-escaper@3.0.3:
     resolution: {integrity: sha512-RuMffC89BOWQoY0WKGpIhn5gX3iI54O6nRA0yC124NYVtzjmFWBIiFd8M0x+ZdX0P9R4lADg1mgP8C7PxGOWuQ==}
+
+  html-rewriter-wasm@0.4.1:
+    resolution: {integrity: sha512-lNovG8CMCCmcVB1Q7xggMSf7tqPCijZXaH4gL6iE8BFghdQCbaY5Met9i1x2Ex8m/cZHDUtXK9H6/znKamRP8Q==}
 
   html-void-elements@3.0.0:
     resolution: {integrity: sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==}
@@ -3083,6 +3090,8 @@ snapshots:
   hono@4.13.22: {}
 
   html-escaper@3.0.3: {}
+
+  html-rewriter-wasm@0.4.1: {}
 
   html-void-elements@3.0.0: {}
 
