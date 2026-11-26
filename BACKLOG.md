@@ -4,6 +4,15 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ## Offen
 
+### Fokus ab 26.11. nachmittags (Entscheidung nach Test durch Benjamin)
+
+Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte Labels nicht, der Nutzer muss alles selbst beurteilen. Kein echter Nutzen. Wert liegt dort, wo das Bild entsteht und gekennzeichnet wird.
+
+- [ ] **T17** Website-Check aus Navigation und Startseite nehmen (Seite bleibt erreichbar, `noindex`). Startseite neu auf den Label-Generator ausrichten: "KI-Bilder in 10 Sekunden richtig kennzeichnen".
+- [ ] **T4d** (vorgezogen) Label-Generator nach `docs/04-label-spec.md` (EU-Icon-Varianten, Farben, Größen, Eigener Text, Export). Das ist ab jetzt das Kernprodukt im Web.
+- [ ] **T13** (vorgezogen) Free Tool 2: PNG/JPG in WebP, Reichweite über Google.
+- [ ] **T18** Konzept `docs/05-plugin.md`: Klarbild als WordPress-Plugin, das beim Upload in die Mediathek KI-Bilder markiert, sichtbares Label + IPTC setzt, Metadaten bei Bildgrößen/WebP erhält und ein Kennzeichnungs-Log führt. Free (Basis) vs. Pro (Log/Nachweis-PDF, mehrere Sites, Agentur). Zahlungsbereitschaft hier statt im Scanner.
+
 ### Sprint 1: Fundament + erstes Free Tool
 
 - [ ] 🧑 **B2** Domain kaufen. kenntlich.de vergeben, .ai zu teuer. **kenntlich.eu** kaufen (Fallback kenntlich.app via Cloudflare). Heute Abend. Claude kann Verfügbarkeit nicht prüfen (Shell blockiert). Marke: "kenntlich. Ein Produkt von dobsonstudio". Klarbild bleibt Name des WP-Plugins.
@@ -11,13 +20,7 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ### Sprint 2: Website-Check
 
-- [ ] **T6b** (DRINGEND) Crawl clientseitig steuern: Free-Plan erlaubt 10 ms CPU pro Request, ein Request für alle Seiten sprengt das (Error 1102 am 26.11.). Neuer Endpunkt `/api/page?url=` verarbeitet genau EINE Seite (Bilder, Skripte, Links, Inline nur Startseite), Browser führt die Warteschlange (bis 25 Seiten, robots.txt einmal via `/api/robots`). Rate-Limit auf Seiten statt Scans umstellen. Hotfix bis dahin: max. 10 Seiten, 512 KB HTML pro Seite, Inline-Skripte nur Startseite.
-- [ ] **T14** Website-Check neu ausrichten (Entscheidung 26.11.): vom "KI-Detektor" zum Kennzeichnungs-Check. Pro Bild drei Spalten: (1) Herkunftsdaten (C2PA/IPTC/EXIF: KI-Hinweis / keine KI-Angabe / Metadaten entfernt), (2) Sichtbare Kennzeichnung erkannt? (3) Ihre Einschätzung: Nutzer markiert per Klick "KI-Bild ja/nein". Ergebnis: Liste "KI-Bild ohne sichtbares Label → kennzeichnen". Seitenweiter Hinweis, wenn kaum ein Bild Metadaten hat ("Ihr CMS entfernt Herkunftsdaten, maschinenlesbare Kennzeichnung geht verloren").
-- [ ] **T15** Sichtbare Kennzeichnung im HTML erkennen: alt, title, figcaption, aria-label, Text im Umfeld des Bildes ("KI-generiert", "KI-Bild", "AI-generated", "mit KI erstellt" ...), EU-Icon-Bilder, unser eigenes Snippet. Signaturen in packages/detect mit Tests.
-- [ ] **T16** (später) Eingebrannte Labels erkennen: OCR nur auf die 4 Bildecken, im Browser, selbst gehostet. Erst prüfen, ob Aufwand/Größe vertretbar ist.
 - [ ] **T3c** Warteliste entfernen (Entscheidung 26.11.: kein Traffic, kein Nutzen, unnötige DSGVO-Pflichten). Ersetzen durch Kontakt-Hinweis "Interesse an Monitoring oder Agentur-Modus? Schreiben Sie uns" mit mailto:info@dobsonstudio.com (später Domain-Adresse). Datenschutz-Entwurf entsprechend anpassen. Nichts speichern.
-- [ ] **T4d** Label-Generator an `docs/04-label-spec.md` angleichen: Varianten Kurz/GEN/MOD im EU-Icon-Muster, 4 Farben inkl. 50 %, Größe 4 bis 20 %, Eigener-Text-Modus mit Vorlage, Export PNG/JPG/WebP. Geometrie wie spezifiziert. In unserer Schrift (Inter).
-- [ ] **T13** Free Tool 2 (SEO): PNG/JPG in WebP umwandeln, im Browser, Pixelmaße bleiben gleich, Qualitätsregler, ZIP. Eigene Landingpage "PNG in WebP umwandeln" mit Hinweis auf KI-Label-Generator.
 - [ ] 🧑 **B3** (zurückgestellt) Supabase- und Resend-Account, erst wenn Login/Warteliste gebraucht werden.
 
 ### Sprint 3: Accounts + Report
@@ -26,6 +29,13 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 - [ ] **T11** PDF-Report (im Browser generiert).
 - [ ] **T12** (zurückgestellt) Warteliste mit Double-Opt-in, erst wenn Traffic da ist und Pro kurz vor Start steht.
 - [ ] 🧑 **B4** Impressum/Datenschutz freigeben (Betreiber: dobsonstudio?).
+
+### Geparkt
+
+- [ ] (geparkt) **T6b** (DRINGEND) Crawl clientseitig steuern: Free-Plan erlaubt 10 ms CPU pro Request, ein Request für alle Seiten sprengt das (Error 1102 am 26.11.). Neuer Endpunkt `/api/page?url=` verarbeitet genau EINE Seite (Bilder, Skripte, Links, Inline nur Startseite), Browser führt die Warteschlange (bis 25 Seiten, robots.txt einmal via `/api/robots`). Rate-Limit auf Seiten statt Scans umstellen. Hotfix bis dahin: max. 10 Seiten, 512 KB HTML pro Seite, Inline-Skripte nur Startseite.
+- [ ] (geparkt) **T14** Website-Check neu ausrichten (Entscheidung 26.11.): vom "KI-Detektor" zum Kennzeichnungs-Check. Pro Bild drei Spalten: (1) Herkunftsdaten (C2PA/IPTC/EXIF: KI-Hinweis / keine KI-Angabe / Metadaten entfernt), (2) Sichtbare Kennzeichnung erkannt? (3) Ihre Einschätzung: Nutzer markiert per Klick "KI-Bild ja/nein". Ergebnis: Liste "KI-Bild ohne sichtbares Label → kennzeichnen". Seitenweiter Hinweis, wenn kaum ein Bild Metadaten hat ("Ihr CMS entfernt Herkunftsdaten, maschinenlesbare Kennzeichnung geht verloren").
+- [ ] (geparkt) **T15** Sichtbare Kennzeichnung im HTML erkennen: alt, title, figcaption, aria-label, Text im Umfeld des Bildes ("KI-generiert", "KI-Bild", "AI-generated", "mit KI erstellt" ...), EU-Icon-Bilder, unser eigenes Snippet. Signaturen in packages/detect mit Tests.
+- [ ] (geparkt) **T16** (später) Eingebrannte Labels erkennen: OCR nur auf die 4 Bildecken, im Browser, selbst gehostet. Erst prüfen, ob Aufwand/Größe vertretbar ist.
 
 ## Erledigt
 

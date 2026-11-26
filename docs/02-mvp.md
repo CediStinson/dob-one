@@ -120,3 +120,13 @@ Visuelle KI-Erkennung, Video/Audio, Stripe, Mehrsprachigkeit, WP-Plugin-Anbindun
 - **Vertrauen vor Reichweite**: DSGVO-maximal, keine Cookies, kein Tracking, keine externen Ressourcen, Datensparsamkeit (Scans speichern nur URL + Ergebnis, keine Bilder).
 - **Hosting-Ehrlichkeit**: Cloudflare und Supabase sind US-Unternehmen (Nutzung über EU-US Data Privacy Framework, Supabase-Region Frankfurt). Wird "gehostet in Deutschland" zum Verkaufsargument, ziehen wir auf Hetzner um. Deshalb Code portabel halten: Hono läuft auch auf Node, keine Cloudflare-only-Features ohne Not.
 - **Domain**: kenntlich.de vergeben, .ai zu teuer. Favorit kenntlich.eu (EU-Recht, später DACH-tauglich), Fallback kenntlich.app.
+
+## Kurswechsel (26.11.2026 nachmittags)
+
+Test durch Benjamin: Der Website-Check liefert keinen echten Nutzen (listet Logos und Teamfotos, Metadaten fehlen meist, eingebrannte Labels unsichtbar). Er wird geparkt.
+
+Neuer Kern: Kennzeichnen dort, wo das Bild entsteht.
+
+1. **Web**: Label-Generator als Hauptprodukt (kostenlos, Reichweite), plus PNG-zu-WebP-Tool für SEO.
+2. **Bezahlprodukt**: Klarbild-WordPress-Plugin mit Kennzeichnung beim Upload, Metadaten-Erhalt und Nachweis-Log (Pro). Zielgruppe: KMU mit WordPress und Agenturen wie dobsonstudio.
+3. Website-Check kommt nur zurück, wenn er eine klare Aufgabe hat (z. B. Chatbot-Hinweis-Check), nicht als KI-Bilder-Detektor.
