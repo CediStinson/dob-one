@@ -6,9 +6,10 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ### Sprint 1: Fundament + erstes Free Tool
 
+- [ ] **T3b** Landingpage auf helles Design umbauen + ehrliche Trust-Elemente + Impressum aus `docs/impressum-entwurf.md` übernehmen (Regeln: `docs/02-mvp.md` > Design). Sie-Form.
 - [ ] **T4** Free Tool 1: KI-Label-Generator nachbauen (Bild im Browser labeln, Vorlagen, Position, Deckkraft, Download, Multi-Upload) plus Anzeige der Metadaten-Einschätzung via `packages/detect`.
 - [ ] **T5** Cloudflare-Free-Limits (Workers Static Assets) für Workers recherchieren und in `docs/02-mvp.md` festhalten (CPU, Subrequests, Requests/Tag).
-- [ ] 🧑 **B2** Domain kaufen. Favorit: **kenntlich** (kenntlich.de, Alternativ kenntlich.ai / kenntlich.app). Fallbacks: offenbar.ai, kiar.de. Claude kann Verfügbarkeit nicht prüfen (Shell blockiert). Marke: "kenntlich. Ein Produkt von dobsonstudio". Klarbild bleibt Name des WP-Plugins.
+- [ ] 🧑 **B2** Domain kaufen. kenntlich.de vergeben, .ai zu teuer. **kenntlich.eu** kaufen (Fallback kenntlich.app via Cloudflare). Heute Abend. Claude kann Verfügbarkeit nicht prüfen (Shell blockiert). Marke: "kenntlich. Ein Produkt von dobsonstudio". Klarbild bleibt Name des WP-Plugins.
 - [ ] **T2c** Echte, signierte C2PA-Beispieldateien (Lizenz prüfen) als Fixtures ergänzen; aktuell nur unsignierte, selbst gebaute Manifeste.
 - [ ] **T2b** DPMA/EUIPO-Markenrecherche "kenntlich" (Klasse 9/42) dokumentieren in `docs/03-marke.md`.
 
