@@ -24,7 +24,11 @@ export async function fetchImageHead(src: string, fetch: FetchFn): Promise<ImgRe
   const { res } = r;
   if (!res.ok) {
     await res.body?.cancel();
-    return { ok: false, status: 502, error: `upstream_${res.status}` };
+    return {
+      ok: false,
+      status: 502,
+      error: res.status === 530 ? "unreachable" : `upstream_${res.status}`,
+    };
   }
   const contentType = (res.headers.get("content-type") ?? "").split(";")[0]?.trim() ?? "";
   if (!contentType.toLowerCase().startsWith("image/")) {

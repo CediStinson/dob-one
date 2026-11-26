@@ -179,7 +179,10 @@ async function fetchPage(
   const type = res.headers.get("content-type") ?? "";
   if (!res.ok || !/html/i.test(type) || !res.body) {
     await res.body?.cancel();
-    if (res.ok && !/html/i.test(type)) page.error = "not_html";
+    if (res.status === 530)
+      page.error = "unreachable"; // Cloudflare: DNS/Ziel nicht erreichbar
+    else if (!res.ok) page.error = `http_${res.status}`;
+    else if (!/html/i.test(type)) page.error = "not_html";
     return { page, final };
   }
   if (!allowOffsite && !sameSite(final, site)) {

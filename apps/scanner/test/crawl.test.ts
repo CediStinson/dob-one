@@ -140,6 +140,15 @@ describe("crawl", () => {
     expect(broken.pages[0]?.error).toBe("network");
   });
 
+  it("meldet nicht auflösbare Domains (Cloudflare 530) und HTTP-Fehler verständlich", async () => {
+    const dns = fakeFetch({ [`${S}/`]: { status: 530, body: "error code: 1016" } });
+    const r = await crawl(new URL(`${S}/`), { fetch: dns.fn, parse: wasmParser });
+    expect(r.pages[0]).toMatchObject({ status: 530, error: "unreachable" });
+    const gone = fakeFetch({ [`${S}/`]: { status: 503 } });
+    const r2 = await crawl(new URL(`${S}/`), { fetch: gone.fn, parse: wasmParser });
+    expect(r2.pages[0]?.error).toBe("http_503");
+  });
+
   it("liest srcset", () => {
     expect(parseSrcset("a.jpg 1x, b.jpg 2x,c.jpg")).toEqual(["a.jpg", "b.jpg", "c.jpg"]);
     expect(parseSrcset("/w_100,h_50/x.jpg 1x, y.jpg")).toEqual(["/w_100,h_50/x.jpg", "y.jpg"]);

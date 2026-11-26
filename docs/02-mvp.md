@@ -73,6 +73,7 @@ Beide Routen liegen unter `/api/*`, weil nur dort der Worker vor den statischen 
 - `GET /api/img?src=…`: erste 256 KB eines Bildes (Range-Header, danach Abbruch). Nur `image/*`, Ausgabe immer als `application/octet-stream` mit `nosniff` und Sandbox-CSP (kein SVG/HTML-Ausführen auf unserer Domain). Header `x-upstream-content-type`, `x-truncated`. Rate-Limit 400 / 10 Min. pro IP.
 - SSRF-Schutz bei jedem Abruf und jedem Redirect-Schritt (max. 3): nur http/https, nur Standardports, keine Zugangsdaten, keine privaten/reservierten IPv4/IPv6 (auch Zahlen- und Hex-Schreibweisen, IPv4-gemappt), keine internen Namen (`localhost`, `.local`, `.internal`, einteilige Hosts). DNS wird nicht aufgelöst (Workers erreichen keine privaten Netze).
 - Rate-Limit ist pro Isolate im Speicher, also grob. Bei Missbrauch: Cloudflare-Regel oder Durable Object.
+- Seitenfehler in `pages[].error`: `unreachable` (Cloudflare 530, meist Domain existiert nicht/Tippfehler), `http_<code>`, `not_html`, `network`, `private_host`, `too_many_redirects`.
 - Fehler: 400 (ungültige/private URL), 415 (kein Bild), 429 (Rate-Limit, mit `retry-after`), 502 (Ziel nicht erreichbar).
 
 ## Design (überarbeitet 26.11.2026)
