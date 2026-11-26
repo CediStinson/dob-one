@@ -2,6 +2,7 @@ import { Budget, readLimited, safeFetch, type FetchFn } from "../net/safe-fetch.
 import { guardUrl, sameSite } from "../net/url-guard.ts";
 import { extractPage, limitStream, type HtmlParser } from "./extract.ts";
 import { allowAll, parseRobots, type Robots } from "./robots.ts";
+import { groupVariants, type ImageEntry } from "./variants.ts";
 
 /** Werte aus docs/02-mvp.md (Cloudflare Free: 50 Subrequests, 6 Verbindungen). */
 export const LIMITS = {
@@ -25,7 +26,7 @@ export interface PageResult {
 export interface ScanResult {
   url: string;
   pages: PageResult[];
-  images: { src: string; pages: string[] }[];
+  images: ImageEntry[];
   scripts: string[];
   iframes: string[];
   robots: { found: boolean; blocked: number };
@@ -145,7 +146,7 @@ export async function crawl(start: URL, deps: CrawlDeps): Promise<ScanResult> {
   return {
     url: site.toString(),
     pages,
-    images: [...images].map(([src, p]) => ({ src, pages: [...p] })),
+    images: groupVariants(images, LIMITS.maxPagesPerImage),
     scripts: [...scripts],
     iframes: [...iframes],
     robots: { found: robots.found, blocked },

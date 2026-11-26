@@ -149,6 +149,24 @@ describe("crawl", () => {
     expect(r2.pages[0]?.error).toBe("http_503");
   });
 
+  it("fasst WordPress-Größenvarianten zusammen und nimmt das Original", async () => {
+    const u = "/wp-content/uploads/2024/06";
+    const { fn } = fakeFetch({
+      [`${S}/`]: html(`
+        <img src="${u}/team-981x1024.jpg" srcset="${u}/team-287x300.jpg 287w, ${u}/team.jpg 1471w">
+        <img src="${u}/logo-e1693-300x58.png" srcset="${u}/logo-e1693-1024x199.png 1024w">
+        <img src="${u}/foto-2024.jpg">`),
+    });
+    const r = await crawl(new URL(`${S}/`), { fetch: fn, parse: wasmParser });
+    expect(r.images.map((i) => i.src)).toEqual([
+      `${S}${u}/team.jpg`,
+      `${S}${u}/logo-e1693-1024x199.png`,
+      `${S}${u}/foto-2024.jpg`,
+    ]);
+    expect(r.images[0]?.variants).toHaveLength(2);
+    expect(r.images[2]?.variants).toBeUndefined();
+  });
+
   it("liest srcset", () => {
     expect(parseSrcset("a.jpg 1x, b.jpg 2x,c.jpg")).toEqual(["a.jpg", "b.jpg", "c.jpg"]);
     expect(parseSrcset("/w_100,h_50/x.jpg 1x, y.jpg")).toEqual(["/w_100,h_50/x.jpg", "y.jpg"]);

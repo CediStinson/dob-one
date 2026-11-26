@@ -18,7 +18,7 @@ Referenz: bestehender Generator auf dobsonstudio.com/ki-label-generator (Browser
 
 ## Aktueller Stand
 
-- 2026-11-26: T6 + T7 Scanner-API im Worker: `/api/scan` (Crawler, robots.txt, Limits) und `/api/img` (256 KB, SSRF-Schutz). 115 Tests. Nächstes Ticket: T8 (UI Website-Check).
+- 2026-11-26: T6 + T7 Scanner-API im Worker: `/api/scan` (Crawler, robots.txt, Limits) und `/api/img` (256 KB, SSRF-Schutz). Live mit dobsonstudio.com geprüft (7 Seiten, 8 Subrequests), Bildvarianten werden zusammengefasst. 117 Tests. Nächstes Ticket: T8 (UI Website-Check).
 - 2026-11-26: T2b Markenrecherche dokumentiert (`docs/03-marke.md`). Keine Kollision im Web, Registerabfrage braucht Benjamin (B5).
 - 2026-11-26: T2c echte C2PA-Dateien getestet, `detect` liest sie korrekt (kein Fehlalarm bei kaputten Signaturen). 71 Tests.
 - 2026-11-26: T4b/T4c Label-Generator schreibt maschinenlesbaren KI-Hinweis (IPTC) in JPEG/PNG/WebP und lädt mehrere Bilder als ZIP.
