@@ -38,9 +38,18 @@ Zahlung kommt erst nach Validierung (Stripe). Bis dahin: Warteliste für Pro.
 - **Analytics**: keine Cookies. Cloudflare Web Analytics.
 - Alles DSGVO-freundlich: keine externen CDNs, Fonts selbst gehostet.
 
-## Design
-
-Dunkel, minimal, Inter, Akzent Teal. Keine Gedankenstriche in Kunden-Copy. Sprache: Deutsch zuerst, Englisch später.
+## Design (überarbeitet 26.11.2026)
+- **Hell statt dunkel.** Compliance-Produkt für KMU: Vertrauen, Ruhe, Seriosität. Weißer/sehr heller Grund (#FFFFFF / #F7F9F9), dunkles Graublau für Text, Teal als Akzent sparsam (Buttons, Haken, Links). dobsonstudio-Look (dunkel) gilt hier ausdrücklich nicht.
+- Inter selbst gehostet, viel Weißraum, klare Tabellen und Häkchen-Listen, echte Screenshots statt Stock-Illustrationen.
+- **Trust-Elemente, nur was wahr ist:**
+  - "Entwickelt in Deutschland" (stimmt: Rottweil). NICHT "Gehostet in Deutschland" (Cloudflare).
+  - "Ohne Cookies, ohne Tracking"
+  - "Ihre Bilder verlassen den Browser nicht" (Label-Generator)
+  - "Kein Login für den Schnell-Check"
+  - "Deutscher Ansprechpartner" + echtes Impressum mit Namen und Adresse, sichtbar verlinkt
+  - Rechtsbezug transparent: Art. 50 KI-VO verlinkt (EUR-Lex), Stand-Datum der Inhalte
+- **Verboten** (irreführend, UWG-Risiko): erfundene Siegel/Zertifikate ("DSGVO-zertifiziert", "TÜV", "rechtssicher garantiert"), erfundene Kundenlogos, Bewertungen oder Testimonials, Nutzerzahlen, die nicht stimmen.
+- Sprache: Deutsch, Sie-Form (B2B, Vertrauen). Keine Gedankenstriche.
 
 ## Nicht im MVP
 

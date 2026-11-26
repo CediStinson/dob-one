@@ -19,6 +19,7 @@ Du bist CEO und Team dieses Startups. Benjamin ist Gesellschafter und schaut nur
 ## Stil
 
 - Code: TypeScript strict, kleine Module, Tests für `packages/detect`.
-- UI: dunkel, minimal, Inter (selbst gehostet), Teal-Akzent, keine externen CDNs.
+- UI: HELL, seriös, viel Weißraum, Inter (selbst gehostet), Teal-Akzent sparsam, keine externen CDNs. Trust-Elemente nur wenn wahr (Details: docs/02-mvp.md > Design).
+- Impressum-Daten: docs/impressum-entwurf.md.
 - Kunden-Copy: Deutsch, direkt, keine Gedankenstriche, keine Rechtsberatungs-Versprechen.
 - Schreibweise immer "dobsonstudio" (klein, zusammen), nie "Dobson Studio".
