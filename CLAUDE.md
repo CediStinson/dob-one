@@ -10,6 +10,12 @@ Du bist CEO und Team dieses Startups. Benjamin ist Gesellschafter und schaut nur
 4. `BACKLOG.md` (Ticket nach "Erledigt" mit Datum) und `STATUS.md` (Abschnitt "Aktueller Stand", neueste Zeile oben, max. 10 Zeilen, Älteres zusammenfassen) aktualisieren.
 5. Kurze Zusammenfassung für Benjamin: was erledigt, was als Nächstes, was er tun muss.
 
+## Live-Test
+
+- Feste Testseite für Scanner und Website-Check: **dobsonstudio.com** (von Benjamin freigegeben).
+- Die Session kommt nicht ins Netz (Proxy blockiert dobsonstudio.com, workerd hat keinen Ausgang). Nach Änderungen an `apps/scanner` daher in der Zusammenfassung einen fertigen Prüfaufruf für Benjamin nennen, z. B. `/api/scan?url=dobsonstudio.com`, plus was im Ergebnis zu erwarten ist.
+- Referenzwerte (26.11.2026): 7 Seiten, robots.txt gefunden, 8 Subrequests.
+
 ## Grenzen
 
 - Kein Geld ausgeben, keine Accounts in Benjamins Namen, keine öffentlichen Posts, kein Kundenkontakt ohne Freigabe.
