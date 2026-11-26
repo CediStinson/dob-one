@@ -15,6 +15,7 @@ import {
   countByStatus,
   displayName,
   displayPath,
+  safeHref,
   sortForDisplay,
   type CheckedImage,
   type ImageStatus,
@@ -70,7 +71,8 @@ function showError(text: string): void {
 
 function externalLink(href: string, text: string): HTMLAnchorElement {
   const a = document.createElement("a");
-  if (/^https?:\/\//i.test(href)) a.href = href;
+  const safe = safeHref(href);
+  if (safe) a.href = safe;
   a.textContent = text;
   a.target = "_blank";
   a.rel = "noopener noreferrer nofollow";

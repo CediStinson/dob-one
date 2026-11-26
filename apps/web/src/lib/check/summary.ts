@@ -131,3 +131,13 @@ export function chatGreeting(company: string): string {
   const name = company.trim().slice(0, 80);
   return `Hallo! Ich bin der KI-Assistent${name ? ` von ${name}` : ""}. Meine Antworten werden automatisch erstellt und können Fehler enthalten.`;
 }
+
+/** Nur http(s)-Links zulassen (kein javascript:, data:). */
+export function safeHref(raw: string): string | null {
+  try {
+    const u = new URL(raw.trim());
+    return u.protocol === "http:" || u.protocol === "https:" ? u.toString() : null;
+  } catch {
+    return null;
+  }
+}
