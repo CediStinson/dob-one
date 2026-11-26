@@ -18,7 +18,7 @@ Referenz: bestehender Generator auf dobsonstudio.com/ki-label-generator (Browser
 
 ## Aktueller Stand
 
-- 2026-11-26: T4c Label-Generator lädt mehrere Bilder als ZIP herunter. 64 Tests. Nächstes Ticket: T2c (signierte C2PA-Fixtures).
+- 2026-11-26: T4c Label-Generator lädt mehrere Bilder als ZIP herunter. 64 Tests. Nächstes Ticket: T2b (Markenrecherche). T2c wartet auf Dateien von Benjamin.
 - 2026-11-26: T4b Label-Generator schreibt jetzt auch einen maschinenlesbaren KI-Hinweis (IPTC) in JPEG, PNG und WebP. 61 Tests.
 - 2026-11-26: T5 Cloudflare-Limits in `docs/02-mvp.md` (100k Worker-Requests/Tag, 10 ms CPU, 50 Subrequests; Assets unbegrenzt).
 - 2026-11-26: T4 KI-Label-Generator live (`/tools/ki-label-generator/`), läuft komplett im Browser, zeigt Metadaten-Einschätzung. 52 Tests.
