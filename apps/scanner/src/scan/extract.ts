@@ -35,7 +35,7 @@ export interface PageData {
 }
 
 /** Grenzen für Inline-Skripte (10 ms CPU im Free-Plan). */
-export const INLINE_LIMITS = { bytesPerScript: 16 * 1024, bytesPerPage: 96 * 1024, urls: 40 };
+export const INLINE_LIMITS = { bytesPerScript: 16 * 1024, bytesPerPage: 48 * 1024, urls: 40 };
 
 /** Absolute oder protokollrelative URLs in JS-Quelltext. */
 const URL_IN_JS = /(?:https?:)?\/\/[a-z0-9][a-z0-9.-]*\.[a-z]{2,24}(?:\/[^\s"'`<>\\)]{0,160})?/gi;
@@ -76,30 +76,17 @@ export function parseSrcset(srcset: string): string[] {
   return out;
 }
 
-export function createCollector(): { data: PageData; handler: ElementHandler } {
+export function createCollector(): {
+  data: PageData;
+  handler: ElementHandler;
+  scriptText: ElementHandler;
+} {
   const data: PageData = { images: [], links: [], scripts: [], iframes: [], inlineUrls: [] };
   // Inline-Skript: Text sammeln, bis der Textknoten endet, dann einmal nach URLs suchen.
   let inline: string | null = null;
   let pageBytes = 0;
   const inlineSeen = new Set<string>();
   const handler: ElementHandler = {
-    text(chunk) {
-      if (inline === null) return;
-      if (inline.length < INLINE_LIMITS.bytesPerScript && pageBytes < INLINE_LIMITS.bytesPerPage) {
-        const take = chunk.text.slice(0, INLINE_LIMITS.bytesPerScript - inline.length);
-        inline += take;
-        pageBytes += take.length;
-      }
-      if (!chunk.lastInTextNode) return;
-      for (const u of urlsInScript(inline)) {
-        if (inlineSeen.size >= INLINE_LIMITS.urls) break;
-        if (!inlineSeen.has(u)) {
-          inlineSeen.add(u);
-          data.inlineUrls.push(u);
-        }
-      }
-      inline = null;
-    },
     element(el) {
       inline = null; // Skript ohne Textknoten: nichts übernehmen
       const tag = el.tagName.toLowerCase();
@@ -154,18 +141,39 @@ export function createCollector(): { data: PageData; handler: ElementHandler } {
       }
     },
   };
-  return { data, handler };
+  // Text-Handler nur für <script>: Text in Links usw. löst so keine JS-Aufrufe aus (CPU).
+  const scriptText: ElementHandler = {
+    text(chunk) {
+      if (inline === null) return;
+      if (inline.length < INLINE_LIMITS.bytesPerScript && pageBytes < INLINE_LIMITS.bytesPerPage) {
+        const take = chunk.text.slice(0, INLINE_LIMITS.bytesPerScript - inline.length);
+        inline += take;
+        pageBytes += take.length;
+      }
+      if (!chunk.lastInTextNode) return;
+      for (const u of urlsInScript(inline)) {
+        if (inlineSeen.size >= INLINE_LIMITS.urls) break;
+        if (!inlineSeen.has(u)) {
+          inlineSeen.add(u);
+          data.inlineUrls.push(u);
+        }
+      }
+      inline = null;
+    },
+  };
+  return { data, handler, scriptText };
 }
 
 export async function extractPage(
   body: ReadableStream<Uint8Array>,
   parse: HtmlParser,
+  opts: { inline?: boolean } = {},
 ): Promise<PageData> {
-  const { data, handler } = createCollector();
-  await parse(
-    body,
-    SELECTORS.map((s) => [s, handler]),
-  );
+  const { data, handler, scriptText } = createCollector();
+  const handlers: [string, ElementHandler][] = SELECTORS.map((s) => [s, handler]);
+  // Inline-Skripte nur auf Wunsch (Startseite): Chat-Snippets sind seitenweit eingebunden.
+  if (opts.inline !== false) handlers.push(["script:not([src])", scriptText]);
+  await parse(body, handlers);
   return data;
 }
 

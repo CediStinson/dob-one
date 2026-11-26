@@ -8,6 +8,18 @@ const S = "https://example.de";
 const stream = (s: string) => new Response(`<!doctype html><html><body>${s}</body></html>`).body!;
 
 describe("Inline-Skripte", () => {
+  it("überspringt Inline-Skripte auf Unterseiten (CPU-Budget)", async () => {
+    const d = await extractPage(
+      stream(
+        `<script>s.src='https://widget.intercom.io/widget/x';</script><script src="/a.js"></script>`,
+      ),
+      wasmParser,
+      { inline: false },
+    );
+    expect(d.inlineUrls).toEqual([]);
+    expect(d.scripts).toEqual(["/a.js"]);
+  });
+
   it("findet URLs in Chat-Snippets (Intercom, Crisp, tawk.to)", async () => {
     const d = await extractPage(
       stream(`

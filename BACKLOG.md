@@ -11,6 +11,7 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ### Sprint 2: Website-Check
 
+- [ ] **T6b** (DRINGEND) Crawl clientseitig steuern: Free-Plan erlaubt 10 ms CPU pro Request, ein Request für alle Seiten sprengt das (Error 1102 am 26.11.). Neuer Endpunkt `/api/page?url=` verarbeitet genau EINE Seite (Bilder, Skripte, Links, Inline nur Startseite), Browser führt die Warteschlange (bis 25 Seiten, robots.txt einmal via `/api/robots`). Rate-Limit auf Seiten statt Scans umstellen. Hotfix bis dahin: max. 10 Seiten, 512 KB HTML pro Seite, Inline-Skripte nur Startseite.
 - [ ] **T14** Website-Check neu ausrichten (Entscheidung 26.11.): vom "KI-Detektor" zum Kennzeichnungs-Check. Pro Bild drei Spalten: (1) Herkunftsdaten (C2PA/IPTC/EXIF: KI-Hinweis / keine KI-Angabe / Metadaten entfernt), (2) Sichtbare Kennzeichnung erkannt? (3) Ihre Einschätzung: Nutzer markiert per Klick "KI-Bild ja/nein". Ergebnis: Liste "KI-Bild ohne sichtbares Label → kennzeichnen". Seitenweiter Hinweis, wenn kaum ein Bild Metadaten hat ("Ihr CMS entfernt Herkunftsdaten, maschinenlesbare Kennzeichnung geht verloren").
 - [ ] **T15** Sichtbare Kennzeichnung im HTML erkennen: alt, title, figcaption, aria-label, Text im Umfeld des Bildes ("KI-generiert", "KI-Bild", "AI-generated", "mit KI erstellt" ...), EU-Icon-Bilder, unser eigenes Snippet. Signaturen in packages/detect mit Tests.
 - [ ] **T16** (später) Eingebrannte Labels erkennen: OCR nur auf die 4 Bildecken, im Browser, selbst gehostet. Erst prüfen, ob Aufwand/Größe vertretbar ist.

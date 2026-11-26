@@ -6,13 +6,13 @@ import { groupVariants, type ImageEntry } from "./variants.ts";
 
 /** Werte aus docs/02-mvp.md (Cloudflare Free: 50 Subrequests, 6 Verbindungen). */
 export const LIMITS = {
-  maxPages: 25,
+  maxPages: 10,
   subrequestBudget: 45,
   concurrency: 6,
   maxImages: 150,
   maxScripts: 100,
   maxPagesPerImage: 5,
-  htmlBytes: 2 * 1024 * 1024,
+  htmlBytes: 512 * 1024,
   robotsBytes: 256 * 1024,
 } as const;
 
@@ -196,7 +196,9 @@ async function fetchPage(
     page.error = "offsite_redirect";
     return { page, final };
   }
-  const data = await extractPage(limitStream(res.body, LIMITS.htmlBytes), deps.parse);
+  const data = await extractPage(limitStream(res.body, LIMITS.htmlBytes), deps.parse, {
+    inline: allowOffsite,
+  });
   page.__data = data;
   let base: URL | undefined;
   if (data.base) {
