@@ -4,6 +4,7 @@ Cloudflare empfiehlt für neue Projekte Workers mit Static Assets statt Pages. W
 Cloudflare Registrar kann keine .de-Domains registrieren. Die .de kaufst du also bei einem anderen Registrar und stellst nur die Nameserver auf Cloudflare um.
 
 ## B1: Cloudflare-Account + Deployment
+
 1. Account auf dash.cloudflare.com anlegen (Free Plan), 2FA aktivieren.
 2. Links "Workers & Pages" > "Create" > "Import a repository" (Workers, nicht Pages).
 3. GitHub verbinden, nur Repo `CediStinson/dob-one` freigeben.
@@ -12,6 +13,7 @@ Cloudflare Registrar kann keine .de-Domains registrieren. Die .de kaufst du also
 6. Mir die workers.dev-URL schicken.
 
 ## B2: Domain
+
 1. Verfügbarkeit prüfen: kenntlich.de > kenntlich.ai > kenntlich.app. Fallbacks: offenbar.ai, kiar.de.
 2. .de kaufen bei Hetzner (hast du schon) oder INWX. Kein Hosting/E-Mail-Paket dazu.
    .ai/.app gehen auch direkt über Cloudflare Registrar (Selbstkostenpreis).
@@ -21,4 +23,9 @@ Cloudflare Registrar kann keine .de-Domains registrieren. Die .de kaufst du also
 6. SSL/TLS auf "Full (strict)". Fertig.
 
 ## Später (B3, nicht jetzt)
+
 Supabase + Resend. Kommt mit Sprint 2.
+
+## Build (seit T1)
+
+Kein Build-Command im Dashboard nötig. `wrangler.jsonc` enthält `build.command` (`pnpm install --frozen-lockfile && pnpm build`), das `wrangler deploy` vor dem Upload ausführt. Falls ein Deploy scheitert: im Dashboard unter Workers & Pages > dob-one > Deployments > Build-Log prüfen.

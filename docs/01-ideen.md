@@ -7,6 +7,7 @@ Kriterien: 0 € Start, Benjamin hat Zugang zur Zielgruppe, rechtlicher oder wir
 **Problem:** Seit 2. August 2026 gelten die Transparenzpflichten aus Art. 50 AI Act. Betreiber, also normale Unternehmen, müssen Deepfakes und KI-Interaktionen (Chatbots) kennzeichnen. Bußgelder bis 15 Mio. € bzw. 3 %. Die meisten KMU wissen nicht, welche Bilder auf ihrer Website KI-generiert sind.
 
 **Produkt:**
+
 - URL eingeben, Scanner crawlt die Website
 - Findet KI-Bilder über Metadaten (C2PA, IPTC DigitalSourceType, Generator-Spuren in EXIF/XMP), findet Chatbot-Widgets ohne KI-Hinweis
 - Liefert ein Label-Snippet (1 Zeile JS), das auf jedem CMS läuft, nicht nur WordPress

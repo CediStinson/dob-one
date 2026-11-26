@@ -1,0 +1,46 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+  title="kenntlich. KI-Inhalte richtig kennzeichnen"
+  description="kenntlich prüft Ihre Website auf KI-Bilder und Chatbots und hilft bei der Kennzeichnung nach Art. 50 AI Act. Bald verfügbar."
+>
+  <main>
+    <h1>kenntlich<span>.</span></h1>
+    <p>
+      Wir prüfen Ihre Website auf KI-Bilder und Chatbots und helfen bei der Kennzeichnung nach Art.
+      50 AI Act.
+    </p>
+    <p>Bald verfügbar.</p>
+    <small>Ein Produkt von dobsonstudio</small>
+  </main>
+</Base>
+
+<style>
+  body {
+    display: grid;
+    place-items: center;
+  }
+  main {
+    max-width: 560px;
+    padding: 32px;
+  }
+  h1 {
+    font-size: 44px;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+  }
+  h1 span {
+    color: var(--accent);
+  }
+  p {
+    color: var(--muted);
+    line-height: 1.6;
+    font-size: 18px;
+    margin: 0 0 12px;
+  }
+  small {
+    color: var(--faint);
+  }
+</style>
