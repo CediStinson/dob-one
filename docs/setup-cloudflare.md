@@ -7,7 +7,7 @@ Cloudflare Registrar kann keine .de-Domains registrieren. Die .de kaufst du also
 1. Account auf dash.cloudflare.com anlegen (Free Plan), 2FA aktivieren.
 2. Links "Workers & Pages" > "Create" > "Import a repository" (Workers, nicht Pages).
 3. GitHub verbinden, nur Repo `CediStinson/dob-one` freigeben.
-4. Einstellungen: Projektname `kenntlich`, Production Branch `main`, Build-Command leer, Deploy-Command `npx wrangler deploy`, Root `/`.
+4. Einstellungen: Projektname `dob-one`, Production Branch `main`, Build-Command leer, Deploy-Command `npx wrangler deploy`, Root `/`.
 5. Deploy. Ergebnis: `kenntlich.<dein-subdomain>.workers.dev` zeigt die Platzhalterseite.
 6. Mir die workers.dev-URL schicken.
 
@@ -17,7 +17,7 @@ Cloudflare Registrar kann keine .de-Domains registrieren. Die .de kaufst du also
    .ai/.app gehen auch direkt über Cloudflare Registrar (Selbstkostenpreis).
 3. In Cloudflare: "Add a domain" > Domain eintragen > Free Plan > Cloudflare zeigt 2 Nameserver.
 4. Beim Registrar die Nameserver auf diese 2 umstellen. Dauert Minuten bis wenige Stunden.
-5. Wenn Cloudflare "Active" zeigt: Workers & Pages > kenntlich > Settings > Domains & Routes > "Add custom domain" > `kenntlich.de` und `www.kenntlich.de`.
+5. Wenn Cloudflare "Active" zeigt: Workers & Pages > dob-one > Settings > Domains & Routes > "Add custom domain" > `kenntlich.de` und `www.kenntlich.de`.
 6. SSL/TLS auf "Full (strict)". Fertig.
 
 ## Später (B3, nicht jetzt)
