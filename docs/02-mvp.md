@@ -42,3 +42,9 @@ Visuelle KI-Erkennung, Video/Audio, Stripe, Mehrsprachigkeit, WP-Plugin-Anbindun
 ## Wettbewerb (Stand 26.11.2026)
 - meetergo bietet einen kostenlosen KI-Kennzeichnungs-Check (C2PA, IPTC, Chatbot, ohne Anmeldung). Der Einmal-Check ist also kein Alleinstellungsmerkmal.
 - Unsere Differenzierung: Monitoring, Label-Snippet + Verwaltung, Nachweis-Log, Agentur-Modus, WP-Plugin-Integration (Klarbild).
+
+## Positionierung (entschieden 26.11.2026)
+- **Markt: Deutschland zuerst**, danach AT/CH. Deutsch only im MVP. Englisch erst nach Product-Market-Fit (gleiche Domain, `/en`).
+- **Vertrauen vor Reichweite**: DSGVO-maximal, keine Cookies, kein Tracking, keine externen Ressourcen, Datensparsamkeit (Scans speichern nur URL + Ergebnis, keine Bilder).
+- **Hosting-Ehrlichkeit**: Cloudflare und Supabase sind US-Unternehmen (Nutzung über EU-US Data Privacy Framework, Supabase-Region Frankfurt). Wird "gehostet in Deutschland" zum Verkaufsargument, ziehen wir auf Hetzner um. Deshalb Code portabel halten: Hono läuft auch auf Node, keine Cloudflare-only-Features ohne Not.
+- **Domain**: kenntlich.de vergeben, .ai zu teuer. Favorit kenntlich.eu (EU-Recht, später DACH-tauglich), Fallback kenntlich.app.
