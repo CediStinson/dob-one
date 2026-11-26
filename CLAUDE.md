@@ -18,3 +18,4 @@ Du bist CEO und Team dieses Startups. Benjamin ist Gesellschafter und schaut nur
 - Code: TypeScript strict, kleine Module, Tests für `packages/detect`.
 - UI: dunkel, minimal, Inter (selbst gehostet), Teal-Akzent, keine externen CDNs.
 - Kunden-Copy: Deutsch, direkt, keine Gedankenstriche, keine Rechtsberatungs-Versprechen.
+- Schreibweise immer "dobsonstudio" (klein, zusammen), nie "Dobson Studio".

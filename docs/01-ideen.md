@@ -26,7 +26,7 @@ Kriterien: 0 € Start, Benjamin hat Zugang zur Zielgruppe, rechtlicher oder wir
 
 **Markt:** Voll. iubenda, Usercentrics, Indie-Tools (z. B. DSGVO Guard mit 19 €/49 €), WP-Plugins mit Scannern über 14 Gesetze. Differenzierung nur über Agentur-Fokus.
 
-**Vorteil:** Dobson Studio ist selbst Kunde (Dogfooding), Überschneidung mit dobsonstudio-dashboard.
+**Vorteil:** dobsonstudio ist selbst Kunde (Dogfooding), Überschneidung mit dobsonstudio-dashboard.
 
 **Einschätzung:** Gute Ausbaustufe von Idee 1, als Start zu austauschbar.
 
