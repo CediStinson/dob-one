@@ -12,8 +12,8 @@ import { TEMPLATES } from "../../../lib/label/layout.ts";
     <h1>KI-Website-Check</h1>
     <p class="lead">
       Geben Sie Ihre Website ein. Wir lesen bis zu 25 Seiten und prüfen die Bilder auf KI-Hinweise
-      in den Metadaten. Sie sehen, wo ein Hinweis fehlen könnte, und bekommen ein fertiges
-      Label-Snippet.
+      in den Metadaten. Zusätzlich erkennen wir bekannte Chatbots. Sie sehen, wo ein Hinweis fehlen könnte,
+      und bekommen ein fertiges Label-Snippet.
     </p>
     <ul class="facts">
       <li>Kein Login, keine Cookies</li>
@@ -49,7 +49,7 @@ import { TEMPLATES } from "../../../lib/label/layout.ts";
         <div><dt>Seiten gelesen</dt><dd id="t-pages">0</dd></div>
         <div><dt>Bilder geprüft</dt><dd id="t-images">0</dd></div>
         <div class="hl"><dt>Mit KI-Hinweis</dt><dd id="t-ai">0</dd></div>
-        <div><dt>Nicht abrufbar</dt><dd id="t-error">0</dd></div>
+        <div class="hl"><dt>Chatbots</dt><dd id="t-bots">0</dd></div>
       </dl>
       <p id="res-limits" class="muted small" hidden></p>
 
@@ -68,13 +68,23 @@ import { TEMPLATES } from "../../../lib/label/layout.ts";
         <ul id="page-list" class="page-list"></ul>
       </details>
 
-      <div class="chatbot muted">
-        <h3>Chatbots</h3>
-        <p>
-          Die Prüfung auf Chatbots ohne KI-Hinweis kommt in Kürze. Nutzen Sie auf Ihrer Website einen
-          KI-Chat, sollte dieser klar als KI erkennbar sein.
+      <section class="chatbot" aria-labelledby="bot-title">
+        <h3 id="bot-title">Chatbots</h3>
+        <ul id="bot-list" class="img-list"></ul>
+        <p id="bot-none" class="muted" hidden>
+          Kein bekanntes Chat-Widget gefunden. Widgets, die erst über einen Tag Manager oder nach
+          Zustimmung im Cookie-Banner geladen werden, können wir nicht sehen.
         </p>
-      </div>
+        <div id="bot-greeting" hidden>
+          <p class="muted">Textvorschlag für die Begrüßung im Chat:</p>
+          <textarea id="greet-code" rows="3" spellcheck="false" aria-label="Begrüßungstext"
+          ></textarea>
+          <div class="snip-actions">
+            <button type="button" id="greet-copy" class="btn small">Text kopieren</button>
+            <span id="greet-msg" class="muted small" role="status" aria-live="polite"></span>
+          </div>
+        </div>
+      </section>
 
       <section class="snippet" aria-labelledby="snip-title">
         <h3 id="snip-title">Label-Snippet zum Einbauen</h3>
@@ -113,6 +123,10 @@ import { TEMPLATES } from "../../../lib/label/layout.ts";
         <li>
           Pro Bild laden wir nur den Dateianfang. Die Auswertung läuft in Ihrem Browser. Das
           Ergebnis speichern wir nicht.
+        </li>
+        <li>
+          Chatbots erkennen wir an den Skripten bekannter Anbieter. Ob der Chat schon einen
+          KI-Hinweis zeigt, prüfen wir nicht, weil das Widget erst im Browser startet.
         </li>
         <li>
           Wir beachten die robots.txt Ihrer Website. Seiten, die dort gesperrt sind, lesen wir nicht.

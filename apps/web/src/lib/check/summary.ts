@@ -1,4 +1,4 @@
-import type { Verdict } from "@dob-one/detect";
+import type { ChatbotFinding, Verdict } from "@dob-one/detect";
 
 /** Ergebnis pro Bild im Check. "skipped": wegen Kontingent nicht mehr geprüft. */
 export type ImageStatus = Verdict | "error" | "skipped";
@@ -34,8 +34,12 @@ export interface Advice {
  * Handlungsempfehlungen aus dem Ergebnis. Formuliert als Empfehlung, nicht als
  * rechtliche Bewertung (keine Rechtsberatung).
  */
-export function adviceFor(c: Counts, scannedPages: number): Advice[] {
-  const out: Advice[] = [];
+export function adviceFor(
+  c: Counts,
+  scannedPages: number,
+  bots: Pick<ChatbotFinding, "name" | "kind">[] = [],
+): Advice[] {
+  const out: Advice[] = [...chatbotAdvice(bots)];
   const flagged = c.ai + c.ai_partial;
   if (flagged > 0) {
     out.push({
@@ -100,4 +104,30 @@ export function displayPath(page: string): string {
   } catch {
     return page;
   }
+}
+
+/** Empfehlungen zu gefundenen Chat-Widgets. KI-Bots zuerst. */
+export function chatbotAdvice(bots: Pick<ChatbotFinding, "name" | "kind">[]): Advice[] {
+  const ai = bots.filter((b) => b.kind === "ai").map((b) => b.name);
+  const optional = bots.filter((b) => b.kind === "ai_optional").map((b) => b.name);
+  const out: Advice[] = [];
+  if (ai.length > 0) {
+    out.push({
+      title: `KI-Chatbot gefunden: ${ai.join(", ")}`,
+      text: "Besucher sollten zu Beginn des Chats klar erfahren, dass sie mit einer KI schreiben, zum Beispiel in der Begrüßung. Einen Textvorschlag finden Sie unten.",
+    });
+  }
+  if (optional.length > 0) {
+    out.push({
+      title: `Live-Chat mit möglicher KI-Funktion: ${optional.join(", ")}`,
+      text: "Diese Chats können automatisch mit KI antworten (etwa Intercom Fin oder Tidio Lyro). Ist das bei Ihnen aktiv, machen Sie es in der Begrüßung kenntlich. Antworten nur Mitarbeitende, betrifft Sie dieser Punkt nicht.",
+    });
+  }
+  return out;
+}
+
+/** Vorschlag für die Begrüßung im Chat. */
+export function chatGreeting(company: string): string {
+  const name = company.trim().slice(0, 80);
+  return `Hallo! Ich bin der KI-Assistent${name ? ` von ${name}` : ""}. Meine Antworten werden automatisch erstellt und können Fehler enthalten.`;
 }

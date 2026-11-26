@@ -29,6 +29,8 @@ export interface ScanResult {
   images: ImageEntry[];
   scripts: string[];
   iframes: string[];
+  /** URLs aus Inline-Skripten, z. B. nachgeladene Chat-Widgets. */
+  inlineUrls: string[];
   robots: { found: boolean; blocked: number };
   truncated: { pages: boolean; images: boolean; budget: boolean };
   subrequests: number;
@@ -54,6 +56,7 @@ export async function crawl(start: URL, deps: CrawlDeps): Promise<ScanResult> {
   const images = new Map<string, Set<string>>();
   const scripts = new Set<string>();
   const iframes = new Set<string>();
+  const inlineUrls = new Set<string>();
   const truncated = { pages: false, images: false, budget: false };
   let blocked = 0;
 
@@ -123,6 +126,7 @@ export async function crawl(start: URL, deps: CrawlDeps): Promise<ScanResult> {
       for (const [list, target] of [
         [data.scripts, scripts],
         [data.iframes, iframes],
+        [data.inlineUrls, inlineUrls],
       ] as const) {
         for (const s of list) {
           if (target.size >= LIMITS.maxScripts) break;
@@ -149,6 +153,7 @@ export async function crawl(start: URL, deps: CrawlDeps): Promise<ScanResult> {
     images: groupVariants(images, LIMITS.maxPagesPerImage),
     scripts: [...scripts],
     iframes: [...iframes],
+    inlineUrls: [...inlineUrls],
     robots: { found: robots.found, blocked },
     truncated,
     subrequests: budget.used,

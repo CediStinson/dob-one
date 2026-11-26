@@ -22,6 +22,8 @@ export interface ScanResult {
   images: ScanImage[];
   scripts: string[];
   iframes: string[];
+  /** Ab T9; ältere Antworten ohne Feld. */
+  inlineUrls?: string[];
   robots: { found: boolean; blocked: number };
   truncated: { pages: boolean; images: boolean; budget: boolean };
   subrequests: number;

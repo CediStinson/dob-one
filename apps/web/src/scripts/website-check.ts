@@ -1,3 +1,4 @@
+import { detectChatbots, type ChatbotFinding } from "@dob-one/detect";
 import {
   normalizeInput,
   pageErrorText,
@@ -10,6 +11,7 @@ import { checkImages } from "../lib/check/run.ts";
 import { labelSnippet } from "../lib/check/snippet.ts";
 import {
   adviceFor,
+  chatGreeting,
   countByStatus,
   displayName,
   displayPath,
@@ -49,6 +51,8 @@ const snipText = $<HTMLSelectElement>("#snip-text");
 const snipCode = $<HTMLTextAreaElement>("#snip-code");
 const snipCopy = $<HTMLButtonElement>("#snip-copy");
 const snipMsg = $<HTMLSpanElement>("#snip-msg");
+const greetCode = $<HTMLTextAreaElement>("#greet-code");
+const greetMsg = $<HTMLSpanElement>("#greet-msg");
 
 const apiFetch = (u: string) => fetch(u, { headers: { accept: "application/json" } });
 
@@ -142,10 +146,39 @@ function renderLimits(scanResult: ScanResult): void {
   el.hidden = notes.length === 0;
 }
 
-function renderAdvice(images: CheckedImage[], okPages: number): void {
+const BOT_KIND: Record<ChatbotFinding["kind"], string> = {
+  ai: "KI-Chatbot",
+  ai_optional: "Live-Chat, KI möglich",
+};
+
+function renderBots(bots: ChatbotFinding[], site: string): void {
+  $<HTMLUListElement>("#bot-list").replaceChildren(
+    ...bots.map((b) => {
+      const li = document.createElement("li");
+      const name = document.createElement("span");
+      name.className = "name";
+      name.textContent = b.name;
+      const tag = document.createElement("span");
+      tag.className = "tag";
+      tag.dataset.s = b.kind === "ai" ? "ai" : "ai_partial";
+      tag.textContent = BOT_KIND[b.kind];
+      const where = document.createElement("span");
+      where.className = "where";
+      where.textContent = `Erkannt an ${b.url.slice(0, 120)}`;
+      li.append(name, tag, where);
+      return li;
+    }),
+  );
+  $("#bot-none").toggleAttribute("hidden", bots.length > 0);
+  $("#bot-greeting").toggleAttribute("hidden", bots.length === 0);
+  greetCode.value = chatGreeting(site.replace(/^www\./, ""));
+  greetMsg.textContent = "";
+}
+
+function renderAdvice(images: CheckedImage[], okPages: number, bots: ChatbotFinding[]): void {
   const list = $<HTMLUListElement>("#advice");
   list.replaceChildren(
-    ...adviceFor(countByStatus(images), okPages).map((a) => {
+    ...adviceFor(countByStatus(images), okPages, bots).map((a) => {
       const li = document.createElement("li");
       const t = document.createElement("strong");
       t.textContent = a.title;
@@ -178,9 +211,15 @@ function renderResult(scanResult: ScanResult, images: CheckedImage[]): void {
   setText("#t-pages", okPages);
   setText("#t-images", images.length - c.skipped - c.error);
   setText("#t-ai", c.ai + c.ai_partial);
-  setText("#t-error", c.error);
+  const bots = detectChatbots([
+    ...scanResult.scripts,
+    ...scanResult.iframes,
+    ...(scanResult.inlineUrls ?? []),
+  ]);
+  setText("#t-bots", bots.length);
+  renderBots(bots, site);
   renderLimits(scanResult);
-  renderAdvice(images, okPages);
+  renderAdvice(images, okPages, bots);
   renderImages(images, false);
   snippetSrc = images.find((i) => i.status === "ai" || i.status === "ai_partial")?.src;
   renderSnippet();
@@ -246,15 +285,18 @@ form.addEventListener("submit", (e) => {
 });
 
 snipText.addEventListener("change", renderSnippet);
-snipCopy.addEventListener("click", async () => {
+
+async function copy(area: HTMLTextAreaElement, msgEl: HTMLElement): Promise<void> {
   try {
-    await navigator.clipboard.writeText(snipCode.value);
-    snipMsg.textContent = "Kopiert.";
+    await navigator.clipboard.writeText(area.value);
+    msgEl.textContent = "Kopiert.";
   } catch {
-    snipCode.select();
-    snipMsg.textContent = "Bitte mit Strg+C bzw. Cmd+C kopieren.";
+    area.select();
+    msgEl.textContent = "Bitte mit Strg+C bzw. Cmd+C kopieren.";
   }
-});
+}
+$<HTMLButtonElement>("#greet-copy").addEventListener("click", () => void copy(greetCode, greetMsg));
+snipCopy.addEventListener("click", () => void copy(snipCode, snipMsg));
 
 // Vorbelegung über ?url=, ohne automatischen Start.
 const preset = new URLSearchParams(location.search).get("url");

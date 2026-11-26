@@ -69,7 +69,7 @@ Folgen für uns:
 
 Beide Routen liegen unter `/api/*`, weil nur dort der Worker vor den statischen Assets läuft.
 
-- `GET /api/scan?url=example.de`: crawlt bis 25 Seiten der gleichen Website (www. zählt dazu, Redirect der Startseite auf eine andere Domain wird übernommen), respektiert robots.txt (Gruppe `kenntlich-check`, sonst `*`). Max. 45 Subrequests, 6 parallel, 2 MB HTML pro Seite, 150 Bilder. Antwort: `pages`, `images` (`src` + bis zu 5 Fundseiten, Größenvarianten wie `-300x200` zusammengefasst in `variants`, `src` ist das Original bzw. die größte Variante), `scripts`, `iframes` (für T9), `robots`, `truncated`, `subrequests`. Rate-Limit 5 Scans / 10 Min. pro IP.
+- `GET /api/scan?url=example.de`: crawlt bis 25 Seiten der gleichen Website (www. zählt dazu, Redirect der Startseite auf eine andere Domain wird übernommen), respektiert robots.txt (Gruppe `kenntlich-check`, sonst `*`). Max. 45 Subrequests, 6 parallel, 2 MB HTML pro Seite, 150 Bilder. Antwort: `pages`, `images` (`src` + bis zu 5 Fundseiten, Größenvarianten wie `-300x200` zusammengefasst in `variants`, `src` ist das Original bzw. die größte Variante), `scripts`, `iframes`, `inlineUrls` (URLs aus Inline-Skripten, max. 16 KB pro Skript, 96 KB und 40 URLs pro Seite, JSON-LD ignoriert), `robots`, `truncated`, `subrequests`. Rate-Limit 5 Scans / 10 Min. pro IP.
 - `GET /api/img?src=…`: erste 256 KB eines Bildes (Range-Header, danach Abbruch). Nur `image/*`, Ausgabe immer als `application/octet-stream` mit `nosniff` und Sandbox-CSP (kein SVG/HTML-Ausführen auf unserer Domain). Header `x-upstream-content-type`, `x-truncated`. Rate-Limit 400 / 10 Min. pro IP.
 - SSRF-Schutz bei jedem Abruf und jedem Redirect-Schritt (max. 3): nur http/https, nur Standardports, keine Zugangsdaten, keine privaten/reservierten IPv4/IPv6 (auch Zahlen- und Hex-Schreibweisen, IPv4-gemappt), keine internen Namen (`localhost`, `.local`, `.internal`, einteilige Hosts). DNS wird nicht aufgelöst (Workers erreichen keine privaten Netze).
 - Rate-Limit ist pro Isolate im Speicher, also grob. Bei Missbrauch: Cloudflare-Regel oder Durable Object.
@@ -83,6 +83,13 @@ Beide Routen liegen unter `/api/*`, weil nur dort der Worker vor den statischen 
 - 429 beim Scan: Wartezeit aus `retry-after`, ohne Angabe Text "Tageskontingent". 429 während der Bildprüfung: Abbruch, Rest als "nicht geprüft", Ergebnis wird trotzdem gezeigt.
 - Entscheidung: Bis Accounts (T10) existieren, zeigt der freie Check den ganzen Scan (bis 25 Seiten) statt nur einer Seite. Begrenzung kommt mit T10.
 - `?url=` füllt das Feld vor, startet aber nicht automatisch.
+
+## Chatbot-Erkennung (T9, Stand 26.11.2026)
+
+- Signaturliste in `packages/detect/src/chatbots.ts` (`detectChatbots(urls)`), Vergleich auf `host/pfad` ohne www. und Query. Quelle: `scripts`, `iframes`, `inlineUrls` aus `/api/scan`. Inline-URLs sind nötig, weil Intercom, Crisp, tawk.to, Drift, Voiceflow, LiveChat ihr Widget per JS-Snippet nachladen.
+- Zwei Arten: `ai` (KI-Chatbot, z. B. Chatbase, Botpress, Voiceflow, moin.ai, AI Engine für WordPress) und `ai_optional` (Live-Chat mit optionaler KI, z. B. Intercom, Tidio, Zendesk, Userlike, Smartsupp).
+- Grenzen: Widgets über Tag Manager oder erst nach Cookie-Zustimmung sehen wir nicht. Ob der Chat bereits einen KI-Hinweis zeigt, prüfen wir nicht (Widget startet erst im Browser). Die UI sagt das offen.
+- UI: Kachel "Chatbots", Liste mit Art, Empfehlung, Textvorschlag für die Begrüßung zum Kopieren.
 
 ## Design (überarbeitet 26.11.2026)
 

@@ -14,6 +14,8 @@ import { checkImage, checkImages } from "../src/lib/check/run.ts";
 import { escapeHtml, labelSnippet } from "../src/lib/check/snippet.ts";
 import {
   adviceFor,
+  chatbotAdvice,
+  chatGreeting,
   countByStatus,
   displayName,
   displayPath,
@@ -233,5 +235,30 @@ describe("snippet", () => {
     expect(s).toContain('src="IHR-BILD.jpg"');
     expect(s).toContain("<figcaption>KI-generiert</figcaption>");
     expect(s).not.toMatch(/https?:\/\//);
+  });
+});
+
+describe("Chatbot-Empfehlungen", () => {
+  it("KI-Bot und Live-Chat getrennt, vor den Bild-Empfehlungen", () => {
+    const a = adviceFor(countByStatus([{ status: "ai" }]), 1, [
+      { name: "Chatbase", kind: "ai" },
+      { name: "Tidio", kind: "ai_optional" },
+      { name: "Crisp", kind: "ai_optional" },
+    ]);
+    expect(a.map((x) => x.title).slice(0, 3)).toEqual([
+      "KI-Chatbot gefunden: Chatbase",
+      "Live-Chat mit möglicher KI-Funktion: Tidio, Crisp",
+      "1 Bild mit KI-Hinweis prüfen",
+    ]);
+    for (const x of a) expect(`${x.title} ${x.text}`).not.toMatch(/[–—]/);
+  });
+  it("ohne Bots keine Bot-Empfehlung", () => {
+    expect(chatbotAdvice([])).toEqual([]);
+  });
+  it("Begrüßungstext", () => {
+    expect(chatGreeting("beispiel.de")).toBe(
+      "Hallo! Ich bin der KI-Assistent von beispiel.de. Meine Antworten werden automatisch erstellt und können Fehler enthalten.",
+    );
+    expect(chatGreeting("  ")).toContain("Ich bin der KI-Assistent. Meine");
   });
 });

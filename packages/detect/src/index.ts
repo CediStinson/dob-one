@@ -10,3 +10,11 @@ export {
   embedXmpWebp,
   type EmbedSourceType,
 } from "./embed.ts";
+export {
+  CHATBOT_SIGNATURES,
+  detectChatbots,
+  urlKey,
+  type ChatbotFinding,
+  type ChatbotKind,
+  type ChatbotSignature,
+} from "./chatbots.ts";

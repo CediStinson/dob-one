@@ -8,8 +8,14 @@ export interface El {
   getAttribute(name: string): string | null;
 }
 
+export interface TextChunk {
+  text: string;
+  lastInTextNode: boolean;
+}
+
 export interface ElementHandler {
-  element(el: El): void;
+  element?(el: El): void;
+  text?(chunk: TextChunk): void;
 }
 
 /** Minimal-Schnittstelle: Workers-HTMLRewriter in Produktion, WASM-Variante in Tests. */
@@ -23,7 +29,21 @@ export interface PageData {
   links: string[];
   scripts: string[];
   iframes: string[];
+  /** URLs aus Inline-Skripten (Chat-Snippets laden ihr Widget meist per JS nach). */
+  inlineUrls: string[];
   base?: string;
+}
+
+/** Grenzen für Inline-Skripte (10 ms CPU im Free-Plan). */
+export const INLINE_LIMITS = { bytesPerScript: 16 * 1024, bytesPerPage: 96 * 1024, urls: 40 };
+
+/** Absolute oder protokollrelative URLs in JS-Quelltext. */
+const URL_IN_JS = /(?:https?:)?\/\/[a-z0-9][a-z0-9.-]*\.[a-z]{2,24}(?:\/[^\s"'`<>\\)]{0,160})?/gi;
+
+const JS_TYPES = /^(|text\/javascript|application\/javascript|module|text\/ecmascript)$/i;
+
+export function urlsInScript(text: string): string[] {
+  return text.match(URL_IN_JS) ?? [];
 }
 
 export const SELECTORS = [
@@ -32,7 +52,7 @@ export const SELECTORS = [
   "source[srcset]",
   "meta[property='og:image']",
   "a[href]",
-  "script[src]",
+  "script",
   "iframe[src]",
 ] as const;
 
@@ -57,9 +77,31 @@ export function parseSrcset(srcset: string): string[] {
 }
 
 export function createCollector(): { data: PageData; handler: ElementHandler } {
-  const data: PageData = { images: [], links: [], scripts: [], iframes: [] };
+  const data: PageData = { images: [], links: [], scripts: [], iframes: [], inlineUrls: [] };
+  // Inline-Skript: Text sammeln, bis der Textknoten endet, dann einmal nach URLs suchen.
+  let inline: string | null = null;
+  let pageBytes = 0;
+  const inlineSeen = new Set<string>();
   const handler: ElementHandler = {
+    text(chunk) {
+      if (inline === null) return;
+      if (inline.length < INLINE_LIMITS.bytesPerScript && pageBytes < INLINE_LIMITS.bytesPerPage) {
+        const take = chunk.text.slice(0, INLINE_LIMITS.bytesPerScript - inline.length);
+        inline += take;
+        pageBytes += take.length;
+      }
+      if (!chunk.lastInTextNode) return;
+      for (const u of urlsInScript(inline)) {
+        if (inlineSeen.size >= INLINE_LIMITS.urls) break;
+        if (!inlineSeen.has(u)) {
+          inlineSeen.add(u);
+          data.inlineUrls.push(u);
+        }
+      }
+      inline = null;
+    },
     element(el) {
+      inline = null; // Skript ohne Textknoten: nichts übernehmen
       const tag = el.tagName.toLowerCase();
       const attr = (n: string) => el.getAttribute(n)?.trim() || undefined;
       switch (tag) {
@@ -100,6 +142,8 @@ export function createCollector(): { data: PageData; handler: ElementHandler } {
         case "script": {
           const v = attr("src");
           if (v) data.scripts.push(v);
+          else if (JS_TYPES.test(attr("type") ?? "") && pageBytes < INLINE_LIMITS.bytesPerPage)
+            inline = "";
           break;
         }
         case "iframe": {
