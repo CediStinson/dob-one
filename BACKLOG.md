@@ -7,7 +7,7 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 ### Sprint 1: Fundament + erstes Free Tool
 
 - [ ] 🧑 **B2** Domain kaufen. kenntlich.de vergeben, .ai zu teuer. **kenntlich.eu** kaufen (Fallback kenntlich.app via Cloudflare). Heute Abend. Claude kann Verfügbarkeit nicht prüfen (Shell blockiert). Marke: "kenntlich. Ein Produkt von dobsonstudio". Klarbild bleibt Name des WP-Plugins.
-- [ ] **T2b** DPMA/EUIPO-Markenrecherche "kenntlich" (Klasse 9/42) dokumentieren in `docs/03-marke.md`.
+- [ ] 🧑 **B5** Registerabfrage "kenntlich" und "klarbild" in TMview/DPMAregister (10 Min., kostenlos, Anleitung in `docs/03-marke.md`), Treffer dort eintragen.
 
 ### Sprint 2: Website-Check
 
@@ -26,6 +26,7 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ## Erledigt
 
+- [x] 2026-11-26 T2b Markenrecherche `docs/03-marke.md`: Websuche ohne Kollision, Register selbst nicht abfragbar (→ B5), Hauptrisiko: "kenntlich" ist beschreibend, eher Wort-Bild-Marke.
 - [x] 2026-11-26 T2c Tests für 5 echte C2PA-Dateien (c2pa-org): A → none, C/CA/XCA/E-sig → unclear mit claim_generator, Erkennung auch mit nur 64 KB Anfang, Robustheit bei Abschneiden. Lizenz/Attribution liegt bei, Fixtures nicht im Web-Build (geprüft). 7 Tests.
 - [x] 2026-11-26 T4c "Alle herunterladen" als ZIP (eigener ZIP-Writer ohne Kompression, UTF-8-Namen, Dopplungen nummeriert). 3 Tests, Python-zipfile als Gegenprobe.
 - [x] 2026-11-26 T4b Label-Generator bettet beim Export XMP mit IPTC `DigitalSourceType` ein (JPEG APP1, PNG iTXt, WebP VP8X + XMP), Auswahl KI-generiert / Montage / nicht einbetten. Modul `packages/detect/src/embed.ts`, 9 Roundtrip-Tests.
