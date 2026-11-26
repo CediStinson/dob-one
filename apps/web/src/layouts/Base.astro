@@ -17,24 +17,32 @@ const { title, description } = Astro.props;
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content="noindex" />
-    <meta name="theme-color" content="#0b0f10" />
+    <meta name="theme-color" content="#ffffff" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
-    <header class="wrap top">
-      <a href="/" class="logo">kenntlich<span>.</span></a>
-      <nav>
-        <a href="/#tools">Free Tools</a>
-        <a href="/#warteliste" class="btn small">Warteliste</a>
-      </nav>
-    </header>
+    <div class="top-bar">
+      <header class="wrap top">
+        <a href="/" class="logo">kenntlich<span>.</span></a>
+        <nav>
+          <a href="/#so-gehts">So funktioniert es</a>
+          <a href="/#tools">Free Tools</a>
+          <a href="/#warteliste" class="btn small">Warteliste</a>
+        </nav>
+      </header>
+    </div>
     <slot />
-    <footer class="wrap foot">
-      <span>kenntlich. Ein Produkt von dobsonstudio</span>
-      <nav>
-        <a href="/impressum/">Impressum</a>
-        <a href="/datenschutz/">Datenschutz</a>
-      </nav>
-    </footer>
+    <div class="site-foot">
+      <footer class="wrap foot">
+        <div>
+          <p><strong>kenntlich.</strong> Ein Produkt von dobsonstudio</p>
+          <p>Entwickelt in Rottweil, Deutschland. Ohne Cookies, ohne Tracking.</p>
+        </div>
+        <nav>
+          <a href="/impressum/">Impressum</a>
+          <a href="/datenschutz/">Datenschutz</a>
+        </nav>
+      </footer>
+    </div>
   </body>
 </html>

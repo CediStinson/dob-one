@@ -6,7 +6,6 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ### Sprint 1: Fundament + erstes Free Tool
 
-- [ ] **T3b** Landingpage auf helles Design umbauen + ehrliche Trust-Elemente + Impressum aus `docs/impressum-entwurf.md` übernehmen (Regeln: `docs/02-mvp.md` > Design). Sie-Form.
 - [ ] **T4** Free Tool 1: KI-Label-Generator nachbauen (Bild im Browser labeln, Vorlagen, Position, Deckkraft, Download, Multi-Upload) plus Anzeige der Metadaten-Einschätzung via `packages/detect`.
 - [ ] **T5** Cloudflare-Free-Limits (Workers Static Assets) für Workers recherchieren und in `docs/02-mvp.md` festhalten (CPU, Subrequests, Requests/Tag).
 - [ ] 🧑 **B2** Domain kaufen. kenntlich.de vergeben, .ai zu teuer. **kenntlich.eu** kaufen (Fallback kenntlich.app via Cloudflare). Heute Abend. Claude kann Verfügbarkeit nicht prüfen (Shell blockiert). Marke: "kenntlich. Ein Produkt von dobsonstudio". Klarbild bleibt Name des WP-Plugins.
@@ -30,6 +29,7 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ## Erledigt
 
+- [x] 2026-11-26 T3b Landingpage hell (Weiß/#F7F9F9, Teal sparsam), Trust-Leiste nur mit wahren Aussagen, Rechtsbezug mit EUR-Lex-Link + Stand-Datum, Impressum/Datenschutz mit Entwurfsdaten (Freigabe B4 offen). Prettier-Fehler in docs behoben (CI war rot).
 - [x] 2026-11-26 T3 Landingpage (Hero, Problem, Lösung, Free Tools, Warteliste als Mock, Impressum/Datenschutz als Entwurf), Inter selbst gehostet.
 - [x] 2026-11-26 T2 `packages/detect`: C2PA, IPTC DigitalSourceType, XMP/EXIF-Generator-Tags, PNG-Textchunks. 13 Fixtures, 42 Tests.
 - [x] 2026-11-26 T1 Monorepo (pnpm workspaces, Astro, Hono, Vitest, Prettier), CI-Workflow mit `wrangler deploy --dry-run`.
