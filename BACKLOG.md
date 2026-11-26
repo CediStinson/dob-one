@@ -7,7 +7,6 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 ### Sprint 1: Fundament + erstes Free Tool
 
 - [ ] 🧑 **B2** Domain kaufen. kenntlich.de vergeben, .ai zu teuer. **kenntlich.eu** kaufen (Fallback kenntlich.app via Cloudflare). Heute Abend. Claude kann Verfügbarkeit nicht prüfen (Shell blockiert). Marke: "kenntlich. Ein Produkt von dobsonstudio". Klarbild bleibt Name des WP-Plugins.
-- [ ] **T2c** Echte C2PA-Fixtures liegen jetzt in `packages/detect/fixtures/c2pa-org/` (5 JPEGs, CC BY-SA 4.0, Erwartungen in README dort). Tests dafür schreiben; prüfen, dass Lizenz/Attribution passt und Fixtures nicht ins Web-Build gelangen.
 - [ ] **T2b** DPMA/EUIPO-Markenrecherche "kenntlich" (Klasse 9/42) dokumentieren in `docs/03-marke.md`.
 
 ### Sprint 2: Website-Check
@@ -27,6 +26,7 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ## Erledigt
 
+- [x] 2026-11-26 T2c Tests für 5 echte C2PA-Dateien (c2pa-org): A → none, C/CA/XCA/E-sig → unclear mit claim_generator, Erkennung auch mit nur 64 KB Anfang, Robustheit bei Abschneiden. Lizenz/Attribution liegt bei, Fixtures nicht im Web-Build (geprüft). 7 Tests.
 - [x] 2026-11-26 T4c "Alle herunterladen" als ZIP (eigener ZIP-Writer ohne Kompression, UTF-8-Namen, Dopplungen nummeriert). 3 Tests, Python-zipfile als Gegenprobe.
 - [x] 2026-11-26 T4b Label-Generator bettet beim Export XMP mit IPTC `DigitalSourceType` ein (JPEG APP1, PNG iTXt, WebP VP8X + XMP), Auswahl KI-generiert / Montage / nicht einbetten. Modul `packages/detect/src/embed.ts`, 9 Roundtrip-Tests.
 - [x] 2026-11-26 T5 Cloudflare-Free-Limits recherchiert und mit Folgen für T6/T7 in `docs/02-mvp.md` dokumentiert.
