@@ -1,0 +1,416 @@
+---
+import Base from "../../../layouts/Base.astro";
+import { TEMPLATES } from "../../../lib/label/layout.ts";
+
+const positions = [
+  ["top-left", "Oben links"],
+  ["top-right", "Oben rechts"],
+  ["bottom-left", "Unten links"],
+  ["bottom-right", "Unten rechts"],
+] as const;
+const sizes = [
+  ["s", "Klein"],
+  ["m", "Mittel"],
+  ["l", "Groß"],
+] as const;
+---
+
+<Base
+  title="KI-Label-Generator. kenntlich"
+  description="Bilder kostenlos mit einem sichtbaren KI-Hinweis versehen. Läuft komplett im Browser, Ihre Bilder werden nicht hochgeladen."
+>
+  <main class="wrap tool">
+    <p class="eyebrow">Free Tool</p>
+    <h1>KI-Label-Generator</h1>
+    <p class="lead">
+      Versehen Sie Bilder mit einem sichtbaren KI-Hinweis. Zusätzlich sehen Sie, ob die Metadaten
+      einer Datei auf KI hindeuten.
+    </p>
+    <ul class="facts">
+      <li>Ihre Bilder verlassen den Browser nicht</li>
+      <li>Kein Login, keine Cookies</li>
+      <li>Bis zu 20 Bilder auf einmal</li>
+    </ul>
+
+    <div class="layout">
+      <form id="label-options" class="panel" aria-label="Label-Einstellungen">
+        <fieldset>
+          <legend>Text</legend>
+          {
+            TEMPLATES.map((t, i) => (
+              <label class="opt">
+                <input type="radio" name="template" value={t} checked={i === 0} />
+                {t}
+              </label>
+            ))
+          }
+          <label class="opt">
+            <input type="radio" name="template" value="__custom" />
+            Eigener Text
+          </label>
+          <input
+            id="custom-text"
+            type="text"
+            maxlength="60"
+            placeholder="z. B. Bild mit KI erstellt"
+            aria-label="Eigener Label-Text"
+            disabled
+          />
+        </fieldset>
+
+        <fieldset>
+          <legend>Position</legend>
+          <div class="seg four">
+            {
+              positions.map(([v, l]) => (
+                <label>
+                  <input type="radio" name="position" value={v} checked={v === "bottom-right"} />
+                  <span>{l}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Größe</legend>
+          <div class="seg">
+            {
+              sizes.map(([v, l]) => (
+                <label>
+                  <input type="radio" name="size" value={v} checked={v === "m"} />
+                  <span>{l}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Stil</legend>
+          <div class="seg">
+            <label><input type="radio" name="theme" value="light" checked /><span>Hell</span></label>
+            <label><input type="radio" name="theme" value="dark" /><span>Dunkel</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Deckkraft <output id="opacity-out" for="opacity">90 %</output></legend>
+          <input id="opacity" name="opacity" type="range" min="30" max="100" step="5" value="90" />
+        </fieldset>
+      </form>
+
+      <section class="work" aria-label="Bilder">
+        <label id="drop" class="drop" for="files">
+          <strong>Bilder hierher ziehen oder auswählen</strong>
+          <span>JPEG, PNG, WebP, AVIF. Bis 40 MB pro Bild.</span>
+          <input
+            id="files"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/avif"
+            multiple
+          />
+        </label>
+        <p id="tool-msg" class="msg" role="status" aria-live="polite"></p>
+        <div class="bulk">
+          <button type="button" id="download-all" class="btn" hidden disabled
+            >Alle herunterladen</button
+          >
+          <button type="button" id="clear-all" class="btn ghost" disabled>Alle entfernen</button>
+        </div>
+        <ul id="items" class="items"></ul>
+      </section>
+    </div>
+
+    <template id="item-template">
+      <li class="item">
+        <div class="preview"></div>
+        <div class="meta">
+          <p class="name"></p>
+          <div class="verdict"><strong></strong><span></span></div>
+          <div class="actions">
+            <button type="button" class="btn small dl">Herunterladen</button>
+            <button type="button" class="btn small ghost rm">Entfernen</button>
+          </div>
+        </div>
+      </li>
+    </template>
+
+    <section class="note-block">
+      <h2>Gut zu wissen</h2>
+      <ul class="muted">
+        <li>
+          Der Download enthält das sichtbare Label. Metadaten der Originaldatei (auch C2PA-Nachweise)
+          werden dabei nicht übernommen. Bewahren Sie das Original auf.
+        </li>
+        <li>
+          Die Metadaten-Einschätzung ist ein Hinweis, kein Beweis. Fehlen Metadaten, kann ein Bild
+          trotzdem mit KI erzeugt sein.
+        </li>
+        <li>
+          Ob und wie Sie kennzeichnen müssen, hängt vom Einzelfall ab. Dieses Tool ersetzt keine
+          Rechtsberatung. Grundlage ist Art.&nbsp;50 der KI-Verordnung (<a
+            href="https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R1689"
+            rel="noopener">EUR-Lex</a
+          >).
+        </li>
+      </ul>
+    </section>
+  </main>
+</Base>
+
+<script>
+  import "../../../scripts/label-tool.ts";
+</script>
+
+<style>
+  .tool {
+    padding-top: 56px;
+  }
+  .eyebrow {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+  h1 {
+    font-size: clamp(32px, 5vw, 44px);
+    margin: 0 0 16px;
+  }
+  .lead {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 640px;
+    margin: 0 0 20px;
+  }
+  .facts {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .facts li::before {
+    content: "✓";
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .panel {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px;
+    position: sticky;
+    top: 16px;
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0 0 20px;
+    min-width: 0;
+  }
+  fieldset:last-child {
+    margin-bottom: 0;
+  }
+  legend {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  legend output {
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .opt {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 3px 0;
+    font-size: 15px;
+  }
+  input[type="radio"] {
+    accent-color: var(--accent);
+  }
+  #custom-text {
+    width: 100%;
+    margin-top: 6px;
+    border: 1px solid #c9d2d6;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font: inherit;
+    font-size: 15px;
+  }
+  #custom-text:disabled {
+    background: var(--bg-soft);
+  }
+  .seg {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .seg.four {
+    grid-template-columns: 1fr 1fr;
+  }
+  .seg label {
+    position: relative;
+  }
+  .seg input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+  }
+  .seg span {
+    display: block;
+    text-align: center;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px 4px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .seg input:checked + span {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .seg input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+  .drop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+    border: 2px dashed #c9d2d6;
+    border-radius: 14px;
+    background: var(--bg-soft);
+    padding: 40px 20px;
+    cursor: pointer;
+  }
+  .drop.over,
+  .drop:focus-within {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .drop span {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .drop input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+  .msg {
+    min-height: 1.6em;
+    color: var(--muted);
+    font-size: 14px;
+    margin: 8px 0;
+  }
+  .bulk {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 16px;
+  }
+  .item {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 20px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .preview :global(canvas) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    background: var(--bg-soft);
+  }
+  .name {
+    font-weight: 600;
+    margin: 0 0 12px;
+    word-break: break-all;
+  }
+  .verdict {
+    border-left: 3px solid var(--line);
+    padding: 4px 0 4px 12px;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+  .verdict strong,
+  .verdict span {
+    display: block;
+  }
+  .verdict span {
+    color: var(--muted);
+  }
+  .verdict[data-tone="ai"] {
+    border-color: #b45309;
+  }
+  .verdict[data-tone="partial"] {
+    border-color: #ca8a04;
+  }
+  .verdict[data-tone="none"] {
+    border-color: var(--accent);
+  }
+  .actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .note-block {
+    margin-top: 72px;
+    max-width: 720px;
+  }
+  .note-block h2 {
+    font-size: 22px;
+  }
+  .note-block li {
+    margin-bottom: 8px;
+  }
+  @media (max-width: 860px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .panel {
+      position: static;
+    }
+    .item {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -6,7 +6,7 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ### Sprint 1: Fundament + erstes Free Tool
 
-- [ ] **T4** Free Tool 1: KI-Label-Generator nachbauen (Bild im Browser labeln, Vorlagen, Position, Deckkraft, Download, Multi-Upload) plus Anzeige der Metadaten-Einschätzung via `packages/detect`.
+- [ ] **T4b** Label-Generator: beim JPEG/PNG-Export maschinenlesbare Kennzeichnung einbetten (XMP mit IPTC `DigitalSourceType`), optional ZIP-Download für "Alle herunterladen" ohne externe Lib.
 - [ ] **T5** Cloudflare-Free-Limits (Workers Static Assets) für Workers recherchieren und in `docs/02-mvp.md` festhalten (CPU, Subrequests, Requests/Tag).
 - [ ] 🧑 **B2** Domain kaufen. kenntlich.de vergeben, .ai zu teuer. **kenntlich.eu** kaufen (Fallback kenntlich.app via Cloudflare). Heute Abend. Claude kann Verfügbarkeit nicht prüfen (Shell blockiert). Marke: "kenntlich. Ein Produkt von dobsonstudio". Klarbild bleibt Name des WP-Plugins.
 - [ ] **T2c** Echte, signierte C2PA-Beispieldateien (Lizenz prüfen) als Fixtures ergänzen; aktuell nur unsignierte, selbst gebaute Manifeste.
@@ -29,7 +29,8 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ## Erledigt
 
-- [x] 2026-11-26 T3b Landingpage hell (Weiß/#F7F9F9, Teal sparsam), Trust-Leiste nur mit wahren Aussagen, Rechtsbezug mit EUR-Lex-Link + Stand-Datum, Impressum/Datenschutz mit Entwurfsdaten (Freigabe B4 offen). Prettier-Fehler in docs behoben (CI war rot).
+- [x] 2026-11-26 T4 KI-Label-Generator unter `/tools/ki-label-generator/`: 4 Vorlagen + eigener Text, 4 Positionen, 3 Größen, Hell/Dunkel, Deckkraft, bis 20 Bilder, Download einzeln/alle, Metadaten-Einschätzung via `packages/detect` im Browser. 10 neue Tests (apps/web).
+- [x] 2026-11-26 T3b Landingpage hell (Weiß/#F7F9F9, Teal sparsam), Trust-Leiste nur mit wahren Aussagen, Rechtsbezug mit EUR-Lex-Link + Stand-Datum, Impressum/Datenschutz mit Entwurfsdaten (Freigabe B4 offen).
 - [x] 2026-11-26 T3 Landingpage (Hero, Problem, Lösung, Free Tools, Warteliste als Mock, Impressum/Datenschutz als Entwurf), Inter selbst gehostet.
 - [x] 2026-11-26 T2 `packages/detect`: C2PA, IPTC DigitalSourceType, XMP/EXIF-Generator-Tags, PNG-Textchunks. 13 Fixtures, 42 Tests.
 - [x] 2026-11-26 T1 Monorepo (pnpm workspaces, Astro, Hono, Vitest, Prettier), CI-Workflow mit `wrangler deploy --dry-run`.
