@@ -24,8 +24,9 @@ Zahlung kommt erst nach Validierung (Stripe). Bis dahin: Warteliste für Pro.
 - **Keine** visuelle "KI-Detektor"-Erkennung im MVP. Ergebnisse sind Hinweise, kein Beweis. Disclaimer wie beim bestehenden Generator.
 
 ## Tech-Stack (0 €)
-- **Frontend**: Astro + TypeScript, statisch, auf Cloudflare Pages. Interaktive Teile als Vanilla-TS-Islands.
-- **Scanner**: Cloudflare Worker (Hono). Der Worker crawlt HTML (HTMLRewriter) und lädt pro Bild nur die ersten ~256 KB. Das Parsen der Metadaten läuft im Browser (exifr + eigener C2PA/PNG-Chunk-Parser), weil der Free-Plan wenig CPU pro Request erlaubt. Limits vor dem Bau verifizieren.
+- **Hosting**: Ein Cloudflare Worker mit Static Assets (Cloudflare-Empfehlung für neue Projekte statt Pages). Frontend + API in einem Deployment.
+- **Frontend**: Astro + TypeScript, statisch gebaut. Interaktive Teile als Vanilla-TS-Islands.
+- **Scanner**: API-Routen im selben Worker (Hono). Der Worker crawlt HTML (HTMLRewriter) und lädt pro Bild nur die ersten ~256 KB. Das Parsen der Metadaten läuft im Browser (exifr + eigener C2PA/PNG-Chunk-Parser), weil der Free-Plan wenig CPU pro Request erlaubt. Limits vor dem Bau verifizieren.
 - **Monitoring** (später): GitHub Actions Cron, Parsen serverseitig in Node.
 - **Auth + DB**: Supabase Free (Postgres, Magic-Link-Login).
 - **Mail**: Resend Free.
@@ -37,3 +38,7 @@ Dunkel, minimal, Inter, Akzent Teal. Keine Gedankenstriche in Kunden-Copy. Sprac
 
 ## Nicht im MVP
 Visuelle KI-Erkennung, Video/Audio, Stripe, Mehrsprachigkeit, WP-Plugin-Anbindung (kommt als Erstes danach: Klarbild-Plugin meldet an die SaaS).
+
+## Wettbewerb (Stand 26.11.2026)
+- meetergo bietet einen kostenlosen KI-Kennzeichnungs-Check (C2PA, IPTC, Chatbot, ohne Anmeldung). Der Einmal-Check ist also kein Alleinstellungsmerkmal.
+- Unsere Differenzierung: Monitoring, Label-Snippet + Verwaltung, Nachweis-Log, Agentur-Modus, WP-Plugin-Integration (Klarbild).

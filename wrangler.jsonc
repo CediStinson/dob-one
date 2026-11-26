@@ -1,0 +1,6 @@
+// Platzhalter-Deployment. Wird in T1 durch apps/web + Worker ersetzt.
+{
+  "name": "kenntlich",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": "./placeholder" }
+}
