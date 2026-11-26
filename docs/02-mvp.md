@@ -38,6 +38,33 @@ Zahlung kommt erst nach Validierung (Stripe). Bis dahin: Warteliste für Pro.
 - **Analytics**: keine Cookies. Cloudflare Web Analytics.
 - Alles DSGVO-freundlich: keine externen CDNs, Fonts selbst gehostet.
 
+## Cloudflare Free-Limits (recherchiert 26.11.2026)
+
+Quellen: [Limits](https://developers.cloudflare.com/workers/platform/limits/) (Stand 19.11.2026), [Static Assets Billing](https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/) (Stand 12.11.2026), [Subrequest-Changelog](https://developers.cloudflare.com/changelog/post/2026-02-11-subrequests-limit/) (11.02.2026), [Builds](https://developers.cloudflare.com/workers/ci-cd/builds/limits-and-pricing/) (Stand 28.10.2026).
+
+| Limit                      | Free                                                                                   |
+| -------------------------- | -------------------------------------------------------------------------------------- |
+| Worker-Requests            | 100.000 pro Tag, Reset 00:00 UTC                                                       |
+| Static-Asset-Requests      | kostenlos, unbegrenzt (zählen nicht zum Worker-Limit)                                  |
+| CPU pro Request            | 10 ms (Warten auf fetch zählt nicht), sonst Fehler 1102                                |
+| Dauer pro Request          | kein Limit solange Client verbunden, `waitUntil` max. 30 s                             |
+| Speicher                   | 128 MB pro Isolate                                                                     |
+| Subrequests                | 50 extern pro Aufruf, 1.000 an Cloudflare-Dienste (Änderung 02/2026 gilt nur für Paid) |
+| Gleichzeitige Verbindungen | 6 (weitere werden gequeued)                                                            |
+| Worker-Größe               | 64 MiB unkomprimiert                                                                   |
+| Env-Variablen              | 64 pro Worker, je 5 KB                                                                 |
+| Assets                     | 20.000 Dateien pro Version, max. 25 MiB pro Datei                                      |
+| Cron Triggers              | 5 pro Account                                                                          |
+| Workers Builds             | 3.000 Min./Monat, 1 Build gleichzeitig, Timeout 20 Min.                                |
+
+Folgen für uns:
+
+- Über dem Tageslimit liefern `run_worker_first`-Routen (`/api/*`) **429**, die statischen Seiten und der Label-Generator laufen weiter. Die UI muss 429 freundlich abfangen ("Tageskontingent erreicht, morgen wieder").
+- **T6 Crawl**: robots.txt + bis 25 Seiten = 26 externe Subrequests, passt unter 50. Redirects zählen einzeln, deshalb max. 3 Redirects pro URL und hartes Abbruchbudget von 45 Subrequests. Max. 6 parallel, also in Batches.
+- **10 ms CPU**: HTML nur streamend mit HTMLRewriter verarbeiten (nur `img`, `source`, `script`, `link`), keine DOM-Bäume, kein Regex über ganze Seiten. Metadaten-Parsing bleibt im Browser (wie geplant).
+- **T7 `/img`**: ein Aufruf pro Bild, also pro Scan bis zu ~25 Seiten × n Bilder Worker-Requests. Bei 100.000/Tag reicht das für einige hundert volle Scans täglich. Pro Scan Bilder deduplizieren und auf z. B. 150 begrenzen.
+- Rate-Limit pro IP ohne KV/DO: zunächst einfach (Cloudflare-Regel oder In-Memory pro Isolate), echte Lösung erst bei Bedarf.
+
 ## Design (überarbeitet 26.11.2026)
 
 - **Hell statt dunkel.** Compliance-Produkt für KMU: Vertrauen, Ruhe, Seriosität. Weißer/sehr heller Grund (#FFFFFF / #F7F9F9), dunkles Graublau für Text, Teal als Akzent sparsam (Buttons, Haken, Links). dobsonstudio-Look (dunkel) gilt hier ausdrücklich nicht.
