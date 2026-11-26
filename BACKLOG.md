@@ -11,17 +11,18 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 ### Sprint 2: Website-Check
 
+- [ ] **T3c** Warteliste entfernen (Entscheidung 26.11.: kein Traffic, kein Nutzen, unnötige DSGVO-Pflichten). Ersetzen durch Kontakt-Hinweis "Interesse an Monitoring oder Agentur-Modus? Schreiben Sie uns" mit mailto:info@dobsonstudio.com (später Domain-Adresse). Datenschutz-Entwurf entsprechend anpassen. Nichts speichern.
 - [ ] **T4d** Label-Generator an `docs/04-label-spec.md` angleichen: Varianten Kurz/GEN/MOD im EU-Icon-Muster, 4 Farben inkl. 50 %, Größe 4 bis 20 %, Eigener-Text-Modus mit Vorlage, Export PNG/JPG/WebP. Geometrie wie spezifiziert. In unserer Schrift (Inter).
 - [ ] **T4e** Sicherheitscheck Label-Generator + Website-Check: Metadaten und gescannte Inhalte nur per `textContent` ausgeben, nie `innerHTML`. Test mit präpariertem Bild (Skript im XMP).
 - [ ] **T13** Free Tool 2 (SEO): PNG/JPG in WebP umwandeln, im Browser, Pixelmaße bleiben gleich, Qualitätsregler, ZIP. Eigene Landingpage "PNG in WebP umwandeln" mit Hinweis auf KI-Label-Generator.
 - [ ] **T9** Chatbot-Erkennung (Signaturliste in `packages/detect`).
-- [ ] 🧑 **B3** Supabase- und Resend-Account anlegen, Keys als Env-Variablen in Cloudflare eintragen.
+- [ ] 🧑 **B3** (zurückgestellt) Supabase- und Resend-Account, erst wenn Login/Warteliste gebraucht werden.
 
 ### Sprint 3: Accounts + Report
 
 - [ ] **T10** Magic-Link-Login (Supabase), Scans speichern.
 - [ ] **T11** PDF-Report (im Browser generiert).
-- [ ] **T12** Warteliste echt anbinden, Double-Opt-in-Mail.
+- [ ] **T12** (zurückgestellt) Warteliste mit Double-Opt-in, erst wenn Traffic da ist und Pro kurz vor Start steht.
 - [ ] 🧑 **B4** Impressum/Datenschutz freigeben (Betreiber: dobsonstudio?).
 
 ## Erledigt
