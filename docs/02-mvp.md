@@ -111,6 +111,11 @@ Beide Routen liegen unter `/api/*`, weil nur dort der Worker vor den statischen 
 - Standard: KI-Label "KI GENERIERT", Schwarz, 8 %, unten rechts. GEN setzt IPTC "KI-generiert", MOD "Bearbeitung/Montage mit KI".
 - Export: "Wie Original" (JPEG/WebP bleiben, sonst PNG) oder fest PNG/JPG/WebP. Liefert der Browser kein WebP, wird die Datei als PNG benannt und eingebettet.
 
+## WebP-Tool (T13, Stand 27.11.2026)
+
+- Seite `/tools/bild-in-webp-umwandeln/` (SEO-Begriffe: PNG/JPG in WebP umwandeln), Logik in `apps/web/src/lib/webp/convert.ts` (getestet), UI `apps/web/src/scripts/webp-tool.ts`.
+- Canvas `toBlob("image/webp", q)`. Liefert der Browser kein WebP (ältere Safari), Hinweis statt falscher Datei. Erkennt `detect` einen KI-Hinweis im Original, wird er per `embedXmpWebp` neu geschrieben (Brücke zum Kernthema).
+
 ## Statistik (T19, Stand 27.11.2026)
 
 - Browser sendet per `sendBeacon` an `POST /api/hit` (`{p: Pfad, r: Referrer-Hostname}`) und `POST /api/event` (`{e: label_export|webp_export|contact_click, n?: Bilder}`). Antwort immer 204.

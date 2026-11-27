@@ -1,0 +1,425 @@
+---
+import Base from "../../../layouts/Base.astro";
+import { QUALITY } from "../../../lib/webp/convert.ts";
+
+const sizes = [
+  ["0", "Original"],
+  ["2560", "2560 px"],
+  ["1920", "1920 px"],
+  ["1280", "1280 px"],
+] as const;
+---
+
+<Base
+  title="Bilder in WebP umwandeln: PNG und JPG kostenlos. kenntlich"
+  description="PNG und JPG kostenlos in WebP umwandeln, direkt im Browser. Kleinere Dateien, schnellere Website. Ihre Bilder werden nicht hochgeladen."
+>
+  <main class="wrap tool">
+    <p class="eyebrow">Free Tool</p>
+    <h1>PNG und JPG in WebP umwandeln</h1>
+    <p class="lead">
+      WebP-Bilder sind meist deutlich kleiner als PNG oder JPG bei gleicher Optik. Ihre Website lädt
+      schneller, das hilft Besuchern und bei Google.
+    </p>
+    <ul class="facts">
+      <li>Ihre Bilder verlassen den Browser nicht</li>
+      <li>Kein Login, keine Cookies</li>
+      <li>Bis zu 30 Bilder auf einmal</li>
+    </ul>
+
+    <div class="layout">
+      <form id="webp-options" class="panel" aria-label="Einstellungen">
+        <fieldset>
+          <legend>Qualität <output id="quality-out" for="quality">{QUALITY.default}</output></legend>
+          <input
+            id="quality"
+            name="quality"
+            type="range"
+            min={QUALITY.min}
+            max={QUALITY.max}
+            step="1"
+            value={QUALITY.default}
+          />
+          <p class="help">80 bis 85 ist für Websites meist ideal. Höher heißt größere Dateien.</p>
+        </fieldset>
+
+        <fieldset>
+          <legend>Maximale Kantenlänge</legend>
+          <div class="seg two">
+            {
+              sizes.map(([v, l]) => (
+                <label>
+                  <input type="radio" name="maxEdge" value={v} checked={v === "0"} />
+                  <span>{l}</span>
+                </label>
+              ))
+            }
+          </div>
+          <p class="help">Große Fotos auf 1920 px verkleinern spart oft am meisten. Kleinere Bilder werden nie vergrößert.</p>
+        </fieldset>
+
+        <fieldset>
+          <legend>KI-Kennzeichnung</legend>
+          <label class="opt">
+            <input type="checkbox" name="keepMarker" checked />
+            KI-Hinweis aus den Metadaten übernehmen
+          </label>
+          <p class="help">
+            Beim Umwandeln gehen Metadaten verloren. Enthält das Original einen KI-Hinweis, schreiben
+            wir ihn als IPTC-Angabe in die WebP-Datei.
+          </p>
+        </fieldset>
+      </form>
+
+      <section class="work" aria-label="Bilder">
+        <label id="drop" class="drop" for="files">
+          <strong>Bilder hierher ziehen oder auswählen</strong>
+          <span>PNG, JPEG, WebP, AVIF, GIF, BMP. Bis 40 MB pro Bild.</span>
+          <input
+            id="files"
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/avif,image/gif,image/bmp"
+            multiple
+          />
+        </label>
+        <p id="tool-msg" class="msg" role="status" aria-live="polite"></p>
+        <p id="summary" class="summary" aria-live="polite"></p>
+        <div class="bulk">
+          <button type="button" id="download-all" class="btn" hidden disabled
+            >Alle als ZIP herunterladen</button
+          >
+          <button type="button" id="clear-all" class="btn ghost" disabled>Alle entfernen</button>
+        </div>
+        <ul id="items" class="items"></ul>
+      </section>
+    </div>
+
+    <template id="item-template">
+      <li class="row">
+        <div>
+          <p class="name"></p>
+          <p class="sizes"></p>
+          <p class="detail"></p>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn small dl" disabled>Herunterladen</button>
+          <button type="button" class="btn small ghost rm">Entfernen</button>
+        </div>
+      </li>
+    </template>
+
+    <section class="note-block">
+      <h2>Gut zu wissen</h2>
+      <ul class="muted">
+        <li>
+          Die Umwandlung läuft komplett in Ihrem Browser. Es wird nichts hochgeladen oder
+          gespeichert.
+        </li>
+        <li>
+          Andere Metadaten (EXIF, Kamera, C2PA-Nachweise) werden nicht übernommen. Bewahren Sie das
+          Original auf.
+        </li>
+        <li>
+          KI-Bilder müssen Sie unter Umständen sichtbar kennzeichnen. Das geht mit dem <a
+            href="/tools/ki-label-generator/">KI-Label-Generator</a
+          >, der auch direkt als WebP speichern kann.
+        </li>
+        <li>
+          WordPress und die meisten Baukästen können WebP seit Jahren anzeigen. Transparenz bleibt
+          erhalten, animierte GIFs werden als Standbild umgewandelt.
+        </li>
+      </ul>
+    </section>
+  </main>
+</Base>
+
+<script>
+  import "../../../scripts/webp-tool.ts";
+</script>
+
+<style>
+  .tool {
+    padding-top: 56px;
+  }
+  .eyebrow {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+  h1 {
+    font-size: clamp(32px, 5vw, 44px);
+    margin: 0 0 16px;
+  }
+  .lead {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 640px;
+    margin: 0 0 20px;
+  }
+  .facts {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .facts li::before {
+    content: "✓";
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .panel {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px;
+    position: sticky;
+    top: 16px;
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0 0 20px;
+    min-width: 0;
+  }
+  fieldset:last-child {
+    margin-bottom: 0;
+  }
+  legend {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  legend output {
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .opt {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 3px 0;
+    font-size: 15px;
+  }
+  input[type="radio"] {
+    accent-color: var(--accent);
+  }
+  #custom-text {
+    width: 100%;
+    margin-top: 6px;
+    border: 1px solid #c9d2d6;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font: inherit;
+    font-size: 15px;
+  }
+  #custom-text:disabled {
+    background: var(--bg-soft);
+  }
+  .seg {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .seg.two {
+    grid-template-columns: 1fr 1fr;
+  }
+  .seg label {
+    position: relative;
+  }
+  .seg input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+  }
+  .seg span {
+    display: block;
+    text-align: center;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px 4px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .seg input:checked + span {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .seg input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .help {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--faint);
+  }
+  .help.warn {
+    color: #8a5a00;
+  }
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+  .drop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+    border: 2px dashed #c9d2d6;
+    border-radius: 14px;
+    background: var(--bg-soft);
+    padding: 40px 20px;
+    cursor: pointer;
+  }
+  .drop.over,
+  .drop:focus-within {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .drop span {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .drop input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+  .msg {
+    min-height: 1.6em;
+    color: var(--muted);
+    font-size: 14px;
+    margin: 8px 0;
+  }
+  .bulk {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 16px;
+  }
+  .item {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 20px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .preview :global(canvas) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    background: var(--bg-soft);
+  }
+  .name {
+    font-weight: 600;
+    margin: 0 0 12px;
+    word-break: break-all;
+  }
+  .verdict {
+    border-left: 3px solid var(--line);
+    padding: 4px 0 4px 12px;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+  .verdict strong,
+  .verdict span {
+    display: block;
+  }
+  .verdict span {
+    color: var(--muted);
+  }
+  .verdict[data-tone="ai"] {
+    border-color: #b45309;
+  }
+  .verdict[data-tone="partial"] {
+    border-color: #ca8a04;
+  }
+  .verdict[data-tone="none"] {
+    border-color: var(--accent);
+  }
+  .actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .summary {
+    font-weight: 600;
+    margin: 0 0 12px;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+  .row p {
+    margin: 0;
+  }
+  .sizes {
+    font-size: 15px;
+  }
+  .detail {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  input[type="checkbox"] {
+    accent-color: var(--accent);
+  }
+  .note-block {
+    margin-top: 72px;
+    max-width: 720px;
+  }
+  .note-block h2 {
+    font-size: 22px;
+  }
+  .note-block li {
+    margin-bottom: 8px;
+  }
+  @media (max-width: 860px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .panel {
+      position: static;
+    }
+    .item {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

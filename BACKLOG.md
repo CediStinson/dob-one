@@ -8,7 +8,6 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte Labels nicht, der Nutzer muss alles selbst beurteilen. Kein echter Nutzen. Wert liegt dort, wo das Bild entsteht und gekennzeichnet wird.
 
-- [ ] **T13** (vorgezogen) Free Tool 2: PNG/JPG in WebP, Reichweite über Google.
 - [ ] **T18** Konzept `docs/05-plugin.md`: Klarbild als WordPress-Plugin, das beim Upload in die Mediathek KI-Bilder markiert, sichtbares Label + IPTC setzt, Metadaten bei Bildgrößen/WebP erhält und ein Kennzeichnungs-Log führt. Free (Basis) vs. Pro (Log/Nachweis-PDF, mehrere Sites, Agentur). Zahlungsbereitschaft hier statt im Scanner.
 
 ### Sprint 1: Fundament + erstes Free Tool
@@ -38,6 +37,8 @@ Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte La
 - [ ] (geparkt) **T16** (später) Eingebrannte Labels erkennen: OCR nur auf die 4 Bildecken, im Browser, selbst gehostet. Erst prüfen, ob Aufwand/Größe vertretbar ist.
 
 ## Erledigt
+
+- [x] 2026-11-27 T13 Free Tool 2 unter `/tools/bild-in-webp-umwandeln/`: PNG/JPG/WebP/AVIF/GIF/BMP in WebP, komplett im Browser, Qualität 50 bis 100 (Standard 82), optional max. Kantenlänge 2560/1920/1280, Vorher/Nachher-Größe pro Bild und gesamt, ehrlicher Hinweis wenn WebP größer wird, ZIP für alle, erkannter KI-Hinweis wird als IPTC in die WebP übernommen. Klare Meldung, wenn der Browser kein WebP schreibt. Verlinkt auf Startseite und im Footer, zählt `webp_export`. 5 Tests, Playwright-Durchlauf.
 
 - [x] 2026-11-27 T19 Anonyme Statistik: `POST /api/hit` und `/api/event` per `sendBeacon` (Pfad, Referrer-Domain, `label_export` mit Bildanzahl, `contact_click`, `webp_export` vorbereitet), strenge Prüfung, Bot-Filter, Rate-Limit, keine IP/kein User-Agent gespeichert. Tageszähler in D1 (Tabelle legt der Worker selbst an), `/stats` mit Basic Auth (`STATS_PASSWORD`), `noindex`, Hinweis "keine eindeutigen Besucher". Auto-Provisioning bewusst nicht genutzt: Builds-Token hat kein D1-Recht, Deploy würde brechen (→ B6). Datenschutz-Entwurf und Footer ("ohne Tracking von Personen") angepasst. 17 Tests, Durchlauf in workerd mit lokaler D1.
 
