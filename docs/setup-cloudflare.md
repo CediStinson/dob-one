@@ -32,15 +32,33 @@ Kein Build-Command im Dashboard nötig. `wrangler.jsonc` enthält `build.command
 
 ## B6: Statistik einschalten (T19, ca. 5 Min., kostenlos)
 
-Der Code für die anonyme Statistik ist live, zählt aber erst, wenn eine D1-Datenbank angebunden ist. Automatisch anlegen beim Deploy geht nicht: der Build-Token von Workers Builds hat standardmäßig kein D1-Recht, ein Versuch würde den Deploy brechen.
+Der Code für die anonyme Statistik ist live, zählt aber erst, wenn eine D1-Datenbank angebunden ist. Automatisch anlegen beim Deploy geht nicht: der Build-Token von Workers Builds hat standardmäßig kein D1-Recht, ein Versuch würde den Deploy brechen. Solange etwas fehlt, läuft die Website normal weiter, die Zähler verwerfen still und `/stats` zeigt, was fehlt.
 
-1. dash.cloudflare.com > Storage & Databases > D1 SQL Database > "Create Database".
-2. Name: `dob-one-stats`, Region: Automatisch (oder Western Europe). "Create". Free Plan, keine Kosten (5 GB, 100.000 Schreibvorgänge pro Tag).
-3. Die angezeigte **Database ID** (UUID) kopieren und mir in den Chat oder als Zeile in `BACKLOG.md` bei B6 schreiben. Die ID ist kein Geheimnis.
-4. Passwort für `/stats` setzen: Workers & Pages > dob-one > Settings > Variables and Secrets > "Add" > Typ **Secret**, Name `STATS_PASSWORD`, Wert: ein langes Passwort (z. B. aus deinem Passwortmanager). "Deploy". Secrets bleiben bei späteren Deploys erhalten.
-5. Ich trage die Datenbank in `wrangler.jsonc` ein. Die Tabelle legt der Worker beim ersten Aufruf selbst an.
-6. Danach: `https://<domain>/stats` aufrufen, Benutzername beliebig, Passwort wie in Schritt 4.
+**Teil 1: Datenbank anlegen**
 
-Falls der Deploy danach mit einem D1-Berechtigungsfehler scheitert: My Profile > API Tokens > Token "Workers Builds" bearbeiten > Berechtigung "Account > D1 > Edit" ergänzen, Deploy erneut starten.
+1. dash.cloudflare.com öffnen, Account wählen.
+2. Links im Menü "Storage & databases" > "D1 SQL database" > Button "Create Database".
+3. Name: `dob-one-stats`. Location: "Automatic" lassen (oder "Western Europe"). "Create". Free Plan, keine Kosten.
+4. Auf der Seite der neuen Datenbank steht oben die **Database ID** (lange Zeichenkette mit Bindestrichen, z. B. `a1b2c3d4-...`). Kopieren.
+5. Die ID in `BACKLOG.md` bei B6 eintragen (oder mir schreiben). Sie ist kein Geheimnis. Den Rest (Eintrag in `wrangler.jsonc`, Tabelle) mache ich.
 
-Ohne Datenbank oder ohne Passwort antwortet `/stats` mit 503 ("noch nicht eingerichtet"), die Zähler-Endpunkte nehmen Daten an und verwerfen sie.
+**Teil 2: Passwort für /stats setzen**
+
+6. Links "Workers & Pages" > Worker `dob-one` anklicken > Reiter "Settings".
+7. Abschnitt "Variables and Secrets" > "+ Add".
+8. Type: **Secret** (wichtig: nicht "Text", sonst überschreibt der nächste Deploy den Wert). Variable name: `STATS_PASSWORD`. Value: ein langes, zufälliges Passwort aus deinem Passwortmanager.
+9. "Deploy" klicken. Das Secret bleibt bei allen späteren Deploys aus GitHub erhalten.
+
+**Teil 3: Öffnen**
+
+10. Sobald ich die Datenbank eingetragen habe (nächster Lauf nach deinem Eintrag): `https://dob-one.<dein-subdomain>.workers.dev/stats` aufrufen (später `https://kenntlich.eu/stats`).
+11. Der Browser fragt nach Benutzername und Passwort: Benutzername beliebig (z. B. `benjamin`), Passwort aus Schritt 8.
+
+Was `/stats` zeigt, solange etwas fehlt:
+
+- Kein Passwort gesetzt: Hinweisseite "Statistik noch nicht eingerichtet" mit Stand von Passwort und Datenbank. Keine Zahlen.
+- Passwort gesetzt, Datenbank fehlt: nach der Anmeldung Hinweis "Datenbank: fehlt".
+- Datenbank zeitweise nicht erreichbar: Hinweis "Datenbank nicht erreichbar", kein Fehler 500.
+- Nach 10 falschen Passwörtern in 10 Minuten: kurze Sperre.
+
+Falls der Deploy nach dem Eintragen der Datenbank mit einem D1-Berechtigungsfehler scheitert (die Live-Seite bleibt dann auf dem alten Stand): My Profile > API Tokens > Token für Workers Builds bearbeiten > Berechtigung "Account > D1 > Edit" ergänzen > speichern, dann unter Workers & Pages > dob-one > Deployments den letzten Build neu starten.

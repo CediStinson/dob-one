@@ -7,7 +7,7 @@ import { crawl } from "./scan/crawl.ts";
 import { workersParser, type HtmlParser } from "./scan/extract.ts";
 import { checkBasicAuth } from "./stats/auth.ts";
 import { MAX_BODY, dayOf, isBot, parseEvent, parseHit, type CountRow } from "./stats/input.ts";
-import { buildReport, firstDay, renderReport } from "./stats/report.ts";
+import { buildReport, firstDay, renderNotice, renderReport } from "./stats/report.ts";
 import { D1Store, type D1Like, type StatsStore } from "./stats/store.ts";
 
 /** Minimales Interface, damit der Code auch ausserhalb von Cloudflare (Node) läuft. */
@@ -100,9 +100,18 @@ export function createApp(overrides: Partial<AppDeps> = {}) {
   ): Promise<Response> => {
     const req = c.req.raw;
     const store = deps.stats(c.env);
-    const len = Number(req.headers.get("content-length") ?? "0");
-    if (!store || len > MAX_BODY || isBot(req.headers.get("user-agent"))) return c.body(null, 204);
-    const rows = parse((await req.text()).slice(0, MAX_BODY + 1));
+    // Ohne Längenangabe (Streaming) lesen wir gar nicht erst: sendBeacon schickt sie immer mit.
+    const len = Number(req.headers.get("content-length") ?? "NaN");
+    if (!store || !(len > 0 && len <= MAX_BODY) || isBot(req.headers.get("user-agent"))) {
+      return c.body(null, 204);
+    }
+    let body: string;
+    try {
+      body = await req.text();
+    } catch {
+      return c.body(null, 204);
+    }
+    const rows = parse(body.slice(0, MAX_BODY + 1));
     if (!rows || !deps.hitLimiter.check(clientIp(req)).ok) return c.body(null, 204);
     const job = store.add(dayOf(deps.now()), rows).catch((e: unknown) => {
       console.error("stats", e);
@@ -128,9 +137,15 @@ export function createApp(overrides: Partial<AppDeps> = {}) {
     );
     const password = c.env?.STATS_PASSWORD ?? "";
     const store = deps.stats(c.env);
-    if (!password || !store) {
-      return c.text(
-        "Statistik ist noch nicht eingerichtet (STATS_PASSWORD oder Datenbank fehlt).",
+    if (!password) {
+      // Ohne Passwort ist /stats gesperrt. Der Hinweis verrät keine Zahlen, nur den Einrichtungsstand.
+      return c.html(
+        renderNotice("Statistik noch nicht eingerichtet", [
+          "Passwort: fehlt. Bitte im Cloudflare-Dashboard das Secret STATS_PASSWORD setzen.",
+          store
+            ? "Datenbank: verbunden."
+            : "Datenbank: fehlt. Bitte D1-Datenbank anlegen und als Binding DB eintragen.",
+        ]),
         503,
       );
     }
@@ -142,9 +157,29 @@ export function createApp(overrides: Partial<AppDeps> = {}) {
       c.header("www-authenticate", 'Basic realm="kenntlich Statistik", charset="UTF-8"');
       return c.text("Anmeldung erforderlich.", 401);
     }
+    if (!store) {
+      return c.html(
+        renderNotice("Statistik noch nicht eingerichtet", [
+          "Passwort: gesetzt.",
+          "Datenbank: fehlt. Bitte D1-Datenbank anlegen und als Binding DB eintragen. Bis dahin wird nichts gezählt.",
+        ]),
+        503,
+      );
+    }
     const now = deps.now();
-    const rows = await store.since(firstDay(now));
-    return c.html(renderReport(buildReport(rows, now)));
+    try {
+      const rows = await store.since(firstDay(now));
+      return c.html(renderReport(buildReport(rows, now)));
+    } catch (e) {
+      console.error("stats", e);
+      return c.html(
+        renderNotice("Datenbank nicht erreichbar", [
+          "Die Statistik konnte gerade nicht gelesen werden. Bitte später erneut versuchen.",
+          "Bleibt der Fehler, im Cloudflare-Dashboard prüfen, ob die D1-Datenbank existiert und als Binding DB eingetragen ist.",
+        ]),
+        503,
+      );
+    }
   };
   app.get("/stats", statsPage);
   app.get("/stats/", statsPage);

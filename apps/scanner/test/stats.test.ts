@@ -4,13 +4,13 @@ import { RateLimiter } from "../src/net/rate-limit.ts";
 import { checkBasicAuth } from "../src/stats/auth.ts";
 import { cleanPath, cleanRef, dayOf, isBot, parseEvent, parseHit } from "../src/stats/input.ts";
 import { buildReport, esc, renderReport } from "../src/stats/report.ts";
-import { MemoryStore } from "../src/stats/store.ts";
+import { D1Store, MemoryStore, type D1Like, type StatsStore } from "../src/stats/store.ts";
 
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36";
 const NOW = Date.UTC(2026, 10, 27, 12);
 
-function setup(opts: { store?: MemoryStore | null; limit?: number } = {}) {
+function setup(opts: { store?: StatsStore | null; limit?: number } = {}) {
   const store = opts.store === undefined ? new MemoryStore() : opts.store;
   const app = createApp({
     stats: () => store,
@@ -21,12 +21,23 @@ function setup(opts: { store?: MemoryStore | null; limit?: number } = {}) {
   return { app, store };
 }
 
-const post = (path: string, body: string, ua = UA) =>
+const post = (path: string, body: string, ua = UA, withLength = true) =>
   new Request(`https://kenntlich.eu${path}`, {
     method: "POST",
     body,
-    headers: { "user-agent": ua, "content-type": "text/plain", "cf-connecting-ip": "1.2.3.4" },
+    headers: {
+      "user-agent": ua,
+      "content-type": "text/plain",
+      "cf-connecting-ip": "1.2.3.4",
+      ...(withLength ? { "content-length": String(new TextEncoder().encode(body).length) } : {}),
+    },
   });
+
+/** Speicher, der immer fehlschlägt (z. B. D1 nicht erreichbar). */
+const brokenStore: StatsStore = {
+  add: () => Promise.reject(new Error("D1 down")),
+  since: () => Promise.reject(new Error("D1 down")),
+};
 
 const basic = (pw: string) => `Basic ${btoa(`x:${pw}`)}`;
 
@@ -120,6 +131,18 @@ describe("POST /api/hit und /api/event", () => {
     expect(keys).toEqual(["/a/"]);
   });
 
+  it("zählt still nicht, wenn D1 ausfällt", async () => {
+    const { app } = setup({ store: brokenStore });
+    expect((await app.request(post("/api/hit", '{"p":"/"}'))).status).toBe(204);
+    expect((await app.request(post("/api/event", '{"e":"contact_click"}'))).status).toBe(204);
+  });
+
+  it("liest keine Bodies ohne Längenangabe", async () => {
+    const { app, store } = setup();
+    expect((await app.request(post("/api/hit", '{"p":"/"}', UA, false))).status).toBe(204);
+    expect(await store!.since("2026-01-01")).toEqual([]);
+  });
+
   it("antwortet 204 auch ohne Datenbank", async () => {
     const { app } = setup({ store: null });
     expect((await app.request(post("/api/hit", '{"p":"/"}'))).status).toBe(204);
@@ -134,10 +157,44 @@ describe("POST /api/hit und /api/event", () => {
 describe("/stats", () => {
   const env = { STATS_PASSWORD: "geheim-ü" };
 
-  it("ist ohne Passwort-Secret gesperrt", async () => {
+  it("ist ohne Passwort-Secret gesperrt und zeigt einen klaren Hinweis ohne Zahlen", async () => {
     const { app } = setup();
+    await app.request(post("/api/hit", '{"p":"/geheim/"}'));
     const res = await app.request("/stats", {}, {});
     expect(res.status).toBe(503);
+    const html = await res.text();
+    expect(html).toContain("STATS_PASSWORD");
+    expect(html).toContain("Datenbank: verbunden");
+    expect(html).not.toContain("/geheim/");
+    expect(res.headers.get("x-robots-tag")).toContain("noindex");
+  });
+
+  it("meldet fehlende Datenbank erst nach Anmeldung", async () => {
+    const { app } = setup({ store: null });
+    const noAuth = await app.request("/stats", {}, { STATS_PASSWORD: "pw" });
+    expect(noAuth.status).toBe(401);
+    const res = await app.request(
+      "/stats",
+      { headers: { authorization: basic("pw") } },
+      {
+        STATS_PASSWORD: "pw",
+      },
+    );
+    expect(res.status).toBe(503);
+    expect(await res.text()).toContain("Datenbank: fehlt");
+  });
+
+  it("zeigt einen Hinweis statt Fehler 500, wenn D1 nicht erreichbar ist", async () => {
+    const { app } = setup({ store: brokenStore });
+    const res = await app.request(
+      "/stats",
+      { headers: { authorization: basic("pw") } },
+      {
+        STATS_PASSWORD: "pw",
+      },
+    );
+    expect(res.status).toBe(503);
+    expect(await res.text()).toContain("Datenbank nicht erreichbar");
   });
 
   it("verlangt Basic Auth und begrenzt Fehlversuche", async () => {
@@ -218,5 +275,51 @@ describe("checkBasicAuth", () => {
     expect(await checkBasicAuth(`Basic ${btoa("ohne-doppelpunkt")}`, "pw")).toBe(false);
     expect(await checkBasicAuth(basic("pw"), "")).toBe(false);
     expect(await checkBasicAuth(basic("pw:mit:doppelpunkt"), "pw:mit:doppelpunkt")).toBe(true);
+  });
+});
+
+describe("D1Store", () => {
+  function fakeD1(failExec = 0) {
+    const log: { sql: string; args?: unknown[] }[] = [];
+    let fails = failExec;
+    const db: D1Like = {
+      prepare: (sql) => ({
+        bind: (...args: unknown[]) => {
+          log.push({ sql, args });
+          return { all: async () => ({ results: [] }) };
+        },
+        all: async <T>() => ({ results: [] as T[] }),
+      }),
+      batch: async () => [],
+      exec: async (sql) => {
+        log.push({ sql });
+        if (fails-- > 0) throw new Error("exec failed");
+        return {};
+      },
+    };
+    return { db, log };
+  }
+
+  it("legt die Tabelle einmal an und schreibt Upserts ohne personenbezogene Felder", async () => {
+    const { db, log } = fakeD1();
+    const s = new D1Store(db);
+    await s.add("2026-11-27", [{ kind: "page", key: "/", n: 1 }]);
+    await s.add("2026-11-27", [{ kind: "event", key: "contact_click", n: 1 }]);
+    await s.since("2026-11-01");
+    const creates = log.filter((l) => l.sql.startsWith("CREATE TABLE"));
+    expect(creates).toHaveLength(1);
+    expect(creates[0]!.sql).not.toMatch(/ip|agent|user/i);
+    expect(log.filter((l) => l.sql.startsWith("INSERT")).map((l) => l.args)).toEqual([
+      ["2026-11-27", "page", "/", 1],
+      ["2026-11-27", "event", "contact_click", 1],
+    ]);
+  });
+
+  it("versucht das Anlegen erneut, wenn es einmal fehlschlägt", async () => {
+    const { db, log } = fakeD1(1);
+    const s = new D1Store(db);
+    await expect(s.add("2026-11-27", [{ kind: "page", key: "/", n: 1 }])).rejects.toThrow();
+    await s.add("2026-11-27", [{ kind: "page", key: "/", n: 1 }]);
+    expect(log.filter((l) => l.sql.startsWith("CREATE TABLE"))).toHaveLength(2);
   });
 });

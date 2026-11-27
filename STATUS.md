@@ -18,6 +18,7 @@ Referenz: bestehender Generator auf dobsonstudio.com/ki-label-generator (Browser
 
 ## Aktueller Stand
 
+- 2026-11-27: T19 nachgeschärft: ausfallsicher ohne DB/Passwort (Hinweisseite statt Fehler), Ende-zu-Ende mit echtem Browser geprüft, Anleitung B6 Schritt für Schritt. 195 Tests. Wartet auf B6 (Benjamin). Nächstes Ticket: T20.
 - 2026-11-27: T18 Konzept Klarbild-Plugin (`docs/05-plugin.md`), Tickets T20 bis T24 angelegt. Nächstes Ticket: T20 (Plugin-Grundgerüst).
 - 2026-11-27: T13 WebP-Tool live (`/tools/bild-in-webp-umwandeln/`), übernimmt KI-Hinweise als IPTC. 189 Tests. Nächstes Ticket: T18 (Konzept Klarbild-Plugin).
 - 2026-11-27: T19 anonyme Statistik gebaut (`/api/hit`, `/api/event`, `/stats` mit Passwort), in workerd mit lokaler D1 geprüft. Zählt erst nach B6 (D1 anlegen + `STATS_PASSWORD`, Benjamin). 184 Tests.
@@ -25,6 +26,5 @@ Referenz: bestehender Generator auf dobsonstudio.com/ki-label-generator (Browser
 - 2026-11-26: T4e Sicherheitscheck Label-Generator + Website-Check bestanden (nur `textContent`, nur http(s)-Links, XSS-Test mit präpariertem Bild). 160 Tests. Nächstes Ticket: T3c.
 - 2026-11-26: T9 Chatbot-Erkennung im Website-Check (Skripte, iframes und Inline-Snippets gegen 36 Anbieter-Signaturen). Der Check ist damit komplett: Bilder, Chatbots, Empfehlungen, Label-Snippet. 155 Tests.
 - 2026-11-26: T8 KI-Website-Check live (`/tools/ki-website-check/`), verlinkt in Navigation und Startseite. Bis Accounts (T10) existieren, zeigt der freie Check den ganzen Scan (bis 25 Seiten). 139 Tests. Nächstes Ticket: T4d (Label-Generator nach Spec).
-- 2026-11-26: T6 + T7 Scanner-API im Worker: `/api/scan` (Crawler, robots.txt, Limits) und `/api/img` (256 KB, SSRF-Schutz). Live mit dobsonstudio.com geprüft (7 Seiten, 8 Subrequests), Bildvarianten werden zusammengefasst. 117 Tests. Nächstes Ticket: T8 (UI Website-Check).
-- 2026-11-26: T5 Cloudflare-Limits und T2b Markenrecherche dokumentiert (B5 offen). T2c echte C2PA-Dateien getestet, T4b/T4c Label-Generator mit IPTC-Einbettung und ZIP.
+- 2026-11-26: T5 Cloudflare-Limits, T2b Markenrecherche (B5 offen), T2c C2PA-Tests, T4b/T4c IPTC-Einbettung + ZIP, T6/T7 Scanner-API (dobsonstudio.com: 7 Seiten, 8 Subrequests).
 - 2026-11-26: Start bis T9/T4e: Repo, Spec, Monorepo mit Worker + Auto-Deploy, `packages/detect` (C2PA, IPTC, Generator-Tags), Landingpage hell, Label-Generator v1 (IPTC-Einbettung, ZIP), Scanner-API + Website-Check mit Chatbot-Erkennung (inzwischen geparkt), Markenrecherche (B5 offen), Sicherheitscheck.

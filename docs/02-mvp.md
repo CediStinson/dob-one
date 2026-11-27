@@ -119,9 +119,11 @@ Beide Routen liegen unter `/api/*`, weil nur dort der Worker vor den statischen 
 ## Statistik (T19, Stand 27.11.2026)
 
 - Browser sendet per `sendBeacon` an `POST /api/hit` (`{p: Pfad, r: Referrer-Hostname}`) und `POST /api/event` (`{e: label_export|webp_export|contact_click, n?: Bilder}`). Antwort immer 204.
-- Server prüft streng (Pfad-Zeichen, Referrer nur Domain, eigene Domain fällt raus, Event-Whitelist, Bilder 1 bis 20, Body max. 1 KB), filtert Bots per User-Agent, Rate-Limit 120 / 10 Min. pro IP (nur im Speicher). Gespeichert: Tabelle `daily(day, kind, key, n)`, Tag in deutscher Zeit. Keine IP, kein User-Agent.
+- Server prüft streng (Pfad-Zeichen, Referrer nur Domain, eigene Domain fällt raus, Event-Whitelist, Bilder 1 bis 20, Body max. 1 KB, ohne `content-length` wird nicht gelesen), filtert Bots per User-Agent, Rate-Limit 120 / 10 Min. pro IP (nur im Speicher). Gespeichert: Tabelle `daily(day, kind, key, n)`, Tag in deutscher Zeit. Keine IP, kein User-Agent.
 - `/stats`: Basic Auth mit Secret `STATS_PASSWORD` (Vergleich über SHA-256, 10 Fehlversuche / 10 Min.), `noindex`, `no-store`, serverseitig gerendert, alle Werte escaped. Zeigt 30 Tage: Aufrufe pro Tag, Seiten, Exporte, gelabelte Bilder, Kontakt-Klicks, Top-10-Referrer.
-- Tabelle legt der Worker selbst an (`CREATE TABLE IF NOT EXISTS`, einmal pro Isolate). Ohne Binding `DB` wird nichts gezählt (B6).
+- Tabelle legt der Worker selbst an (`CREATE TABLE IF NOT EXISTS`, einmal pro Isolate, bei Fehler neuer Versuch). Ohne Binding `DB` wird nichts gezählt (B6).
+- Ausfallsicher: fehlt `DB` oder schlägt D1 fehl, antworten die Zähler weiter 204 (Fehler nur im Worker-Log). `/stats` zeigt dann eine Hinweisseite (503) statt Fehler 500: ohne Passwort öffentlich nur den Einrichtungsstand, ohne Datenbank erst nach Anmeldung.
+- Headless-Browser (auch Playwright) gelten als Bot und werden nicht gezählt. Ende-zu-Ende-Test daher mit normalem User-Agent.
 
 ## Nicht im MVP
 

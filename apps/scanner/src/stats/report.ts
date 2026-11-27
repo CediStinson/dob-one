@@ -88,6 +88,20 @@ function table(head: [string, string], rows: { key: string; n: number }[], empty
   return `<table><thead><tr><th>${esc(head[0])}</th><th class="num">${esc(head[1])}</th></tr></thead><tbody>${body}</tbody></table>`;
 }
 
+const STYLE = `<style>
+body{margin:0;background:#f7f9f9;color:#1f2d3a;font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:860px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:24px;margin:0 0 4px}h2{font-size:17px;margin:32px 0 8px}
+.muted{color:#5b6b78}.note{background:#fff;border:1px solid #dfe6e8;border-radius:8px;padding:10px 14px;font-size:14px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:20px}
+.tile{background:#fff;border:1px solid #dfe6e8;border-radius:8px;padding:14px}
+.tile strong{display:block;font-size:24px}.tile span{color:#5b6b78;font-size:13px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #dfe6e8;border-radius:8px;font-size:14px}
+th,td{text-align:left;padding:6px 10px;border-bottom:1px solid #eef2f3}th{font-weight:600}
+.num{text-align:right;font-variant-numeric:tabular-nums;width:90px}
+td.bar{width:55%}td.bar span{display:block;height:10px;background:#0f8b8d;border-radius:3px;min-width:1px}
+</style>`;
+
 /** Serverseitig gerenderte Übersicht. Alle Werte laufen durch esc(). */
 export function renderReport(r: StatsReport): string {
   const max = Math.max(1, ...r.days.map((d) => d.views));
@@ -113,19 +127,7 @@ export function renderReport(r: StatsReport): string {
   return `<!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>Statistik. kenntlich</title>
-<style>
-body{margin:0;background:#f7f9f9;color:#1f2d3a;font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-main{max-width:860px;margin:0 auto;padding:32px 16px 64px}
-h1{font-size:24px;margin:0 0 4px}h2{font-size:17px;margin:32px 0 8px}
-.muted{color:#5b6b78}.note{background:#fff;border:1px solid #dfe6e8;border-radius:8px;padding:10px 14px;font-size:14px}
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:20px}
-.tile{background:#fff;border:1px solid #dfe6e8;border-radius:8px;padding:14px}
-.tile strong{display:block;font-size:24px}.tile span{color:#5b6b78;font-size:13px}
-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #dfe6e8;border-radius:8px;font-size:14px}
-th,td{text-align:left;padding:6px 10px;border-bottom:1px solid #eef2f3}th{font-weight:600}
-.num{text-align:right;font-variant-numeric:tabular-nums;width:90px}
-td.bar{width:55%}td.bar span{display:block;height:10px;background:#0f8b8d;border-radius:3px;min-width:1px}
-</style></head><body><main>
+${STYLE}</head><body><main>
 <h1>Statistik</h1>
 <p class="muted">${de(r.from)} bis ${de(r.to)} (letzte 30 Tage, deutsche Zeit)</p>
 <p class="note">Gezählt werden Aufrufe und Aktionen, keine eindeutigen Besucher. Das ist Absicht: keine Cookies, keine Speicherung im Browser, keine IP-Adressen. Bots werden grob herausgefiltert.</p>
@@ -136,5 +138,18 @@ td.bar{width:55%}td.bar span{display:block;height:10px;background:#0f8b8d;border
 ${table(["Seite", "Aufrufe"], r.pages, "Noch keine Aufrufe.")}
 <h2>Herkunft (Top 10)</h2>
 ${table(["Domain", "Aufrufe"], r.refs, "Noch keine Referrer. Direkte Aufrufe werden nicht als Herkunft gezählt.")}
+</main></body></html>`;
+}
+
+/** Hinweisseite, z. B. wenn Datenbank oder Passwort noch fehlen. Alle Texte laufen durch esc(). */
+export function renderNotice(title: string, lines: string[]): string {
+  const items = lines.map((l) => `<li>${esc(l)}</li>`).join("");
+  return `<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Statistik. kenntlich</title>
+${STYLE}</head><body><main>
+<h1>${esc(title)}</h1>
+<ul class="note">${items}</ul>
+<p class="muted">Anleitung: docs/setup-cloudflare.md, Abschnitt B6.</p>
 </main></body></html>`;
 }
