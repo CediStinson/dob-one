@@ -3,45 +3,30 @@ import Base from "../layouts/Base.astro";
 
 const problems = [
   {
-    title: "KI-Bilder sind überall",
-    text: "Stockfotos, Agenturmotive, Social-Media-Grafiken. Oft weiß niemand mehr, welches Bild aus einem Generator stammt.",
+    title: "Sichtbar gekennzeichnet",
+    text: "Ein klares KI-Label direkt im Bild. Wer das Bild sieht, erkennt sofort, dass KI beteiligt war.",
   },
   {
-    title: "Chatbots brauchen einen Hinweis",
-    text: "Wer mit einer KI schreibt, soll das erkennen können. Viele Widgets laufen ohne diesen Hinweis.",
+    title: "Maschinenlesbar markiert",
+    text: "Beim Export schreibt der Generator auf Wunsch den IPTC-Hinweis \u201eKI-generiert\u201c in die Datei. Plattformen und Prüfwerkzeuge können ihn auslesen.",
   },
   {
-    title: "Ein Check reicht nicht",
-    text: "Jede neue Seite und jedes neue Bild kann etwas ändern. Ohne laufende Prüfung fällt das niemandem auf.",
+    title: "Ohne Upload",
+    text: "Alles läuft in Ihrem Browser. Ihre Bilder werden nicht hochgeladen und nicht gespeichert.",
   },
 ];
 
 const steps = [
-  { n: "1", title: "URL eingeben", text: "Ihre Website, ohne Installation und ohne Zugangsdaten." },
+  { n: "1", title: "Bilder auswählen", text: "Bis zu 20 Bilder auf einmal, JPG, PNG oder WebP." },
   {
     n: "2",
-    title: "kenntlich prüft",
-    text: "Bild-Metadaten (C2PA, IPTC, Generator-Angaben) und bekannte Chatbot-Skripte auf bis zu 25 Seiten.",
+    title: "Label wählen",
+    text: "Vorlage, Position, Größe und Farbe einstellen. Die Vorschau zeigt sofort das Ergebnis.",
   },
   {
     n: "3",
-    title: "Sie wissen, was zu tun ist",
-    text: "Eine klare Liste mit Fundstellen, Empfehlungen und einem fertigen Label-Snippet zum Einbauen.",
-  },
-];
-
-const tools = [
-  {
-    title: "KI-Label-Generator",
-    href: "/tools/ki-label-generator/",
-    linkText: "Jetzt Bilder labeln",
-    text: "Bilder im Browser mit einem KI-Hinweis versehen. Vorlagen, Position, Deckkraft, mehrere Bilder auf einmal. Ihre Bilder verlassen das Gerät nicht.",
-  },
-  {
-    title: "KI-Website-Check",
-    href: "/tools/ki-website-check/",
-    linkText: "Website jetzt prüfen",
-    text: "Ihre Website kostenlos prüfen: Bilder mit KI-Hinweisen in den Metadaten, Empfehlungen und fertiges Label-Snippet. Chatbot-Prüfung folgt. Kein Login nötig.",
+    title: "Herunterladen",
+    text: "Einzeln oder alle als ZIP, mit sichtbarem Label und KI-Hinweis in den Metadaten.",
   },
 ];
 
@@ -49,28 +34,29 @@ const trust = [
   "Entwickelt in Deutschland",
   "Ohne Cookies, ohne Tracking",
   "Ihre Bilder verlassen den Browser nicht",
-  "Kein Login für den Schnell-Check",
+  "Kostenlos, ohne Login",
 ];
 
-const stand = "26.11.2026";
+const stand = "27.11.2026";
 const eurLex = "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R1689";
+const contact = "mailto:info@dobsonstudio.com?subject=kenntlich";
 ---
 
 <Base
-  title="kenntlich. KI-Inhalte richtig kennzeichnen"
-  description="kenntlich findet KI-Bilder und Chatbots auf Ihrer Website und zeigt, wo nach Art. 50 AI Act ein Hinweis fehlt."
+  title="kenntlich. KI-Bilder richtig kennzeichnen"
+  description="KI-Bilder in 10 Sekunden kennzeichnen: sichtbares Label und maschinenlesbarer KI-Hinweis, kostenlos und direkt im Browser."
 >
   <main>
     <section class="wrap hero">
       <p class="eyebrow">Art. 50 AI Act</p>
-      <h1>KI-Bilder und Chatbots auf Ihrer Website. <span>Richtig gekennzeichnet.</span></h1>
+      <h1>KI-Bilder in 10 Sekunden <span>richtig kennzeichnen.</span></h1>
       <p class="lead">
-        Seit dem 2. August 2026 gelten die Transparenzpflichten aus Art.&nbsp;50 AI&nbsp;Act. kenntlich findet
-        KI-Inhalte auf Ihrer Website und zeigt Ihnen, wo ein Hinweis fehlt.
+        Sichtbares Label im Bild und maschinenlesbarer KI-Hinweis in der Datei. Kostenlos, ohne Login,
+        direkt in Ihrem Browser.
       </p>
       <div class="cta">
-        <a href="#warteliste" class="btn">Auf die Warteliste</a>
-        <a href="#tools" class="btn ghost">Free Tools ansehen</a>
+        <a href="/tools/ki-label-generator/" class="btn">Jetzt Bilder kennzeichnen</a>
+        <a href="#so-gehts" class="btn ghost">So funktioniert es</a>
       </div>
       <ul class="trust" aria-label="Was Sie erwarten können">
         {
@@ -87,7 +73,7 @@ const eurLex = "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R
     </section>
 
     <section class="wrap block">
-      <h2>Das Problem</h2>
+      <h2>Was der Label-Generator macht</h2>
       <div class="grid three">
         {
           problems.map((p) => (
@@ -101,7 +87,7 @@ const eurLex = "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R
     </section>
 
     <section class="wrap block" id="so-gehts">
-      <h2>So funktioniert kenntlich</h2>
+      <h2>So funktioniert es</h2>
       <ol class="grid three steps">
         {
           steps.map((s) => (
@@ -113,30 +99,9 @@ const eurLex = "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R
           ))
         }
       </ol>
-      <p class="muted after">
-        Mit Pro prüft kenntlich jede Woche erneut und meldet sich, wenn neue KI-Bilder ohne Hinweis
-        auftauchen. Für Agenturen mit mehreren Domains und Report im eigenen Look.
+      <p class="after">
+        <a href="/tools/ki-label-generator/" class="btn">Zum KI-Label-Generator</a>
       </p>
-    </section>
-
-    <section class="wrap block" id="tools">
-      <h2>Free Tools</h2>
-      <div class="grid two">
-        {
-          tools.map((t) => (
-            <article class="card">
-              <span class={t.href ? "badge live" : "badge"}>{t.href ? "Kostenlos nutzbar" : "Bald verfügbar"}</span>
-              <h3>{t.title}</h3>
-              <p class="muted">{t.text}</p>
-              {t.href && (
-                <p class="tool-link">
-                  <a href={t.href}>{t.linkText}</a>
-                </p>
-              )}
-            </article>
-          ))
-        }
-      </div>
     </section>
 
     <section class="wrap block">
@@ -161,55 +126,27 @@ const eurLex = "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R
       </div>
     </section>
 
-    <section class="wrap block" id="warteliste">
-      <div class="card wait">
+    <section class="wrap block" id="kontakt">
+      <div class="card contact">
         <div>
-          <h2>Warteliste</h2>
+          <h2>Mehr als einzelne Bilder?</h2>
           <p class="muted">
-            Wir melden uns einmal, wenn kenntlich startet. Keine Weitergabe, kein Newsletter.
+            Interesse an einer Lösung für WordPress oder an einem Modus für Agenturen? Schreiben Sie
+            uns.
           </p>
         </div>
-        <form id="waitlist" novalidate>
-          <label for="email" class="sr">E-Mail-Adresse</label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            autocomplete="email"
-            placeholder="name@firma.de"
-          />
-          <button type="submit" class="btn">Eintragen</button>
-          <p class="hint" id="waitlist-msg" role="status" aria-live="polite"></p>
-        </form>
+        <a href={contact} class="btn ghost">info@dobsonstudio.com</a>
       </div>
     </section>
 
     <section class="wrap block">
       <p class="note">
-        kenntlich wertet Metadaten und bekannte Skripte aus. Die Ergebnisse sind Hinweise, kein Beweis,
-        und ersetzen keine Rechtsberatung.
+        kenntlich hilft beim Kennzeichnen und wertet Metadaten aus. Die Ergebnisse sind Hinweise, kein
+        Beweis, und ersetzen keine Rechtsberatung.
       </p>
     </section>
   </main>
 </Base>
-
-<script>
-  // Vorschau: Die Warteliste ist noch nicht angebunden (T12). Es wird nichts gesendet oder gespeichert.
-  const form = document.querySelector<HTMLFormElement>("#waitlist");
-  const msg = document.querySelector<HTMLParagraphElement>("#waitlist-msg");
-  form?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const input = form.querySelector<HTMLInputElement>("input[type=email]");
-    if (!input || !msg) return;
-    if (!input.checkValidity()) {
-      msg.textContent = "Bitte eine gültige E-Mail-Adresse eingeben.";
-      return;
-    }
-    msg.textContent = "Danke. Die Warteliste startet in Kürze. Bis dahin wird nichts gespeichert.";
-    form.reset();
-  });
-</script>
 
 <style>
   .hero {
@@ -335,56 +272,30 @@ const eurLex = "https://eur-lex.europa.eu/legal-content/DE/TXT/?uri=CELEX:32024R
     margin-top: 20px;
     max-width: 680px;
   }
-  .wait {
+  .contact {
     background: var(--bg-soft);
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 1fr;
     gap: 24px;
     align-items: center;
   }
-  .wait h2 {
+  .contact h2 {
     margin-bottom: 8px;
   }
-  form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  input {
-    flex: 1 1 220px;
-    background: var(--bg);
-    border: 1px solid #c9d2d6;
-    border-radius: 10px;
-    padding: 12px 14px;
-    color: var(--fg);
-    font: inherit;
-  }
-  input:focus {
-    outline: 2px solid var(--accent);
-    outline-offset: 1px;
-  }
-  .hint {
-    flex-basis: 100%;
-    margin: 0;
-    min-height: 1.6em;
-    color: var(--muted);
-    font-size: 14px;
-  }
-  .sr {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
+  .contact .btn {
+    justify-self: end;
   }
   @media (max-width: 800px) {
     .grid.three,
     .grid.two,
-    .wait {
+    .contact {
       grid-template-columns: 1fr;
     }
     .hero {
       padding-top: 40px;
+    }
+    .contact .btn {
+      justify-self: start;
     }
   }
 </style>

@@ -5,8 +5,13 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description: string;
+  /** Seite dauerhaft aus Suchmaschinen halten (z. B. geparkter Website-Check). */
+  noindex?: boolean;
 }
-const { title, description } = Astro.props;
+// Vor dem Start (Domain, Freigabe B4) bleibt die ganze Seite noindex.
+const PRELAUNCH = true;
+const { title, description, noindex = false } = Astro.props;
+const robots = PRELAUNCH || noindex ? "noindex" : undefined;
 ---
 
 <!doctype html>
@@ -16,7 +21,7 @@ const { title, description } = Astro.props;
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content="noindex" />
+    {robots && <meta name="robots" content={robots} />}
     <meta name="theme-color" content="#ffffff" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
@@ -26,9 +31,8 @@ const { title, description } = Astro.props;
         <a href="/" class="logo">kenntlich<span>.</span></a>
         <nav>
           <a href="/#so-gehts">So funktioniert es</a>
-          <a href="/tools/ki-website-check/">Website-Check</a>
-          <a href="/tools/ki-label-generator/">Label-Generator</a>
-          <a href="/#warteliste" class="btn small">Warteliste</a>
+          <a href="/#kontakt">Kontakt</a>
+          <a href="/tools/ki-label-generator/" class="btn small">Label-Generator</a>
         </nav>
       </header>
     </div>
