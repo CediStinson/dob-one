@@ -105,6 +105,12 @@ Beide Routen liegen unter `/api/*`, weil nur dort der Worker vor den statischen 
 - **Verboten** (irreführend, UWG-Risiko): erfundene Siegel/Zertifikate ("DSGVO-zertifiziert", "TÜV", "rechtssicher garantiert"), erfundene Kundenlogos, Bewertungen oder Testimonials, Nutzerzahlen, die nicht stimmen.
 - Sprache: Deutsch, Sie-Form (B2B, Vertrauen). Keine Gedankenstriche.
 
+## Label-Generator (T4d, Stand 27.11.2026)
+
+- Umsetzung von `docs/04-label-spec.md` in `apps/web/src/lib/label/layout.ts` (reine Geometrie, getestet) und `render.ts` (Canvas).
+- Standard: KI-Label "KI GENERIERT", Schwarz, 8 %, unten rechts. GEN setzt IPTC "KI-generiert", MOD "Bearbeitung/Montage mit KI".
+- Export: "Wie Original" (JPEG/WebP bleiben, sonst PNG) oder fest PNG/JPG/WebP. Liefert der Browser kein WebP, wird die Datei als PNG benannt und eingebettet.
+
 ## Nicht im MVP
 
 Visuelle KI-Erkennung, Video/Audio, Stripe, Mehrsprachigkeit, WP-Plugin-Anbindung (kommt als Erstes danach: Klarbild-Plugin meldet an die SaaS).

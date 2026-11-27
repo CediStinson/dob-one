@@ -1,6 +1,13 @@
 ---
 import Base from "../../../layouts/Base.astro";
-import { TEMPLATES } from "../../../lib/label/layout.ts";
+import {
+  BADGE_SIZE,
+  DEFAULT_BADGE,
+  DEFAULT_TEXT,
+  MAX_TEXT,
+  TEXT_SIZE,
+  TEXT_TEMPLATE,
+} from "../../../lib/label/layout.ts";
 
 const positions = [
   ["top-left", "Oben links"],
@@ -8,10 +15,22 @@ const positions = [
   ["bottom-left", "Unten links"],
   ["bottom-right", "Unten rechts"],
 ] as const;
-const sizes = [
-  ["s", "Klein"],
-  ["m", "Mittel"],
-  ["l", "Groß"],
+const variants = [
+  ["short", "KI"],
+  ["gen", "Generiert"],
+  ["mod", "Modifiziert"],
+] as const;
+const colors = [
+  ["black", "Schwarz"],
+  ["white", "Weiß"],
+  ["black50", "Schwarz 50 %"],
+  ["white50", "Weiß 50 %"],
+] as const;
+const formats = [
+  ["original", "Wie Original"],
+  ["png", "PNG"],
+  ["jpg", "JPG"],
+  ["webp", "WebP"],
 ] as const;
 ---
 
@@ -23,7 +42,7 @@ const sizes = [
     <p class="eyebrow">Free Tool</p>
     <h1>KI-Label-Generator</h1>
     <p class="lead">
-      Versehen Sie Bilder mit einem sichtbaren KI-Hinweis. Zusätzlich sehen Sie, ob die Metadaten
+      Versehen Sie Bilder mit einem sichtbaren KI-Label, angelehnt an die EU-Icons, oder mit eigenem Text. Zusätzlich sehen Sie, ob die Metadaten
       einer Datei auf KI hindeuten.
     </p>
     <ul class="facts">
@@ -35,32 +54,110 @@ const sizes = [
     <div class="layout">
       <form id="label-options" class="panel" aria-label="Label-Einstellungen">
         <fieldset>
-          <legend>Text</legend>
-          {
-            TEMPLATES.map((t, i) => (
-              <label class="opt">
-                <input type="radio" name="template" value={t} checked={i === 0} />
-                {t}
-              </label>
-            ))
-          }
-          <label class="opt">
-            <input type="radio" name="template" value="__custom" />
-            Eigener Text
-          </label>
-          <input
-            id="custom-text"
-            type="text"
-            maxlength="60"
-            placeholder="z. B. Bild mit KI erstellt"
-            aria-label="Eigener Label-Text"
-            disabled
-          />
+          <legend>Art</legend>
+          <div class="seg two">
+            <label><input type="radio" name="mode" value="badge" checked /><span>KI-Label</span></label>
+            <label><input type="radio" name="mode" value="text" /><span>Eigener Text</span></label>
+          </div>
         </fieldset>
+
+        <div id="badge-options">
+          <fieldset>
+            <legend>Variante</legend>
+            <div class="seg">
+              {
+                variants.map(([v, l]) => (
+                  <label>
+                    <input type="radio" name="variant" value={v} checked={v === DEFAULT_BADGE.variant} />
+                    <span>{l}</span>
+                  </label>
+                ))
+              }
+            </div>
+            <p class="help">Angelehnt an die EU-Icons zur KI-Kennzeichnung. Das Label lautet immer „KI“.</p>
+          </fieldset>
+
+          <fieldset>
+            <legend>Farbe</legend>
+            <div class="seg two">
+              {
+                colors.map(([v, l]) => (
+                  <label>
+                    <input type="radio" name="color" value={v} checked={v === DEFAULT_BADGE.color} />
+                    <span>{l}</span>
+                  </label>
+                ))
+              }
+            </div>
+            <p class="help warn" id="color-hint" hidden>
+              Das Label muss klar erkennbar bleiben. Prüfen Sie in der Vorschau, ob es sich gut vom Bild abhebt.
+            </p>
+          </fieldset>
+
+          <fieldset>
+            <legend>Größe <output id="badge-size-out" for="badge-size">{DEFAULT_BADGE.sizePct} %</output></legend>
+            <input
+              id="badge-size"
+              name="badgeSize"
+              type="range"
+              min={BADGE_SIZE.min}
+              max={BADGE_SIZE.max}
+              step="1"
+              value={DEFAULT_BADGE.sizePct}
+            />
+            <p class="help">Höhe in Prozent der kürzeren Bildkante.</p>
+          </fieldset>
+        </div>
+
+        <div id="text-options" hidden>
+          <fieldset>
+            <legend>Text</legend>
+            <label class="opt">
+              <input type="radio" name="textSource" value="template" checked />
+              {TEXT_TEMPLATE}
+            </label>
+            <label class="opt">
+              <input type="radio" name="textSource" value="custom" />
+              Eigener Text
+            </label>
+            <input
+              id="custom-text"
+              type="text"
+              maxlength={MAX_TEXT}
+              placeholder="z. B. Bild mit KI erstellt"
+              aria-label="Eigener Label-Text"
+              disabled
+            />
+          </fieldset>
+
+          <fieldset>
+            <legend>Helligkeit <output id="gray-out" for="gray">Weiß</output></legend>
+            <input id="gray" name="gray" type="range" min="0" max="100" step="5" value={DEFAULT_TEXT.gray} />
+            <p class="help">Von Schwarz bis Weiß. Ein weicher Schatten in der Gegenfarbe hält den Text lesbar.</p>
+          </fieldset>
+
+          <fieldset>
+            <legend>Schriftgröße <output id="text-size-out" for="text-size">{DEFAULT_TEXT.sizePct} %</output></legend>
+            <input
+              id="text-size"
+              name="textSize"
+              type="range"
+              min={TEXT_SIZE.min}
+              max={TEXT_SIZE.max}
+              step="0.5"
+              value={DEFAULT_TEXT.sizePct}
+            />
+          </fieldset>
+
+          <fieldset>
+            <legend>Deckkraft <output id="opacity-out" for="opacity">90 %</output></legend>
+            <input id="opacity" name="opacity" type="range" min="30" max="100" step="5" value="90" />
+          </fieldset>
+        </div>
 
         <fieldset>
           <legend>Position</legend>
-          <div class="seg four">
+          <div class="seg two">
             {
               positions.map(([v, l]) => (
                 <label>
@@ -69,28 +166,6 @@ const sizes = [
                 </label>
               ))
             }
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Größe</legend>
-          <div class="seg">
-            {
-              sizes.map(([v, l]) => (
-                <label>
-                  <input type="radio" name="size" value={v} checked={v === "m"} />
-                  <span>{l}</span>
-                </label>
-              ))
-            }
-          </div>
-        </fieldset>
-
-        <fieldset>
-          <legend>Stil</legend>
-          <div class="seg">
-            <label><input type="radio" name="theme" value="light" checked /><span>Hell</span></label>
-            <label><input type="radio" name="theme" value="dark" /><span>Dunkel</span></label>
           </div>
         </fieldset>
 
@@ -112,8 +187,17 @@ const sizes = [
         </fieldset>
 
         <fieldset>
-          <legend>Deckkraft <output id="opacity-out" for="opacity">90 %</output></legend>
-          <input id="opacity" name="opacity" type="range" min="30" max="100" step="5" value="90" />
+          <legend>Dateiformat</legend>
+          <div class="seg two">
+            {
+              formats.map(([v, l]) => (
+                <label>
+                  <input type="radio" name="format" value={v} checked={v === "original"} />
+                  <span>{l}</span>
+                </label>
+              ))
+            }
+          </div>
         </fieldset>
       </form>
 
@@ -280,7 +364,7 @@ const sizes = [
     grid-template-columns: repeat(3, 1fr);
     gap: 6px;
   }
-  .seg.four {
+  .seg.two {
     grid-template-columns: 1fr 1fr;
   }
   .seg label {
@@ -314,6 +398,9 @@ const sizes = [
     margin: 6px 0 0;
     font-size: 13px;
     color: var(--faint);
+  }
+  .help.warn {
+    color: #8a5a00;
   }
   input[type="range"] {
     width: 100%;

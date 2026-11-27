@@ -1,49 +1,150 @@
 import { describe as group, expect, it } from "vitest";
 import {
   clampOpacity,
-  computeLabelBox,
-  fontSizeFor,
+  computeBadge,
+  computeText,
+  grayHex,
   labeledFileName,
   MIN_FONT_PX,
   outputType,
+  wrapLines,
+  type Measure,
 } from "../src/lib/label/layout.ts";
 import { describe } from "../src/lib/label/verdict.ts";
 
-group("fontSizeFor", () => {
-  it("skaliert mit der kurzen Bildseite", () => {
-    expect(fontSizeFor(2000, 1000, "m")).toBe(38);
-    expect(fontSizeFor(1000, 2000, "l")).toBe(52);
-  });
-  it("hat eine Mindestgröße", () => {
-    expect(fontSizeFor(100, 100, "s")).toBe(MIN_FONT_PX);
-  });
-});
+/** Einfache Messung: jedes Zeichen 0,6 Schriftgrößen breit. */
+const measure: Measure = (text, _weight, size) => text.length * size * 0.6;
 
-group("computeLabelBox", () => {
-  it("setzt das Label unten rechts mit Rand", () => {
-    const b = computeLabelBox(1000, 800, 100, { position: "bottom-right", size: "m" });
-    expect(b.x + b.width).toBe(1000 - 20);
-    expect(b.y + b.height).toBe(800 - 20);
+group("computeBadge", () => {
+  it("Kurz: quadratisch, Höhe 8 % der kurzen Kante, Radius 16 %", () => {
+    const b = computeBadge(
+      2000,
+      1000,
+      { variant: "short", sizePct: 8, position: "bottom-right" },
+      measure,
+    );
+    expect(b.height).toBe(80);
+    expect(b.width).toBe(80);
+    expect(b.radius).toBeCloseTo(12.8);
+    expect(b.fontSize).toBeCloseTo(35.2);
+    expect(b.extra).toBeNull();
+    // Rand: max(4, 1,2 % von 1000) = 12
+    expect(b.x + b.width).toBeCloseTo(2000 - 12);
+    expect(b.y + b.height).toBeCloseTo(1000 - 12);
+    expect(b.kiX).toBeCloseTo(b.x + 40);
+    expect(b.textY).toBeCloseTo(b.y + 40 + 35.2 * 0.04);
   });
-  it("setzt das Label oben links mit Rand", () => {
-    const b = computeLabelBox(1000, 800, 100, { position: "top-left", size: "m" });
-    expect(b.x).toBe(20);
-    expect(b.y).toBe(20);
-    expect(b.textX).toBe(b.x + b.paddingX);
+  it("GEN: Pille mit Radius halbe Höhe und Zusatztext", () => {
+    const b = computeBadge(
+      1000,
+      1000,
+      { variant: "gen", sizePct: 10, position: "top-left" },
+      measure,
+    );
+    expect(b.height).toBe(100);
+    expect(b.radius).toBe(50);
+    expect(b.fontSize).toBeCloseTo(40);
+    expect(b.extraFontSize).toBeCloseTo(34.4);
+    expect(b.extra).toBe("GENERIERT");
+    expect(b.x).toBeCloseTo(12);
+    expect(b.y).toBeCloseTo(12);
+    const kiW = 2 * 40 * 0.6;
+    const extraW = 9 * 34.4 * 0.6;
+    expect(b.width).toBeCloseTo(32 * 2 + kiW + 18 + extraW);
+    expect(b.kiX).toBeCloseTo(12 + 32);
+    expect(b.extraX).toBeCloseTo(12 + 32 + kiW + 18);
   });
-  it("wird nie breiter als das Bild", () => {
-    const b = computeLabelBox(200, 200, 5000, { position: "top-right", size: "l" });
-    expect(b.x).toBeGreaterThanOrEqual(0);
-    expect(b.x + b.width).toBeLessThanOrEqual(200);
+  it("MOD schreibt MODIFIZIERT", () => {
+    const b = computeBadge(
+      800,
+      600,
+      { variant: "mod", sizePct: 8, position: "top-right" },
+      measure,
+    );
+    expect(b.extra).toBe("MODIFIZIERT");
+  });
+  it("hat eine Mindesthöhe von 32 px und begrenzt die Größe auf 4 bis 20 %", () => {
+    expect(
+      computeBadge(200, 200, { variant: "short", sizePct: 4, position: "top-left" }, measure)
+        .height,
+    ).toBe(32);
+    expect(
+      computeBadge(1000, 1000, { variant: "short", sizePct: 50, position: "top-left" }, measure)
+        .height,
+    ).toBe(200);
+    expect(
+      computeBadge(
+        1000,
+        1000,
+        { variant: "short", sizePct: Number.NaN, position: "top-left" },
+        measure,
+      ).height,
+    ).toBe(80);
   });
   it("bleibt bei allen Positionen im Bild", () => {
     for (const position of ["top-left", "top-right", "bottom-left", "bottom-right"] as const) {
-      const b = computeLabelBox(640, 360, 120, { position, size: "s" });
+      const b = computeBadge(640, 360, { variant: "gen", sizePct: 8, position }, measure);
       expect(b.x).toBeGreaterThanOrEqual(0);
       expect(b.y).toBeGreaterThanOrEqual(0);
       expect(b.x + b.width).toBeLessThanOrEqual(640);
       expect(b.y + b.height).toBeLessThanOrEqual(360);
     }
+  });
+});
+
+group("computeText", () => {
+  const base = {
+    text: "Mit KI erstellt",
+    gray: 100,
+    sizePct: 4,
+    position: "bottom-right" as const,
+  };
+  it("Schriftgröße in % der kurzen Kante, Rand max(14, 2,2 %), horizontal × 1,35", () => {
+    const t = computeText(2000, 1000, base, measure);
+    expect(t.fontSize).toBe(40);
+    expect(t.align).toBe("right");
+    expect(t.x).toBeCloseTo(2000 - 22 * 1.35);
+    expect(t.lines).toEqual(["Mit KI erstellt"]);
+    expect(t.baselines[0]).toBeCloseTo(1000 - 22 - 40 + 32);
+  });
+  it("oben links mit Mindestrand", () => {
+    const t = computeText(200, 200, { ...base, position: "top-left" }, measure);
+    expect(t.fontSize).toBe(MIN_FONT_PX);
+    expect(t.x).toBeCloseTo(14 * 1.35);
+    expect(t.align).toBe("left");
+    expect(t.baselines[0]).toBeCloseTo(14 + MIN_FONT_PX * 0.8);
+  });
+  it("bricht langen Text um und bleibt im Bild", () => {
+    const text = "Dieses Bild wurde mit Unterstützung von KI erstellt";
+    const t = computeText(600, 400, { ...base, text, sizePct: 8 }, measure);
+    expect(t.lines.length).toBeGreaterThan(1);
+    expect(t.lines.join(" ")).toBe(text);
+    expect(t.baselines.at(-1)!).toBeLessThanOrEqual(400 - 14);
+  });
+  it("begrenzt Text auf 100 Zeichen", () => {
+    const t = computeText(4000, 4000, { ...base, text: "a".repeat(150) }, measure);
+    expect(t.lines.join("").length).toBe(100);
+  });
+  it("Schatten in Gegenfarbe", () => {
+    expect(computeText(800, 800, { ...base, gray: 100 }, measure).shadow).toBe("rgba(0,0,0,0.5)");
+    const dark = computeText(800, 800, { ...base, gray: 0 }, measure);
+    expect(dark.color).toBe("#000000");
+    expect(dark.shadow).toBe("rgba(255,255,255,0.5)");
+    expect(dark.shadowBlur).toBeCloseTo(dark.fontSize * 0.2);
+  });
+});
+
+group("wrapLines und grayHex", () => {
+  it("bricht an Leerzeichen um, lange Wörter bleiben ganz", () => {
+    const width = (t: string) => t.length;
+    expect(wrapLines("aa bb cc", 5, width)).toEqual(["aa bb", "cc"]);
+    expect(wrapLines("superlangeswort x", 5, width)).toEqual(["superlangeswort", "x"]);
+    expect(wrapLines("   ", 5, width)).toEqual([]);
+  });
+  it("Graustufen", () => {
+    expect(grayHex(0)).toBe("#000000");
+    expect(grayHex(100)).toBe("#ffffff");
+    expect(grayHex(50)).toBe("#808080");
   });
 });
 
@@ -60,6 +161,9 @@ group("Hilfsfunktionen", () => {
   it("wählt das Ausgabeformat", () => {
     expect(outputType("image/jpeg").ext).toBe("jpg");
     expect(outputType("image/avif")).toEqual({ type: "image/png", ext: "png" });
+    expect(outputType("image/png", "jpg")).toEqual({ type: "image/jpeg", ext: "jpg" });
+    expect(outputType("image/jpeg", "webp").ext).toBe("webp");
+    expect(outputType("image/webp", "png").ext).toBe("png");
   });
   it("beschreibt Ergebnisse mit Generator", () => {
     expect(describe({ verdict: "ai", generator: "Midjourney" }).detail).toContain("Midjourney");

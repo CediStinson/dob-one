@@ -8,14 +8,24 @@ import {
   type EmbedSourceType,
 } from "@dob-one/detect";
 import {
+  BADGE_SIZE,
+  clamp,
   clampOpacity,
-  DEFAULT_OPTIONS,
+  COLOR_PRESETS,
+  DEFAULT_BADGE,
+  DEFAULT_TEXT,
+  EXPORT_QUALITY,
   labeledFileName,
+  MAX_TEXT,
   outputType,
+  TEXT_SIZE,
+  TEXT_TEMPLATE,
+  VARIANT_EXTRA,
+  type ColorPreset,
+  type ExportFormat,
   type LabelOptions,
   type Position,
-  type Size,
-  type Theme,
+  type Variant,
 } from "../lib/label/layout.ts";
 import { drawLabeled, LABEL_FONT } from "../lib/label/render.ts";
 import { describe } from "../lib/label/verdict.ts";
@@ -48,24 +58,77 @@ const allBtn = $<HTMLButtonElement>("#download-all");
 const clearBtn = $<HTMLButtonElement>("#clear-all");
 const customText = $<HTMLInputElement>("#custom-text");
 const opacityOut = $<HTMLOutputElement>("#opacity-out");
+const badgeBox = $<HTMLDivElement>("#badge-options");
+const textBox = $<HTMLDivElement>("#text-options");
+const colorHint = $<HTMLParagraphElement>("#color-hint");
+const badgeSizeOut = $<HTMLOutputElement>("#badge-size-out");
+const textSizeOut = $<HTMLOutputElement>("#text-size-out");
+const grayOut = $<HTMLOutputElement>("#gray-out");
 const tpl = $<HTMLTemplateElement>("#item-template");
 
 const items: Item[] = [];
 
+function pick<T extends string>(value: unknown, allowed: readonly T[], fallback: T): T {
+  return allowed.includes(value as T) ? (value as T) : fallback;
+}
+
+const POSITIONS = ["top-left", "top-right", "bottom-left", "bottom-right"] as const;
+const FORMATS = ["original", "png", "jpg", "webp"] as const;
+const pct = (n: number) => `${String(n).replace(".", ",")} %`;
+
 function readOptions(): LabelOptions {
   const data = new FormData(form);
-  const template = String(data.get("template") ?? DEFAULT_OPTIONS.text);
-  const text = template === "__custom" ? customText.value.slice(0, 60) : template;
-  customText.disabled = template !== "__custom";
+  const mode = data.get("mode") === "text" ? "text" : "badge";
+  badgeBox.hidden = mode !== "badge";
+  textBox.hidden = mode !== "text";
+  const position = pick<Position>(data.get("position"), POSITIONS, DEFAULT_BADGE.position);
+
+  if (mode === "badge") {
+    const color = pick<ColorPreset>(
+      data.get("color"),
+      Object.keys(COLOR_PRESETS) as ColorPreset[],
+      DEFAULT_BADGE.color,
+    );
+    const sizePct = clamp(
+      Number(data.get("badgeSize")),
+      BADGE_SIZE.min,
+      BADGE_SIZE.max,
+      BADGE_SIZE.default,
+    );
+    colorHint.hidden = COLOR_PRESETS[color].alpha === 1;
+    badgeSizeOut.value = pct(sizePct);
+    return {
+      mode,
+      variant: pick<Variant>(
+        data.get("variant"),
+        Object.keys(VARIANT_EXTRA) as Variant[],
+        DEFAULT_BADGE.variant,
+      ),
+      color,
+      sizePct,
+      position,
+    };
+  }
+
+  const custom = data.get("textSource") === "custom";
+  customText.disabled = !custom;
+  const text = custom ? customText.value.slice(0, MAX_TEXT) : TEXT_TEMPLATE;
   const opacity = clampOpacity(Number(data.get("opacity")) / 100);
+  const gray = clamp(Number(data.get("gray")), 0, 100, DEFAULT_TEXT.gray);
+  const sizePct = clamp(
+    Number(data.get("textSize")),
+    TEXT_SIZE.min,
+    TEXT_SIZE.max,
+    TEXT_SIZE.default,
+  );
   opacityOut.value = `${Math.round(opacity * 100)} %`;
-  return {
-    text,
-    position: (data.get("position") as Position) ?? DEFAULT_OPTIONS.position,
-    size: (data.get("size") as Size) ?? DEFAULT_OPTIONS.size,
-    theme: (data.get("theme") as Theme) ?? DEFAULT_OPTIONS.theme,
-    opacity,
-  };
+  grayOut.value = gray === 0 ? "Schwarz" : gray === 100 ? "Weiß" : `${gray} %`;
+  textSizeOut.value = pct(sizePct);
+  return { mode, text, gray, opacity, sizePct, position };
+}
+
+function readFormat(): ExportFormat {
+  return pick<ExportFormat>(new FormData(form).get("format"), FORMATS, "original");
 }
 
 function renderPreview(item: Item, opts: LabelOptions): void {
@@ -93,14 +156,24 @@ async function exportBlob(item: Item): Promise<{ blob: Blob; name: string }> {
   canvas.height = h;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas nicht verfügbar");
-  drawLabeled(ctx, item.bitmap, w, h, readOptions());
-  const out = outputType(item.file.type);
+  const out = outputType(item.file.type, readFormat());
+  // JPG kennt keine Transparenz: vorher weiß füllen, sonst werden transparente Bereiche schwarz.
+  drawLabeled(
+    ctx,
+    item.bitmap,
+    w,
+    h,
+    readOptions(),
+    out.type === "image/jpeg" ? "#FFFFFF" : undefined,
+  );
   const blob = await new Promise<Blob | null>((resolve) =>
-    canvas.toBlob(resolve, out.type, out.type === "image/png" ? undefined : 0.92),
+    canvas.toBlob(resolve, out.type, out.type === "image/png" ? undefined : EXPORT_QUALITY),
   );
   if (!blob) throw new Error("Export fehlgeschlagen");
-  const marked = await embedMarker(blob, out.type, w, h);
-  return { blob: marked, name: labeledFileName(item.file.name, out.ext) };
+  // Manche Browser können kein WebP schreiben und liefern PNG: dann auch als PNG benennen.
+  const actual = outputType(blob.type, "original");
+  const marked = await embedMarker(blob, actual.type, w, h);
+  return { blob: marked, name: labeledFileName(item.file.name, actual.ext) };
 }
 
 function readMarker(): EmbedSourceType | null {
@@ -215,14 +288,12 @@ async function addFiles(files: FileList | File[]): Promise<void> {
 }
 
 form.addEventListener("input", renderAll);
-// "KI-bearbeitet" passt zur IPTC-Angabe "Montage/Bearbeitung mit KI".
+// Variante GEN/MOD passt zur IPTC-Angabe "KI-generiert" bzw. "Bearbeitung/Montage mit KI".
 form.addEventListener("change", (e) => {
   const t = e.target as HTMLInputElement;
-  if (t.name !== "template" || readMarker() === null) return;
+  if (t.name !== "variant" || t.value === "short" || readMarker() === null) return;
   const code =
-    t.value === "KI-bearbeitet"
-      ? "compositeWithTrainedAlgorithmicMedia"
-      : "trainedAlgorithmicMedia";
+    t.value === "mod" ? "compositeWithTrainedAlgorithmicMedia" : "trainedAlgorithmicMedia";
   const radio = form.querySelector<HTMLInputElement>(`input[name="marker"][value="${code}"]`);
   if (radio) radio.checked = true;
 });
@@ -276,5 +347,8 @@ clearBtn.addEventListener("click", () => {
 });
 
 // Schrift laden, damit Vorschau und Export mit Inter gezeichnet werden.
-void document.fonts.load(`600 24px ${LABEL_FONT}`).then(renderAll, renderAll);
+void Promise.all([
+  document.fonts.load(`600 24px ${LABEL_FONT}`),
+  document.fonts.load(`700 24px ${LABEL_FONT}`),
+]).then(renderAll, renderAll);
 renderAll();

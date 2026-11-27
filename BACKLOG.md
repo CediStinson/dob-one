@@ -8,8 +8,6 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte Labels nicht, der Nutzer muss alles selbst beurteilen. Kein echter Nutzen. Wert liegt dort, wo das Bild entsteht und gekennzeichnet wird.
 
-- [ ] **T17** Website-Check aus Navigation und Startseite nehmen (Seite bleibt erreichbar, `noindex`). Startseite neu auf den Label-Generator ausrichten: "KI-Bilder in 10 Sekunden richtig kennzeichnen".
-- [ ] **T4d** (vorgezogen) Label-Generator nach `docs/04-label-spec.md` (EU-Icon-Varianten, Farben, Größen, Eigener Text, Export). Das ist ab jetzt das Kernprodukt im Web.
 - [ ] **T13** (vorgezogen) Free Tool 2: PNG/JPG in WebP, Reichweite über Google.
 - [ ] **T18** Konzept `docs/05-plugin.md`: Klarbild als WordPress-Plugin, das beim Upload in die Mediathek KI-Bilder markiert, sichtbares Label + IPTC setzt, Metadaten bei Bildgrößen/WebP erhält und ein Kennzeichnungs-Log führt. Free (Basis) vs. Pro (Log/Nachweis-PDF, mehrere Sites, Agentur). Zahlungsbereitschaft hier statt im Scanner.
 
@@ -20,7 +18,6 @@ Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte La
 
 ### Sprint 2: Website-Check
 
-- [ ] **T3c** Warteliste entfernen (Entscheidung 26.11.: kein Traffic, kein Nutzen, unnötige DSGVO-Pflichten). Ersetzen durch Kontakt-Hinweis "Interesse an Monitoring oder Agentur-Modus? Schreiben Sie uns" mit mailto:info@dobsonstudio.com (später Domain-Adresse). Datenschutz-Entwurf entsprechend anpassen. Nichts speichern.
 - [ ] 🧑 **B3** (zurückgestellt) Supabase- und Resend-Account, erst wenn Login/Warteliste gebraucht werden.
 
 ### Sprint 3: Accounts + Report
@@ -39,6 +36,9 @@ Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte La
 
 ## Erledigt
 
+- [x] 2026-11-27 T4d Label-Generator nach `docs/04-label-spec.md`: Modus "KI-Label" (Kurz/GEN/MOD, Geometrie nach Spec, 4 Farben inkl. 50 % mit Erkennbarkeits-Hinweis, Größe 4 bis 20 %) und "Eigener Text" (Vorlage oder bis 100 Zeichen, Graustufe, Deckkraft, Schriftgröße, Schatten in Gegenfarbe, Zeilenumbruch). Export wählbar (Original/PNG/JPG/WebP, Qualität 0,9, JPG weiß hinterlegt, Fallback wenn Browser kein WebP schreibt). GEN/MOD setzt passende IPTC-Angabe. 14 neue Tests, Playwright-Durchlauf.
+- [x] 2026-11-27 T3c Warteliste entfernt, ersetzt durch Kontakt-Hinweis (mailto:info@dobsonstudio.com), Datenschutz-Entwurf angepasst. Es wird nichts gespeichert.
+- [x] 2026-11-27 T17 Startseite neu auf den Label-Generator ("KI-Bilder in 10 Sekunden richtig kennzeichnen"), Website-Check aus Navigation und Startseite entfernt (Seite erreichbar, `noindex` auch nach dem Start über `Base`-Prop).
 - [x] 2026-11-26 T4e Sicherheitscheck: kein `innerHTML`/`set:html`/`eval` im Frontend (als Test festgeschrieben), Links nur http(s) (`safeHref`), präpariertes JPEG mit Skript im XMP zeigt nur unseren Generatornamen. Playwright-Durchlauf mit bösartigen Scan-Daten und Bild: kein Dialog, kein eingeschleustes Element. 5 Tests.
 - [x] 2026-11-26 T9 Chatbot-Erkennung: 36 Signaturen in `packages/detect/src/chatbots.ts` (KI-Bots und Live-Chats mit optionaler KI), Scanner liefert zusätzlich `inlineUrls` aus Inline-Skripten (begrenzt), Website-Check zeigt Chatbots, Empfehlung und Begrüßungstext. Echttest des Crawlers gegen pypi.org (9 Seiten, 61 Bilder). 16 neue Tests.
 - [x] 2026-11-26 T8 KI-Website-Check unter `/tools/ki-website-check/`: Scan + Bildprüfung im Browser (4 parallel, Fallback auf Größenvariante), Fortschritt, Kacheln, Empfehlungen, Bildliste (KI-Funde oben), Seitenliste mit Fehlertexten, Label-Snippet mit Kopieren, 429 freundlich (auch mitten in der Bildprüfung, Rest "nicht geprüft"). Scan-Inhalte nur per `textContent`. Fix: `[hidden]` wurde von `.btn` überschrieben. 22 Tests, Playwright-Durchlauf mit Mock-API.
