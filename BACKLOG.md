@@ -18,7 +18,7 @@ Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte La
 ### Sprint 1: Fundament + erstes Free Tool
 
 - [ ] 🧑 **B6** Statistik einschalten (5 Min., kostenlos): D1-Datenbank `dob-one-stats` anlegen, Database ID hier eintragen, Secret `STATS_PASSWORD` setzen. Anleitung: `docs/setup-cloudflare.md` > B6. Danach trägt Claude das Binding ein (nächster Lauf prüft das Feld).
-  - Database ID: _(hier eintragen)_
+  - Database ID: `afdd8083-64e1-452c-8ccc-502318326625` (27.11., in `wrangler.jsonc` eingetragen). Offen: Secret `STATS_PASSWORD`, falls noch nicht gesetzt.
 
 - [ ] 🧑 **B2** Domain kaufen. kenntlich.de vergeben, .ai zu teuer. **kenntlich.eu** kaufen (Fallback kenntlich.app via Cloudflare). Benjamin: Abend 27.11. oder 28.11. Claude kann Verfügbarkeit nicht prüfen (Shell blockiert). Marke: "kenntlich. Ein Produkt von dobsonstudio". Klarbild bleibt Name des WP-Plugins.
 - [ ] 🧑 **B5** Registerabfrage "kenntlich" und "klarbild" in TMview/DPMAregister (10 Min., kostenlos, Anleitung in `docs/03-marke.md`), Treffer dort eintragen.
