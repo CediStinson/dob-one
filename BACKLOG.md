@@ -8,6 +8,12 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte Labels nicht, der Nutzer muss alles selbst beurteilen. Kein echter Nutzen. Wert liegt dort, wo das Bild entsteht und gekennzeichnet wird.
 
+- [ ] **T19** (WICHTIG für Benjamin) Eigene, anonyme Statistik, first-party, ohne Cookies, ohne Speicherung im Browser (kein localStorage/sessionStorage, § 25 TDDDG), ohne externe Skripte, ohne IP-Speicherung:
+  - `POST /api/hit` per `navigator.sendBeacon` beim Seitenaufruf (nur Pfad + Referrer-Domain), `POST /api/event` für Tool-Nutzung: `label_export` mit Anzahl Bilder, `webp_export`, `contact_click`.
+  - Speicher: Cloudflare D1, Tageszähler (Datum, Pfad/Event, Anzahl). Erst Wrangler-Auto-Provisioning probieren (D1-Binding ohne `database_id`); falls nicht möglich, 🧑-Ticket mit Anleitung.
+  - `/stats`: Übersicht letzte 30 Tage (Seitenaufrufe pro Tag/Seite, gelabelte Bilder, Exporte, Kontakt-Klicks, Top-Referrer), geschützt per Passwort aus Secret `STATS_PASSWORD` (Basic Auth), `noindex`. Anleitung für Benjamin zum Setzen des Secrets in `docs/setup-cloudflare.md`.
+  - Bot-Filter (User-Agent), Rate-Limit. Datenschutz-Entwurf ergänzen ("anonyme Nutzungszähler, keine personenbezogenen Daten"). Footer-Text ehrlich halten: "Ohne Cookies, ohne Tracking von Personen".
+  - Hinweis im Stats-UI: Es werden Aufrufe gezählt, keine eindeutigen Besucher (bewusst, Datenschutz).
 - [ ] **T13** (vorgezogen) Free Tool 2: PNG/JPG in WebP, Reichweite über Google.
 - [ ] **T18** Konzept `docs/05-plugin.md`: Klarbild als WordPress-Plugin, das beim Upload in die Mediathek KI-Bilder markiert, sichtbares Label + IPTC setzt, Metadaten bei Bildgrößen/WebP erhält und ein Kennzeichnungs-Log führt. Free (Basis) vs. Pro (Log/Nachweis-PDF, mehrere Sites, Agentur). Zahlungsbereitschaft hier statt im Scanner.
 
