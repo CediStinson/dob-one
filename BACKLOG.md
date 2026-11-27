@@ -13,7 +13,7 @@ Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte La
 
 ### Sprint 1: Fundament + erstes Free Tool
 
-- [ ] 🧑 **B2** Domain kaufen. kenntlich.de vergeben, .ai zu teuer. **kenntlich.eu** kaufen (Fallback kenntlich.app via Cloudflare). Heute Abend. Claude kann Verfügbarkeit nicht prüfen (Shell blockiert). Marke: "kenntlich. Ein Produkt von dobsonstudio". Klarbild bleibt Name des WP-Plugins.
+- [ ] 🧑 **B2** Domain kaufen. kenntlich.de vergeben, .ai zu teuer. **kenntlich.eu** kaufen (Fallback kenntlich.app via Cloudflare). Benjamin: Abend 27.11. oder 28.11. Claude kann Verfügbarkeit nicht prüfen (Shell blockiert). Marke: "kenntlich. Ein Produkt von dobsonstudio". Klarbild bleibt Name des WP-Plugins.
 - [ ] 🧑 **B5** Registerabfrage "kenntlich" und "klarbild" in TMview/DPMAregister (10 Min., kostenlos, Anleitung in `docs/03-marke.md`), Treffer dort eintragen.
 
 ### Sprint 2: Website-Check

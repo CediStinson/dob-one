@@ -136,3 +136,19 @@ Neuer Kern: Kennzeichnen dort, wo das Bild entsteht.
 1. **Web**: Label-Generator als Hauptprodukt (kostenlos, Reichweite), plus PNG-zu-WebP-Tool für SEO.
 2. **Bezahlprodukt**: Klarbild-WordPress-Plugin mit Kennzeichnung beim Upload, Metadaten-Erhalt und Nachweis-Log (Pro). Zielgruppe: KMU mit WordPress und Agenturen wie dobsonstudio.
 3. Website-Check kommt nur zurück, wenn er eine klare Aufgabe hat (z. B. Chatbot-Hinweis-Check), nicht als KI-Bilder-Detektor.
+
+## Ziel und Abbruchkriterien (entschieden 27.11.2026)
+
+Ziel laut Benjamin: **Nebeneinkommen reicht.** Kein Wachstum um jeden Preis, wenig laufender Aufwand für ihn.
+
+Testphase 4 Wochen (bis 25.12.2026):
+
+1. Label-Generator + WebP-Tool live auf eigener Domain, bei Google eingereicht (Search Console).
+2. Klarbild-Basisversion im WordPress-Plugin-Verzeichnis eingereicht.
+3. Messen (Cloudflare Web Analytics, ohne Cookies): Tool-Nutzungen pro Woche, Anfragen über den Kontakt-Hinweis.
+
+Danach entscheiden:
+
+- **Weiter mit Pro (Bezahlversion)**, wenn die Tools spürbar genutzt werden (Richtwert: 50+ Nutzungen pro Woche, steigend) oder mindestens 1 echte Anfrage nach Pro/Agentur kommt.
+- **Auf Autopilot** (nur noch Pflege, kein Ausbau), wenn Nutzung da ist, aber niemand zahlen will. Die Tools laufen weiter als Lead-Quelle für dobsonstudio.
+- **Einstellen**, wenn kaum Nutzung.
