@@ -8,16 +8,13 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte Labels nicht, der Nutzer muss alles selbst beurteilen. Kein echter Nutzen. Wert liegt dort, wo das Bild entsteht und gekennzeichnet wird.
 
-- [ ] **T19** (WICHTIG für Benjamin) Eigene, anonyme Statistik, first-party, ohne Cookies, ohne Speicherung im Browser (kein localStorage/sessionStorage, § 25 TDDDG), ohne externe Skripte, ohne IP-Speicherung:
-  - `POST /api/hit` per `navigator.sendBeacon` beim Seitenaufruf (nur Pfad + Referrer-Domain), `POST /api/event` für Tool-Nutzung: `label_export` mit Anzahl Bilder, `webp_export`, `contact_click`.
-  - Speicher: Cloudflare D1, Tageszähler (Datum, Pfad/Event, Anzahl). Erst Wrangler-Auto-Provisioning probieren (D1-Binding ohne `database_id`); falls nicht möglich, 🧑-Ticket mit Anleitung.
-  - `/stats`: Übersicht letzte 30 Tage (Seitenaufrufe pro Tag/Seite, gelabelte Bilder, Exporte, Kontakt-Klicks, Top-Referrer), geschützt per Passwort aus Secret `STATS_PASSWORD` (Basic Auth), `noindex`. Anleitung für Benjamin zum Setzen des Secrets in `docs/setup-cloudflare.md`.
-  - Bot-Filter (User-Agent), Rate-Limit. Datenschutz-Entwurf ergänzen ("anonyme Nutzungszähler, keine personenbezogenen Daten"). Footer-Text ehrlich halten: "Ohne Cookies, ohne Tracking von Personen".
-  - Hinweis im Stats-UI: Es werden Aufrufe gezählt, keine eindeutigen Besucher (bewusst, Datenschutz).
 - [ ] **T13** (vorgezogen) Free Tool 2: PNG/JPG in WebP, Reichweite über Google.
 - [ ] **T18** Konzept `docs/05-plugin.md`: Klarbild als WordPress-Plugin, das beim Upload in die Mediathek KI-Bilder markiert, sichtbares Label + IPTC setzt, Metadaten bei Bildgrößen/WebP erhält und ein Kennzeichnungs-Log führt. Free (Basis) vs. Pro (Log/Nachweis-PDF, mehrere Sites, Agentur). Zahlungsbereitschaft hier statt im Scanner.
 
 ### Sprint 1: Fundament + erstes Free Tool
+
+- [ ] 🧑 **B6** Statistik einschalten (5 Min., kostenlos): D1-Datenbank `dob-one-stats` anlegen, Database ID hier eintragen, Secret `STATS_PASSWORD` setzen. Anleitung: `docs/setup-cloudflare.md` > B6. Danach trägt Claude das Binding ein.
+  - Database ID: _(hier eintragen)_
 
 - [ ] 🧑 **B2** Domain kaufen. kenntlich.de vergeben, .ai zu teuer. **kenntlich.eu** kaufen (Fallback kenntlich.app via Cloudflare). Benjamin: Abend 27.11. oder 28.11. Claude kann Verfügbarkeit nicht prüfen (Shell blockiert). Marke: "kenntlich. Ein Produkt von dobsonstudio". Klarbild bleibt Name des WP-Plugins.
 - [ ] 🧑 **B5** Registerabfrage "kenntlich" und "klarbild" in TMview/DPMAregister (10 Min., kostenlos, Anleitung in `docs/03-marke.md`), Treffer dort eintragen.
@@ -41,6 +38,8 @@ Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte La
 - [ ] (geparkt) **T16** (später) Eingebrannte Labels erkennen: OCR nur auf die 4 Bildecken, im Browser, selbst gehostet. Erst prüfen, ob Aufwand/Größe vertretbar ist.
 
 ## Erledigt
+
+- [x] 2026-11-27 T19 Anonyme Statistik: `POST /api/hit` und `/api/event` per `sendBeacon` (Pfad, Referrer-Domain, `label_export` mit Bildanzahl, `contact_click`, `webp_export` vorbereitet), strenge Prüfung, Bot-Filter, Rate-Limit, keine IP/kein User-Agent gespeichert. Tageszähler in D1 (Tabelle legt der Worker selbst an), `/stats` mit Basic Auth (`STATS_PASSWORD`), `noindex`, Hinweis "keine eindeutigen Besucher". Auto-Provisioning bewusst nicht genutzt: Builds-Token hat kein D1-Recht, Deploy würde brechen (→ B6). Datenschutz-Entwurf und Footer ("ohne Tracking von Personen") angepasst. 17 Tests, Durchlauf in workerd mit lokaler D1.
 
 - [x] 2026-11-27 T4d Label-Generator nach `docs/04-label-spec.md`: Modus "KI-Label" (Kurz/GEN/MOD, Geometrie nach Spec, 4 Farben inkl. 50 % mit Erkennbarkeits-Hinweis, Größe 4 bis 20 %) und "Eigener Text" (Vorlage oder bis 100 Zeichen, Graustufe, Deckkraft, Schriftgröße, Schatten in Gegenfarbe, Zeilenumbruch). Export wählbar (Original/PNG/JPG/WebP, Qualität 0,9, JPG weiß hinterlegt, Fallback wenn Browser kein WebP schreibt). GEN/MOD setzt passende IPTC-Angabe. 14 neue Tests, Playwright-Durchlauf.
 - [x] 2026-11-27 T3c Warteliste entfernt, ersetzt durch Kontakt-Hinweis (mailto:info@dobsonstudio.com), Datenschutz-Entwurf angepasst. Es wird nichts gespeichert.

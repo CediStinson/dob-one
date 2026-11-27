@@ -41,7 +41,7 @@ const robots = PRELAUNCH || noindex ? "noindex" : undefined;
       <footer class="wrap foot">
         <div>
           <p><strong>kenntlich.</strong> Ein Produkt von dobsonstudio</p>
-          <p>Entwickelt in Rottweil, Deutschland. Ohne Cookies, ohne Tracking.</p>
+          <p>Entwickelt in Rottweil, Deutschland. Ohne Cookies, ohne Tracking von Personen.</p>
         </div>
         <nav>
           <a href="/impressum/">Impressum</a>
@@ -49,5 +49,10 @@ const robots = PRELAUNCH || noindex ? "noindex" : undefined;
         </nav>
       </footer>
     </div>
+    <script>
+      import { trackContactClicks, trackPageview } from "../scripts/stats.ts";
+      trackPageview();
+      trackContactClicks();
+    </script>
   </body>
 </html>

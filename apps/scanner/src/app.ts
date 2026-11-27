@@ -1,14 +1,22 @@
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
 import { fetchImageHead } from "./img.ts";
 import { clientIp, RateLimiter } from "./net/rate-limit.ts";
 import type { FetchFn } from "./net/safe-fetch.ts";
 import { parseUserUrl } from "./net/url-guard.ts";
 import { crawl } from "./scan/crawl.ts";
 import { workersParser, type HtmlParser } from "./scan/extract.ts";
+import { checkBasicAuth } from "./stats/auth.ts";
+import { MAX_BODY, dayOf, isBot, parseEvent, parseHit, type CountRow } from "./stats/input.ts";
+import { buildReport, firstDay, renderReport } from "./stats/report.ts";
+import { D1Store, type D1Like, type StatsStore } from "./stats/store.ts";
 
 /** Minimales Interface, damit der Code auch ausserhalb von Cloudflare (Node) läuft. */
 export interface Env {
   ASSETS?: { fetch(request: Request): Promise<Response> };
+  /** D1-Datenbank für die anonymen Tageszähler (T19). Fehlt sie, wird nichts gezählt. */
+  DB?: D1Like;
+  /** Passwort für /stats (Secret). Fehlt es, ist /stats gesperrt. */
+  STATS_PASSWORD?: string;
 }
 
 export interface AppDeps {
@@ -16,6 +24,20 @@ export interface AppDeps {
   parse: HtmlParser;
   scanLimiter: RateLimiter;
   imgLimiter: RateLimiter;
+  hitLimiter: RateLimiter;
+  authLimiter: RateLimiter;
+  /** Liefert den Zähler-Speicher oder null, wenn keine Datenbank angebunden ist. */
+  stats: (env: Env | undefined) => StatsStore | null;
+  now: () => number;
+}
+
+const storeCache = new WeakMap<D1Like, StatsStore>();
+function d1Stats(env: Env | undefined): StatsStore | null {
+  const db = env?.DB;
+  if (!db) return null;
+  let s = storeCache.get(db);
+  if (!s) storeCache.set(db, (s = new D1Store(db)));
+  return s;
 }
 
 const MINUTE = 60_000;
@@ -26,6 +48,10 @@ export function createApp(overrides: Partial<AppDeps> = {}) {
     parse: workersParser,
     scanLimiter: new RateLimiter(5, 10 * MINUTE),
     imgLimiter: new RateLimiter(400, 10 * MINUTE),
+    hitLimiter: new RateLimiter(120, 10 * MINUTE),
+    authLimiter: new RateLimiter(10, 10 * MINUTE),
+    stats: d1Stats,
+    now: Date.now,
     ...overrides,
   };
   const app = new Hono<{ Bindings: Env }>();
@@ -67,7 +93,61 @@ export function createApp(overrides: Partial<AppDeps> = {}) {
     });
   });
 
+  // T19: anonyme Zähler. Antwort immer 204, damit nichts über den Filter verraten wird.
+  const count = async (
+    c: Context<{ Bindings: Env }>,
+    parse: (body: string) => CountRow[] | null,
+  ): Promise<Response> => {
+    const req = c.req.raw;
+    const store = deps.stats(c.env);
+    const len = Number(req.headers.get("content-length") ?? "0");
+    if (!store || len > MAX_BODY || isBot(req.headers.get("user-agent"))) return c.body(null, 204);
+    const rows = parse((await req.text()).slice(0, MAX_BODY + 1));
+    if (!rows || !deps.hitLimiter.check(clientIp(req)).ok) return c.body(null, 204);
+    const job = store.add(dayOf(deps.now()), rows).catch((e: unknown) => {
+      console.error("stats", e);
+    });
+    try {
+      c.executionCtx.waitUntil(job);
+    } catch {
+      await job; // ausserhalb von Workers (Tests, Node)
+    }
+    return c.body(null, 204);
+  };
+  app.post("/api/hit", (c) => count(c, (b) => parseHit(b, new URL(c.req.url).hostname)));
+  app.post("/api/event", (c) => count(c, parseEvent));
+
   app.all("/api/*", (c) => c.json({ error: "not_found" }, 404));
+
+  const statsPage = async (c: Context<{ Bindings: Env }>): Promise<Response> => {
+    c.header("x-robots-tag", "noindex, nofollow");
+    c.header("cache-control", "no-store");
+    c.header(
+      "content-security-policy",
+      "default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'none'",
+    );
+    const password = c.env?.STATS_PASSWORD ?? "";
+    const store = deps.stats(c.env);
+    if (!password || !store) {
+      return c.text(
+        "Statistik ist noch nicht eingerichtet (STATS_PASSWORD oder Datenbank fehlt).",
+        503,
+      );
+    }
+    const ip = clientIp(c.req.raw);
+    const ok = await checkBasicAuth(c.req.header("authorization"), password);
+    if (!ok) {
+      if (!deps.authLimiter.check(ip).ok)
+        return c.text("Zu viele Versuche. Bitte später erneut.", 429);
+      c.header("www-authenticate", 'Basic realm="kenntlich Statistik", charset="UTF-8"');
+      return c.text("Anmeldung erforderlich.", 401);
+    }
+    const now = deps.now();
+    const rows = await store.since(firstDay(now));
+    return c.html(renderReport(buildReport(rows, now)));
+  };
+  app.get("/stats", statsPage);
+  app.get("/stats/", statsPage);
 
   // Alles andere: statische Assets (Astro-Build).
   app.all("*", async (c) => {

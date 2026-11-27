@@ -30,6 +30,7 @@ import {
 import { drawLabeled, LABEL_FONT } from "../lib/label/render.ts";
 import { describe } from "../lib/label/verdict.ts";
 import { createZip, uniqueNames } from "../lib/zip.ts";
+import { track } from "./stats.ts";
 
 const MAX_FILES = 20;
 const MAX_BYTES = 40 * 1024 * 1024;
@@ -217,6 +218,7 @@ async function download(item: Item): Promise<void> {
   try {
     const { blob, name } = await exportBlob(item);
     save(blob, name);
+    track("label_export", 1);
   } catch {
     msg.textContent = `${item.file.name} konnte nicht exportiert werden.`;
   }
@@ -330,6 +332,7 @@ allBtn.addEventListener("click", async () => {
       new Blob([zip as Uint8Array<ArrayBuffer>], { type: "application/zip" }),
       "ki-label-bilder.zip",
     );
+    track("label_export", files.length);
     msg.textContent = "";
   } catch {
     msg.textContent =

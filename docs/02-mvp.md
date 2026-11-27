@@ -35,7 +35,7 @@ Zahlung kommt erst nach Validierung (Stripe). Bis dahin: Warteliste für Pro.
 - **Monitoring** (später): GitHub Actions Cron, Parsen serverseitig in Node.
 - **Auth + DB**: Supabase Free (Postgres, Magic-Link-Login).
 - **Mail**: Resend Free.
-- **Analytics**: keine Cookies. Cloudflare Web Analytics.
+- **Analytics**: eigene anonyme Tageszähler in Cloudflare D1 (T19), keine Cookies, nichts im Browser gespeichert, keine IP.
 - Alles DSGVO-freundlich: keine externen CDNs, Fonts selbst gehostet.
 
 ## Cloudflare Free-Limits (recherchiert 26.11.2026)
@@ -111,6 +111,13 @@ Beide Routen liegen unter `/api/*`, weil nur dort der Worker vor den statischen 
 - Standard: KI-Label "KI GENERIERT", Schwarz, 8 %, unten rechts. GEN setzt IPTC "KI-generiert", MOD "Bearbeitung/Montage mit KI".
 - Export: "Wie Original" (JPEG/WebP bleiben, sonst PNG) oder fest PNG/JPG/WebP. Liefert der Browser kein WebP, wird die Datei als PNG benannt und eingebettet.
 
+## Statistik (T19, Stand 27.11.2026)
+
+- Browser sendet per `sendBeacon` an `POST /api/hit` (`{p: Pfad, r: Referrer-Hostname}`) und `POST /api/event` (`{e: label_export|webp_export|contact_click, n?: Bilder}`). Antwort immer 204.
+- Server prüft streng (Pfad-Zeichen, Referrer nur Domain, eigene Domain fällt raus, Event-Whitelist, Bilder 1 bis 20, Body max. 1 KB), filtert Bots per User-Agent, Rate-Limit 120 / 10 Min. pro IP (nur im Speicher). Gespeichert: Tabelle `daily(day, kind, key, n)`, Tag in deutscher Zeit. Keine IP, kein User-Agent.
+- `/stats`: Basic Auth mit Secret `STATS_PASSWORD` (Vergleich über SHA-256, 10 Fehlversuche / 10 Min.), `noindex`, `no-store`, serverseitig gerendert, alle Werte escaped. Zeigt 30 Tage: Aufrufe pro Tag, Seiten, Exporte, gelabelte Bilder, Kontakt-Klicks, Top-10-Referrer.
+- Tabelle legt der Worker selbst an (`CREATE TABLE IF NOT EXISTS`, einmal pro Isolate). Ohne Binding `DB` wird nichts gezählt (B6).
+
 ## Nicht im MVP
 
 Visuelle KI-Erkennung, Video/Audio, Stripe, Mehrsprachigkeit, WP-Plugin-Anbindung (kommt als Erstes danach: Klarbild-Plugin meldet an die SaaS).
@@ -145,7 +152,7 @@ Testphase 4 Wochen (bis 25.12.2026):
 
 1. Label-Generator + WebP-Tool live auf eigener Domain, bei Google eingereicht (Search Console).
 2. Klarbild-Basisversion im WordPress-Plugin-Verzeichnis eingereicht.
-3. Messen (Cloudflare Web Analytics, ohne Cookies): Tool-Nutzungen pro Woche, Anfragen über den Kontakt-Hinweis.
+3. Messen (eigene anonyme Zähler unter `/stats`, ohne Cookies): Tool-Nutzungen pro Woche, Anfragen über den Kontakt-Hinweis.
 
 Danach entscheiden:
 

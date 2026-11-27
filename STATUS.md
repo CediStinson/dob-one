@@ -18,6 +18,7 @@ Referenz: bestehender Generator auf dobsonstudio.com/ki-label-generator (Browser
 
 ## Aktueller Stand
 
+- 2026-11-27: T19 anonyme Statistik gebaut (`/api/hit`, `/api/event`, `/stats` mit Passwort), in workerd mit lokaler D1 geprüft. Zählt erst nach B6 (D1 anlegen + `STATS_PASSWORD`, Benjamin). 184 Tests.
 - 2026-11-27: T17 + T3c + T4d: Startseite auf Label-Generator ausgerichtet, Website-Check aus der Navigation (noindex), Warteliste durch Kontakt-Hinweis ersetzt. Label-Generator nach Spec (EU-Icon-Varianten KI/GEN/MOD, 4 Farben, Eigener Text, Formatwahl). 167 Tests. Nächstes Ticket: T13 (PNG/JPG in WebP).
 - 2026-11-26: T4e Sicherheitscheck Label-Generator + Website-Check bestanden (nur `textContent`, nur http(s)-Links, XSS-Test mit präpariertem Bild). 160 Tests. Nächstes Ticket: T3c.
 - 2026-11-26: T9 Chatbot-Erkennung im Website-Check (Skripte, iframes und Inline-Snippets gegen 36 Anbieter-Signaturen). Der Check ist damit komplett: Bilder, Chatbots, Empfehlungen, Label-Snippet. 155 Tests.

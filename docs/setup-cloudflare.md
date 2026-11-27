@@ -29,3 +29,18 @@ Supabase + Resend. Kommt mit Sprint 2.
 ## Build (seit T1)
 
 Kein Build-Command im Dashboard nötig. `wrangler.jsonc` enthält `build.command` (`pnpm install --frozen-lockfile && pnpm build`), das `wrangler deploy` vor dem Upload ausführt. Falls ein Deploy scheitert: im Dashboard unter Workers & Pages > dob-one > Deployments > Build-Log prüfen.
+
+## B6: Statistik einschalten (T19, ca. 5 Min., kostenlos)
+
+Der Code für die anonyme Statistik ist live, zählt aber erst, wenn eine D1-Datenbank angebunden ist. Automatisch anlegen beim Deploy geht nicht: der Build-Token von Workers Builds hat standardmäßig kein D1-Recht, ein Versuch würde den Deploy brechen.
+
+1. dash.cloudflare.com > Storage & Databases > D1 SQL Database > "Create Database".
+2. Name: `dob-one-stats`, Region: Automatisch (oder Western Europe). "Create". Free Plan, keine Kosten (5 GB, 100.000 Schreibvorgänge pro Tag).
+3. Die angezeigte **Database ID** (UUID) kopieren und mir in den Chat oder als Zeile in `BACKLOG.md` bei B6 schreiben. Die ID ist kein Geheimnis.
+4. Passwort für `/stats` setzen: Workers & Pages > dob-one > Settings > Variables and Secrets > "Add" > Typ **Secret**, Name `STATS_PASSWORD`, Wert: ein langes Passwort (z. B. aus deinem Passwortmanager). "Deploy". Secrets bleiben bei späteren Deploys erhalten.
+5. Ich trage die Datenbank in `wrangler.jsonc` ein. Die Tabelle legt der Worker beim ersten Aufruf selbst an.
+6. Danach: `https://<domain>/stats` aufrufen, Benutzername beliebig, Passwort wie in Schritt 4.
+
+Falls der Deploy danach mit einem D1-Berechtigungsfehler scheitert: My Profile > API Tokens > Token "Workers Builds" bearbeiten > Berechtigung "Account > D1 > Edit" ergänzen, Deploy erneut starten.
+
+Ohne Datenbank oder ohne Passwort antwortet `/stats` mit 503 ("noch nicht eingerichtet"), die Zähler-Endpunkte nehmen Daten an und verwerfen sie.
