@@ -8,7 +8,12 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte Labels nicht, der Nutzer muss alles selbst beurteilen. Kein echter Nutzen. Wert liegt dort, wo das Bild entsteht und gekennzeichnet wird.
 
-- [ ] **T18** Konzept `docs/05-plugin.md`: Klarbild als WordPress-Plugin, das beim Upload in die Mediathek KI-Bilder markiert, sichtbares Label + IPTC setzt, Metadaten bei Bildgrößen/WebP erhält und ein Kennzeichnungs-Log führt. Free (Basis) vs. Pro (Log/Nachweis-PDF, mehrere Sites, Agentur). Zahlungsbereitschaft hier statt im Scanner.
+- [ ] **T20** Klarbild-Grundgerüst in `apps/klarbild/` (Plugin-Header, Einstellungsseite, CI-Job PHP-Lint + PHPUnit), ohne Funktion. Konzept: `docs/05-plugin.md`.
+- [ ] **T21** PHP-Port der Erkennung mit gemeinsamen Fixtures (TS und PHP urteilen gleich), Status beim Upload, Mediathek-Spalte, Filter, Sammelaktion.
+- [ ] **T22** IPTC in alle Bildgrößen schreiben (Port von `embed.ts`), Roundtrip-Tests.
+- [ ] **T23** HTML-Overlay "KI" nach Label-Spec + Alt-Text-Zusatz, Einstellungen.
+- [ ] **T24** Lokales Kennzeichnungs-Log + CSV-Export, Readme für wordpress.org, Screenshots, Plugin-ZIP.
+- [ ] 🧑 **B7** (nach T24) wordpress.org-Konto anlegen, Slug `klarbild` prüfen (Claude kommt nicht an wordpress.org), Plugin einreichen.
 
 ### Sprint 1: Fundament + erstes Free Tool
 
@@ -37,6 +42,8 @@ Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte La
 - [ ] (geparkt) **T16** (später) Eingebrannte Labels erkennen: OCR nur auf die 4 Bildecken, im Browser, selbst gehostet. Erst prüfen, ob Aufwand/Größe vertretbar ist.
 
 ## Erledigt
+
+- [x] 2026-11-27 T18 Konzept `docs/05-plugin.md`: Erkennung beim Upload, HTML-Overlay statt Bildveränderung, IPTC in alle Bildgrößen, lokales Log. Free vollständig (wordpress.org verbietet Trialware), Pro über kenntlich-Konto (Nachweis-PDF, zentrales Log, Agentur-Dashboard, Massen-Scan). Preis-Hypothese 49 €/Jahr bzw. 149 €/Jahr Agentur. Tickets T20 bis T24 + B7 angelegt.
 
 - [x] 2026-11-27 T13 Free Tool 2 unter `/tools/bild-in-webp-umwandeln/`: PNG/JPG/WebP/AVIF/GIF/BMP in WebP, komplett im Browser, Qualität 50 bis 100 (Standard 82), optional max. Kantenlänge 2560/1920/1280, Vorher/Nachher-Größe pro Bild und gesamt, ehrlicher Hinweis wenn WebP größer wird, ZIP für alle, erkannter KI-Hinweis wird als IPTC in die WebP übernommen. Klare Meldung, wenn der Browser kein WebP schreibt. Verlinkt auf Startseite und im Footer, zählt `webp_export`. 5 Tests, Playwright-Durchlauf.
 
