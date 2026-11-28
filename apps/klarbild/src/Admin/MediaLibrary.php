@@ -164,6 +164,7 @@ final class MediaLibrary
             } else {
                 Status::setManual($id, $status);
             }
+            do_action('klarbild_status_changed', $id);
             $count++;
         }
         return add_query_arg(self::NOTICE_PARAM, $count, $redirect);
@@ -245,7 +246,10 @@ final class MediaLibrary
             Status::resetToDetected($id);
         } elseif (in_array($value, Status::MANUAL, true)) {
             Status::setManual($id, $value);
+        } else {
+            return $post;
         }
+        do_action('klarbild_status_changed', $id);
         return $post;
     }
 

@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { classifySourceType, detect, matchGenerator } from "../src/index.ts";
+import { buildXmp, classifySourceType, detect, matchGenerator } from "../src/index.ts";
 
 /**
  * Gemeinsame Erwartungsliste für TypeScript und PHP (Klarbild, apps/klarbild/tests/ParityTest.php).
@@ -109,6 +109,11 @@ const buildFields = () => ({
     generator: matchGenerator(value) ?? null,
   })),
   sourceTypes: SOURCE_TYPE_SAMPLES.map((value) => ({ value, ...classifySourceType(value) })),
+  // Das Plugin schreibt dasselbe XMP-Paket wie der Label-Generator.
+  xmp: {
+    trainedAlgorithmicMedia: buildXmp("trainedAlgorithmicMedia"),
+    compositeWithTrainedAlgorithmicMedia: buildXmp("compositeWithTrainedAlgorithmicMedia"),
+  },
 });
 
 interface Case {

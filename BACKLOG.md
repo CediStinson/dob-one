@@ -8,7 +8,6 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte Labels nicht, der Nutzer muss alles selbst beurteilen. Kein echter Nutzen. Wert liegt dort, wo das Bild entsteht und gekennzeichnet wird.
 
-- [ ] **T22** IPTC in alle Bildgrößen schreiben (Port von `embed.ts`), Roundtrip-Tests.
 - [ ] **T23** HTML-Overlay "KI" nach Label-Spec + Alt-Text-Zusatz, Einstellungen.
 - [ ] **T24** Lokales Kennzeichnungs-Log + CSV-Export, Readme für wordpress.org, Screenshots, Plugin-ZIP.
 - [ ] 🧑 **B7** (nach T24) wordpress.org-Konto anlegen, Slug `klarbild` prüfen (Claude kommt nicht an wordpress.org), Plugin einreichen.
@@ -40,6 +39,8 @@ Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte La
 - [ ] (geparkt) **T16** (später) Eingebrannte Labels erkennen: OCR nur auf die 4 Bildecken, im Browser, selbst gehostet. Erst prüfen, ob Aufwand/Größe vertretbar ist.
 
 ## Erledigt
+
+- [x] 2026-11-28 T22 Klarbild schreibt den KI-Hinweis (IPTC als XMP) in alle erzeugten Bildgrößen, `-scaled` und Zusatzformate, nie ins Original. Vorhandenes XMP bleibt erhalten, genau ein Paket, kaputte Dateien unangetastet, atomisches Schreiben. Auch nach manueller Änderung. 52 PHP-Tests inkl. GD-Roundtrip (JPEG/PNG/WebP, Alpha), Gegenprobe mit Pillow.
 
 - [x] 2026-11-28 T21 Klarbild erkennt KI-Bilder beim Upload: PHP-Port von `packages/detect` (`src/Detect/`), gemeinsame Erwartungsliste `packages/detect/fixtures/expected.json` + `expected-fields.json` (304 Datei-/Anfangsfälle, alle 23 Generatoren, Source Types), PHP liefert exakt das gleiche Ergebnis wie TS. Status als Post-Meta, manueller Status hat Vorrang. Mediathek: Spalte, Filter, 4 Sammelaktionen mit Rechteprüfung, Auswahl in den Anhang-Details (auch Rasteransicht). 41 PHP-Tests. Noch nicht gegen echtes WordPress getestet (nur Stubs).
 

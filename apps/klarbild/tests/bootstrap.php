@@ -24,6 +24,7 @@ function klarbild_wp_reset(): void
     $GLOBALS['klarbild_wp']['options'] = [];
     $GLOBALS['klarbild_wp']['can'] = true;
     $GLOBALS['klarbild_wp']['posts'] = [];
+    $GLOBALS['klarbild_wp']['done'] = [];
     $GLOBALS['pagenow'] = 'upload.php';
     $_GET = [];
 }
@@ -58,7 +59,8 @@ function get_post_mime_type($id)
 
 function wp_get_original_image_path($id)
 {
-    return $GLOBALS['klarbild_wp']['posts'][$id]['file'] ?? false;
+    $post = $GLOBALS['klarbild_wp']['posts'][$id] ?? [];
+    return $post['original'] ?? ($post['file'] ?? false);
 }
 
 function get_attached_file($id)
@@ -84,6 +86,19 @@ function absint($value)
 function add_query_arg($key, $value, $url)
 {
     return $url . (strpos($url, '?') === false ? '?' : '&') . rawurlencode($key) . '=' . rawurlencode((string) $value);
+}
+
+function do_action($hook, ...$args)
+{
+    $GLOBALS['klarbild_wp']['done'][] = [$hook, $args];
+    foreach ($GLOBALS['klarbild_wp']['actions'][$hook] ?? [] as $callback) {
+        call_user_func_array($callback, $args);
+    }
+}
+
+function wp_get_attachment_metadata($id)
+{
+    return $GLOBALS['klarbild_wp']['posts'][$id]['metadata'] ?? false;
 }
 
 function _n($single, $plural, $number, $domain = 'default')

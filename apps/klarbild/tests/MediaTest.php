@@ -20,7 +20,11 @@ final class MediaTest extends TestCase
 
     public function testUploadHookIsRegisteredEverywhere(): void
     {
-        $this->assertSame([[Status::class, 'onGenerateMetadata']], $GLOBALS['klarbild_wp']['filters']['wp_generate_attachment_metadata']);
+        // Detection (priority 20) first, then writing into the sizes (priority 99).
+        $this->assertSame(
+            [[Status::class, 'onGenerateMetadata'], [\Klarbild\Embed\Writer::class, 'onGenerateMetadata']],
+            $GLOBALS['klarbild_wp']['filters']['wp_generate_attachment_metadata']
+        );
     }
 
     public function testUploadStoresDetectedStatus(): void

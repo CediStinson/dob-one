@@ -101,6 +101,13 @@ Zahlungsbereitschaft testen, bevor Pro gebaut wird: Im Plugin (Einstellungsseite
 - Offen: Filter in der Rasteransicht (`ajax_query_attachments_args`), Hinweis im Upload-Dialog, bestehende Mediathek nachträglich prüfen (Pro: Massen-Scan; im Free-Plugin vorerst per Sammelaktion "zurück auf automatisch" nur für bereits geprüfte Bilder). Test gegen echtes WordPress fehlt noch (kein Docker/wp-env in der Session), nur Stubs.
 - Uninstall löscht die Einstellungen, behält aber den Status pro Bild (Nachweis).
 
+## Stand Metadaten (T22, 28.11.2026)
+
+- `src/Embed/Embedder.php`: schreibt IPTC `DigitalSourceType` als XMP in JPEG (APP1), PNG (iTXt) und WebP (VP8X + "XMP ", auch aus einfachem VP8/VP8L, Alpha bleibt). Gleiches Paket wie der Label-Generator (`buildXmp`, geprüft über `expected-fields.json`). Vorhandenes XMP bleibt erhalten (z. B. Copyright), nur der Source Type wird gesetzt oder ersetzt (Attribut-, Element- und `rdf:resource`-Form); sonst eigene `rdf:Description`. Immer genau ein XMP-Paket. Abgeschnittene oder unbekannte Dateien, komprimiertes PNG-XMP und XMP über 64 KB in JPEG bleiben unangetastet. Ergebnis wird vor dem Schreiben mit dem Detector gegengeprüft.
+- `src/Embed/Writer.php`: nach dem Upload (Filter-Priorität 99, nach der Erkennung) und nach manueller Änderung (Action `klarbild_status_changed`) für Status `ai` (trainedAlgorithmicMedia) und `ai_partial` (compositeWithTrainedAlgorithmicMedia). Betrifft alle Bildgrößen, die `-scaled`-Datei und Zusatzformate in `sources`, nie das hochgeladene Original. Nur Dateinamen aus dem Upload-Ordner, Schreiben über Temp-Datei + `rename`. Abschaltbar in den Einstellungen.
+- Geprüft: Roundtrip auf allen Fixtures, mit GD erzeugte JPEG/PNG/WebP (verlustbehaftet, verlustfrei, mit Alpha) bleiben dekodierbar, Pillow liest XMP und Bild.
+- Offen: Status zurück auf "kein KI-Bild" entfernt den Hinweis nicht wieder aus den Größen. Optimierer, die nach Priorität 99 oder per Cron laufen (Smush, ShortPixel, EWWW, Imagify), sind nicht getestet.
+
 ## Vorschlag Tickets
 
 1. **T20** Klarbild-Grundgerüst in `apps/klarbild/` (Plugin-Header, Einstellungsseite, CI-Job PHP-Lint + PHPUnit), ohne Funktion.

@@ -20,10 +20,18 @@ namespace PHPUnit\Framework {
         {
         }
 
+        protected function tearDown(): void
+        {
+        }
+
         public function runTest(string $method): void
         {
             $this->setUp();
-            $this->$method();
+            try {
+                $this->$method();
+            } finally {
+                $this->tearDown();
+            }
         }
 
         private function check(bool $ok, string $message, string $extra = ''): void

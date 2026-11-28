@@ -9,6 +9,7 @@ namespace Klarbild;
 
 use Klarbild\Admin\MediaLibrary;
 use Klarbild\Admin\SettingsPage;
+use Klarbild\Embed\Writer;
 use Klarbild\Media\Status;
 
 if (!defined('ABSPATH')) {
@@ -30,6 +31,9 @@ final class Plugin
         add_action('init', [self::class, 'loadTextdomain']);
         // Detection on upload, also for uploads via REST (block editor) and WP-CLI.
         add_filter('wp_generate_attachment_metadata', [Status::class, 'onGenerateMetadata'], 20, 2);
+        // Then write the AI note into every generated size (late, after core and most image plugins).
+        add_filter('wp_generate_attachment_metadata', [Writer::class, 'onGenerateMetadata'], 99, 2);
+        add_action('klarbild_status_changed', [Writer::class, 'onStatusChanged']);
 
         if (is_admin()) {
             (new SettingsPage())->register();

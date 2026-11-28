@@ -72,7 +72,7 @@ final class SettingsPage
         echo '<div class="wrap">';
         echo '<h1>' . esc_html__('Klarbild', 'klarbild') . '</h1>';
         echo '<div class="notice notice-info inline"><p>'
-            . esc_html__('Early version: these settings are saved, but labeling and metadata functions follow in the next versions.', 'klarbild')
+            . esc_html__('Early version: AI detection on upload and the metadata note are active. The visible label follows in the next version.', 'klarbild')
             . '</p></div>';
         echo '<form action="' . esc_url(admin_url('options.php')) . '" method="post">';
         settings_fields(self::GROUP);
