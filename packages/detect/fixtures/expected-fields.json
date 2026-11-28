@@ -1,0 +1,258 @@
+{
+  "generators": [
+    {
+      "value": "Midjourney v6",
+      "generator": "Midjourney"
+    },
+    {
+      "value": "DALL·E 3",
+      "generator": "DALL-E"
+    },
+    {
+      "value": "DALL-E",
+      "generator": "DALL-E"
+    },
+    {
+      "value": "dall e",
+      "generator": "DALL-E"
+    },
+    {
+      "value": "OpenAI API",
+      "generator": "ChatGPT / OpenAI"
+    },
+    {
+      "value": "ChatGPT",
+      "generator": "ChatGPT / OpenAI"
+    },
+    {
+      "value": "GPT-4o",
+      "generator": "ChatGPT / OpenAI"
+    },
+    {
+      "value": "gpt-image-1",
+      "generator": "ChatGPT / OpenAI"
+    },
+    {
+      "value": "Sora",
+      "generator": "ChatGPT / OpenAI"
+    },
+    {
+      "value": "Adobe Firefly",
+      "generator": "Adobe Firefly"
+    },
+    {
+      "value": "Stable Diffusion XL",
+      "generator": "Stable Diffusion"
+    },
+    {
+      "value": "stable-diffusion",
+      "generator": "Stable Diffusion"
+    },
+    {
+      "value": "SDXL 1.0",
+      "generator": "Stable Diffusion"
+    },
+    {
+      "value": "Stability.ai",
+      "generator": "Stable Diffusion"
+    },
+    {
+      "value": "ComfyUI",
+      "generator": "ComfyUI"
+    },
+    {
+      "value": "AUTOMATIC1111",
+      "generator": "AUTOMATIC1111"
+    },
+    {
+      "value": "a1111",
+      "generator": "AUTOMATIC1111"
+    },
+    {
+      "value": "InvokeAI 3.0",
+      "generator": "InvokeAI"
+    },
+    {
+      "value": "Invoke AI",
+      "generator": "InvokeAI"
+    },
+    {
+      "value": "Fooocus 2.1",
+      "generator": "Fooocus"
+    },
+    {
+      "value": "NovelAI",
+      "generator": "NovelAI"
+    },
+    {
+      "value": "Leonardo.Ai",
+      "generator": "Leonardo.Ai"
+    },
+    {
+      "value": "Ideogram 2.0",
+      "generator": "Ideogram"
+    },
+    {
+      "value": "FLUX.1 [dev]",
+      "generator": "FLUX"
+    },
+    {
+      "value": "flux.2",
+      "generator": "FLUX"
+    },
+    {
+      "value": "Black Forest Labs",
+      "generator": "FLUX"
+    },
+    {
+      "value": "Google Gemini",
+      "generator": "Google Gemini / Imagen"
+    },
+    {
+      "value": "Imagen 3",
+      "generator": "Google Gemini / Imagen"
+    },
+    {
+      "value": "Nano Banana",
+      "generator": "Google Gemini / Imagen"
+    },
+    {
+      "value": "Made with Google AI",
+      "generator": "Google Gemini / Imagen"
+    },
+    {
+      "value": "Bing Image Creator",
+      "generator": "Microsoft Designer / Bing"
+    },
+    {
+      "value": "Microsoft Designer",
+      "generator": "Microsoft Designer / Bing"
+    },
+    {
+      "value": "Copilot Designer",
+      "generator": "Microsoft Designer / Bing"
+    },
+    {
+      "value": "Meta AI",
+      "generator": "Meta AI"
+    },
+    {
+      "value": "Imagine with Meta",
+      "generator": "Meta AI"
+    },
+    {
+      "value": "Grok 2",
+      "generator": "Grok"
+    },
+    {
+      "value": "RunwayML",
+      "generator": "Runway"
+    },
+    {
+      "value": "Runway Gen-3",
+      "generator": "Runway"
+    },
+    {
+      "value": "Krea.ai",
+      "generator": "Krea"
+    },
+    {
+      "value": "Playground v2.5",
+      "generator": "Playground"
+    },
+    {
+      "value": "Playground AI",
+      "generator": "Playground"
+    },
+    {
+      "value": "DreamStudio",
+      "generator": "DreamStudio"
+    },
+    {
+      "value": "Recraft V3",
+      "generator": "Recraft"
+    },
+    {
+      "value": "Freepik AI",
+      "generator": "Freepik AI"
+    },
+    {
+      "value": "Freepik Pikaso",
+      "generator": "Freepik AI"
+    },
+    {
+      "value": "Freepik Mystic",
+      "generator": "Freepik AI"
+    },
+    {
+      "value": "Adobe Photoshop 25.0",
+      "generator": null
+    },
+    {
+      "value": "Canon EOS R5",
+      "generator": null
+    },
+    {
+      "value": "GIMP 2.10",
+      "generator": null
+    },
+    {
+      "value": "influx",
+      "generator": null
+    },
+    {
+      "value": "groking",
+      "generator": null
+    },
+    {
+      "value": "sorait",
+      "generator": null
+    },
+    {
+      "value": "",
+      "generator": null
+    }
+  ],
+  "sourceTypes": [
+    {
+      "value": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+      "code": "trainedAlgorithmicMedia",
+      "meaning": "ai_generated"
+    },
+    {
+      "value": "https://cv.iptc.org/newscodes/digitalsourcetype/compositeWithTrainedAlgorithmicMedia",
+      "code": "compositeWithTrainedAlgorithmicMedia",
+      "meaning": "ai_composite"
+    },
+    {
+      "value": "algorithmicallyEnhanced",
+      "code": "algorithmicallyEnhanced",
+      "meaning": "ai_edited"
+    },
+    {
+      "value": "  TRAINEDALGORITHMICMEDIA  ",
+      "code": "TRAINEDALGORITHMICMEDIA",
+      "meaning": "ai_generated"
+    },
+    {
+      "value": "http://cv.iptc.org/newscodes/digitalsourcetype/digitalCapture",
+      "code": "digitalCapture",
+      "meaning": "not_ai"
+    },
+    {
+      "value": "http://example.com/#trainedAlgorithmicMedia",
+      "code": "trainedAlgorithmicMedia",
+      "meaning": "ai_generated"
+    },
+    {
+      "value": "///",
+      "code": "///",
+      "meaning": "not_ai"
+    },
+    {
+      "value": "",
+      "code": "",
+      "meaning": "not_ai"
+    }
+  ]
+}

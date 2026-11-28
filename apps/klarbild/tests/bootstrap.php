@@ -16,12 +16,79 @@ $GLOBALS['klarbild_wp'] = [
     'pages' => [],
     'is_admin' => true,
     'can' => true,
+    'posts' => [],
 ];
 
 function klarbild_wp_reset(): void
 {
     $GLOBALS['klarbild_wp']['options'] = [];
     $GLOBALS['klarbild_wp']['can'] = true;
+    $GLOBALS['klarbild_wp']['posts'] = [];
+    $GLOBALS['pagenow'] = 'upload.php';
+    $_GET = [];
+}
+
+/** Test helper: an attachment with mime type and file. */
+function klarbild_wp_post(int $id, string $mime, string $file = '', bool $editable = true): void
+{
+    $GLOBALS['klarbild_wp']['posts'][$id] = ['mime' => $mime, 'file' => $file, 'meta' => [], 'editable' => $editable];
+}
+
+function get_post_meta($id, $key = '', $single = false)
+{
+    return $GLOBALS['klarbild_wp']['posts'][$id]['meta'][$key] ?? '';
+}
+
+function update_post_meta($id, $key, $value)
+{
+    $GLOBALS['klarbild_wp']['posts'][$id]['meta'][$key] = $value;
+    return true;
+}
+
+function delete_post_meta($id, $key)
+{
+    unset($GLOBALS['klarbild_wp']['posts'][$id]['meta'][$key]);
+    return true;
+}
+
+function get_post_mime_type($id)
+{
+    return $GLOBALS['klarbild_wp']['posts'][$id]['mime'] ?? false;
+}
+
+function wp_get_original_image_path($id)
+{
+    return $GLOBALS['klarbild_wp']['posts'][$id]['file'] ?? false;
+}
+
+function get_attached_file($id)
+{
+    return $GLOBALS['klarbild_wp']['posts'][$id]['file'] ?? false;
+}
+
+function sanitize_key($key)
+{
+    return preg_replace('/[^a-z0-9_\-]/', '', strtolower((string) $key));
+}
+
+function wp_unslash($value)
+{
+    return is_string($value) ? stripslashes($value) : $value;
+}
+
+function absint($value)
+{
+    return abs((int) $value);
+}
+
+function add_query_arg($key, $value, $url)
+{
+    return $url . (strpos($url, '?') === false ? '?' : '&') . rawurlencode($key) . '=' . rawurlencode((string) $value);
+}
+
+function _n($single, $plural, $number, $domain = 'default')
+{
+    return $number === 1 ? $single : $plural;
 }
 
 function add_action($hook, $callback, $priority = 10, $args = 1)
@@ -41,8 +108,11 @@ function is_admin()
     return $GLOBALS['klarbild_wp']['is_admin'];
 }
 
-function current_user_can($cap)
+function current_user_can($cap, $id = null)
 {
+    if ($id !== null) {
+        return $GLOBALS['klarbild_wp']['can'] && ($GLOBALS['klarbild_wp']['posts'][$id]['editable'] ?? false);
+    }
     return $GLOBALS['klarbild_wp']['can'];
 }
 

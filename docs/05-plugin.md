@@ -87,10 +87,19 @@ Zahlungsbereitschaft testen, bevor Pro gebaut wird: Im Plugin (Einstellungsseite
 
 ## Stand Grundgerüst (T20, 28.11.2026)
 
-- `apps/klarbild/`: `klarbild.php` (Header, Autoloader für `Klarbild\\` aus `src/`), `src/Plugin.php` (Hooks, Link "Settings" in der Plugin-Liste), `src/Settings.php` (Optionen `klarbild_settings`: Overlay an/aus + Ecke, Alt-Text-Zusatz an/aus + Text, IPTC schreiben an/aus; Whitelist-Sanitizer), `src/Admin/SettingsPage.php` (Einstellungen > Klarbild, Settings API, alles escaped, nur `manage_options`), `uninstall.php`, `readme.txt` (Platzhalter, vollständig in T24).
+- `apps/klarbild/`: `klarbild.php` (Header, Autoloader für `Klarbild\` aus `src/`), `src/Plugin.php` (Hooks, Link "Settings" in der Plugin-Liste), `src/Settings.php` (Optionen `klarbild_settings`: Overlay an/aus + Ecke, Alt-Text-Zusatz an/aus + Text, IPTC schreiben an/aus; Whitelist-Sanitizer), `src/Admin/SettingsPage.php` (Einstellungen > Klarbild, Settings API, alles escaped, nur `manage_options`), `uninstall.php`, `readme.txt` (Platzhalter, vollständig in T24).
 - Quelltexte der Oberfläche auf Englisch mit Text Domain `klarbild` (wordpress.org-Standard), deutsche Übersetzung (`languages/`) kommt mit T24.
 - Tests: `tests/*Test.php` sind PHPUnit-Klassen mit WordPress-Stubs (`tests/bootstrap.php`). In der Session gibt es kein Packagist, deshalb läuft lokal `pnpm test:klarbild` (eigener Mini-Runner `tests/run-local.php`, gleiche Klassen). CI: Job `klarbild` mit PHP 7.4 und 8.3, PHP-Lint, echtes PHPUnit 9.6, Mini-Runner.
 - Kein `package.json` im Plugin-Ordner, damit pnpm und der Cloudflare-Build es ignorieren.
+
+## Stand Erkennung + Mediathek (T21, 28.11.2026)
+
+- `src/Detect/` (Bytes, Containers, Fields, Detector): PHP-Port von `packages/detect` (JPEG/PNG/WebP-Container, EXIF IFD0, XMP, C2PA ohne CBOR-Parser, IPTC, 23 Generatoren, PNG-Text). Liest nur die ersten 256 KB des Originals (`wp_get_original_image_path`, sonst `get_attached_file`).
+- Gleichheit TS = PHP: `packages/detect/test/expected.test.ts` schreibt `fixtures/expected.json` (alle Fixtures, ganze Datei und abgeschnittene Anfänge, 304 Fälle) und `fixtures/expected-fields.json` (Beispielwerte für jeden Generator und Source Type). `tests/ParityTest.php` vergleicht das komplette Ergebnis. Nach Änderungen an der Erkennung: `UPDATE_EXPECTED=1 pnpm test`, dann `pnpm test:klarbild`.
+- `src/Media/Status.php`: Post-Meta `_klarbild_status` (ai, ai_partial, unclear, none; fehlt = nicht geprüft), `_klarbild_source` (detected/manual), `_klarbild_detected`, `_klarbild_generator`. Erkennung per Filter `wp_generate_attachment_metadata` (auch REST/Block-Editor). Ein von Hand gesetzter Status wird nie überschrieben. "none" aus der Erkennung heißt in der Oberfläche "Kein KI-Hinweis", nie "Kein KI-Bild".
+- `src/Admin/MediaLibrary.php`: Spalte "KI" und Filter (Listenansicht), Sammelaktionen (KI-generiert, teilweise KI, kein KI-Bild, zurück auf automatisch; Rechte pro Bild geprüft), Auswahl "KI-Bild" in den Anhang-Details (auch in der Rasteransicht).
+- Offen: Filter in der Rasteransicht (`ajax_query_attachments_args`), Hinweis im Upload-Dialog, bestehende Mediathek nachträglich prüfen (Pro: Massen-Scan; im Free-Plugin vorerst per Sammelaktion "zurück auf automatisch" nur für bereits geprüfte Bilder). Test gegen echtes WordPress fehlt noch (kein Docker/wp-env in der Session), nur Stubs.
+- Uninstall löscht die Einstellungen, behält aber den Status pro Bild (Nachweis).
 
 ## Vorschlag Tickets
 

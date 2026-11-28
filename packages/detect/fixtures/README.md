@@ -10,3 +10,6 @@ höchstens `unclear`, nie `ai`.
 
 Kein Fixture gelangt ins Web-Build: `apps/web` importiert nur `packages/detect/src`, ausgeliefert
 wird nur `apps/web/dist`.
+
+`expected.json` und `expected-fields.json` sind die gemeinsame Erwartungsliste für TypeScript und das
+PHP-Plugin Klarbild (`apps/klarbild/tests/ParityTest.php`). Neu schreiben: `UPDATE_EXPECTED=1 pnpm test`.

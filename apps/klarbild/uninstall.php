@@ -1,7 +1,7 @@
 <?php
 /**
- * Removes the plugin options on uninstall. Attachment meta and the log (later versions)
- * are handled here as well once they exist.
+ * Removes the plugin options on uninstall. The AI status per image (post meta) is kept on purpose:
+ * it documents which images were marked, and deleting the plugin must not erase that.
  *
  * @package Klarbild
  */

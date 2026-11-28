@@ -1,13 +1,15 @@
 <?php
 /**
- * Registers all hooks. T20: only the settings page, no image processing yet.
+ * Registers all hooks.
  *
  * @package Klarbild
  */
 
 namespace Klarbild;
 
+use Klarbild\Admin\MediaLibrary;
 use Klarbild\Admin\SettingsPage;
+use Klarbild\Media\Status;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -26,9 +28,12 @@ final class Plugin
         self::$booted = true;
 
         add_action('init', [self::class, 'loadTextdomain']);
+        // Detection on upload, also for uploads via REST (block editor) and WP-CLI.
+        add_filter('wp_generate_attachment_metadata', [Status::class, 'onGenerateMetadata'], 20, 2);
 
         if (is_admin()) {
             (new SettingsPage())->register();
+            (new MediaLibrary())->register();
             add_filter(
                 'plugin_action_links_' . plugin_basename(KLARBILD_FILE),
                 [self::class, 'actionLinks']
