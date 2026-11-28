@@ -85,6 +85,13 @@ Zahlungsbereitschaft testen, bevor Pro gebaut wird: Im Plugin (Einstellungsseite
 - Konto bei wordpress.org nötig, das ist ein Account in Benjamins Namen (🧑).
 - Konkurrenz: andere KI-Kennzeichnungs-Plugins können entstehen. Vorteil Klarbild: Metadaten-Erhalt, Nachweis-Log, Verbindung zum Label-Generator und deutsche Ausrichtung.
 
+## Stand Grundgerüst (T20, 28.11.2026)
+
+- `apps/klarbild/`: `klarbild.php` (Header, Autoloader für `Klarbild\\` aus `src/`), `src/Plugin.php` (Hooks, Link "Settings" in der Plugin-Liste), `src/Settings.php` (Optionen `klarbild_settings`: Overlay an/aus + Ecke, Alt-Text-Zusatz an/aus + Text, IPTC schreiben an/aus; Whitelist-Sanitizer), `src/Admin/SettingsPage.php` (Einstellungen > Klarbild, Settings API, alles escaped, nur `manage_options`), `uninstall.php`, `readme.txt` (Platzhalter, vollständig in T24).
+- Quelltexte der Oberfläche auf Englisch mit Text Domain `klarbild` (wordpress.org-Standard), deutsche Übersetzung (`languages/`) kommt mit T24.
+- Tests: `tests/*Test.php` sind PHPUnit-Klassen mit WordPress-Stubs (`tests/bootstrap.php`). In der Session gibt es kein Packagist, deshalb läuft lokal `pnpm test:klarbild` (eigener Mini-Runner `tests/run-local.php`, gleiche Klassen). CI: Job `klarbild` mit PHP 7.4 und 8.3, PHP-Lint, echtes PHPUnit 9.6, Mini-Runner.
+- Kein `package.json` im Plugin-Ordner, damit pnpm und der Cloudflare-Build es ignorieren.
+
 ## Vorschlag Tickets
 
 1. **T20** Klarbild-Grundgerüst in `apps/klarbild/` (Plugin-Header, Einstellungsseite, CI-Job PHP-Lint + PHPUnit), ohne Funktion.

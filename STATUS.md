@@ -18,6 +18,7 @@ Referenz: bestehender Generator auf dobsonstudio.com/ki-label-generator (Browser
 
 ## Aktueller Stand
 
+- 2026-11-28: T20 Klarbild-Grundgerüst (`apps/klarbild/`, Einstellungsseite, CI-Job PHP 7.4/8.3). 195 TS-Tests + 21 PHP-Tests. Nächstes Ticket: T21 (PHP-Port der Erkennung).
 - 2026-11-27: T19 nachgeschärft: ausfallsicher ohne DB/Passwort (Hinweisseite statt Fehler), Ende-zu-Ende mit echtem Browser geprüft, Anleitung B6 Schritt für Schritt. 195 Tests. Wartet auf B6 (Benjamin). Nächstes Ticket: T20.
 - 2026-11-27: T18 Konzept Klarbild-Plugin (`docs/05-plugin.md`), Tickets T20 bis T24 angelegt. Nächstes Ticket: T20 (Plugin-Grundgerüst).
 - 2026-11-27: T13 WebP-Tool live (`/tools/bild-in-webp-umwandeln/`), übernimmt KI-Hinweise als IPTC. 189 Tests. Nächstes Ticket: T18 (Konzept Klarbild-Plugin).

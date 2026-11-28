@@ -8,7 +8,6 @@ Regeln: Jede Session nimmt das oberste offene Ticket ohne 🧑 (🧑 = braucht B
 
 Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte Labels nicht, der Nutzer muss alles selbst beurteilen. Kein echter Nutzen. Wert liegt dort, wo das Bild entsteht und gekennzeichnet wird.
 
-- [ ] **T20** Klarbild-Grundgerüst in `apps/klarbild/` (Plugin-Header, Einstellungsseite, CI-Job PHP-Lint + PHPUnit), ohne Funktion. Konzept: `docs/05-plugin.md`.
 - [ ] **T21** PHP-Port der Erkennung mit gemeinsamen Fixtures (TS und PHP urteilen gleich), Status beim Upload, Mediathek-Spalte, Filter, Sammelaktion.
 - [ ] **T22** IPTC in alle Bildgrößen schreiben (Port von `embed.ts`), Roundtrip-Tests.
 - [ ] **T23** HTML-Overlay "KI" nach Label-Spec + Alt-Text-Zusatz, Einstellungen.
@@ -42,6 +41,8 @@ Website-Check ist geparkt: listet Logos, Teamfotos usw., erkennt eingebrannte La
 - [ ] (geparkt) **T16** (später) Eingebrannte Labels erkennen: OCR nur auf die 4 Bildecken, im Browser, selbst gehostet. Erst prüfen, ob Aufwand/Größe vertretbar ist.
 
 ## Erledigt
+
+- [x] 2026-11-28 T20 Klarbild-Grundgerüst `apps/klarbild/`: Plugin-Header (GPL, PHP 7.4+, WP 6.2+), Autoloader, Einstellungsseite (Overlay + Ecke, Alt-Text-Zusatz, IPTC schreiben) mit Whitelist-Sanitizer und Escaping, `uninstall.php`, Platzhalter-Readme. 21 PHP-Tests mit WP-Stubs (u. a. Escaping per Mutationsprobe geprüft), lokal `pnpm test:klarbild`, CI-Job PHP 7.4/8.3 mit Lint + PHPUnit 9.6.
 
 - [x] 2026-11-27 T18 Konzept `docs/05-plugin.md`: Erkennung beim Upload, HTML-Overlay statt Bildveränderung, IPTC in alle Bildgrößen, lokales Log. Free vollständig (wordpress.org verbietet Trialware), Pro über kenntlich-Konto (Nachweis-PDF, zentrales Log, Agentur-Dashboard, Massen-Scan). Preis-Hypothese 49 €/Jahr bzw. 149 €/Jahr Agentur. Tickets T20 bis T24 + B7 angelegt.
 

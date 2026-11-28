@@ -13,7 +13,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "dev": "pnpm --filter @dob-one/web build && wrangler dev",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "test:klarbild": "php apps/klarbild/tests/run-local.php"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261125.1",

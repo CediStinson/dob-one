@@ -19,3 +19,23 @@ jobs:
       - run: pnpm test
       - run: pnpm build
       - run: pnpm exec wrangler deploy --dry-run --outdir .wrangler/dry
+  # Klarbild (WordPress-Plugin, apps/klarbild). Unabhängig vom Cloudflare-Deploy.
+  klarbild:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ["7.4", "8.3"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: phpunit:9.6
+          coverage: none
+      - name: PHP-Lint
+        run: find apps/klarbild -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: PHPUnit
+        working-directory: apps/klarbild
+        run: phpunit
+      - name: Lokaler Runner (gleiche Tests ohne PHPUnit)
+        run: php apps/klarbild/tests/run-local.php

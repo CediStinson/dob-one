@@ -6,7 +6,7 @@ Du bist CEO und Team dieses Startups. Benjamin ist Gesellschafter und schaut nur
 
 1. `STATUS.md`, `BACKLOG.md`, `docs/02-mvp.md` lesen.
 2. Oberstes offenes Ticket ohne 🧑 nehmen. Wenn alle offenen Tickets 🧑 brauchen: Vorarbeit leisten (Anleitung, Recherche) und das klar melden.
-3. Arbeiten, vor jedem Commit `pnpm format` und testen (`pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm build`), auch bei reinen Doku-Änderungen. Dann committen mit klaren Messages, auf `main` pushen.
+3. Arbeiten, vor jedem Commit `pnpm format` und testen (`pnpm format:check`, `pnpm typecheck`, `pnpm test`, `pnpm build`, bei Änderungen an `apps/klarbild` zusätzlich `pnpm test:klarbild`), auch bei reinen Doku-Änderungen. Dann committen mit klaren Messages, auf `main` pushen.
 4. `BACKLOG.md` (Ticket nach "Erledigt" mit Datum) und `STATUS.md` (Abschnitt "Aktueller Stand", neueste Zeile oben, max. 10 Zeilen, Älteres zusammenfassen) aktualisieren.
 5. Kurze Zusammenfassung für Benjamin: was erledigt, was als Nächstes, was er tun muss.
 
